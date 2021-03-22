@@ -1,0 +1,100 @@
+{#header}
+<div class="row">
+	<div class="col-lg-12 statusbox-header"><h3>{_page_title}<!--<span>Customer Service Management</span>--></h3></div>
+</div>
+{=include_file("cs/send_nav.htm")}
+<style>
+.search_td_width{width:800px;}
+#nav_div4 a:after{width:90%}
+</style>
+
+{?_print_xls!=1}
+    {=include_file("outline/table_width_cancel.htm")}
+{/}
+<form id="sendForm" name="sendForm" method="POST">
+
+<input type="hidden"name="print_xls" value="">
+<input type="hidden" name="mode" value="">
+<input type="hidden" name="no" value="">
+<input type="hidden" name="code" value="">
+
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+		<tr>						
+			{?_print_xls!=1}<th class="sorting_disabled"><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>{/}
+			<th>몰명</th>
+			<th>주문번호<br><span style="color:red">교환주문번호</span></th>
+			<th>모델명</th>
+			{?_print_xls!=1}<th>이미지</th>{/}
+			<th>수량</th>
+			<th>모델명<br>(교환)</th>
+			{?_print_xls!=1}<th>이미지<br>(교환)</th>{/}
+			<th>수량<br>(교환or반품)</th>
+			<th>비용</th>
+			<th>송장번호<br><span style="color:red">교환주문송장번호</span></th>
+			<th>사유</th>
+			{?_print_xls==1}<th>상품이상내용</th>{/}
+			<th>작성자</th>
+			<th>등록일</th>
+			<th>완료일</th>
+			<th>하자등록번호</th>
+			{?_print_xls!=1}<th></th>{/}
+		</tr>
+	</thead>
+	<tbody>
+		{@loop}
+			<tr class="{.line_color}">			
+				{?_print_xls!=1}
+				<td>
+					<input type="checkbox" class="chk_no" name="chk_no[]" value="{.no}">
+				</td>
+				{/}
+				<td>{.mall_name}<br>{.upload_form_type}</td>
+				<td  style='mso-number-format:"\@";'>{.order_no}{?.ex_ordno}<br><span style="color:red">({.ex_ordno})</span>{/}</td>
+				<td>{.goodsnm}</td>
+				{?_print_xls!=1}<td class="td_img">{.img_url}</td>{/}
+				<td>{.order_num}</td>
+				<td>{?.return_type=='70' || .return_type=='90'}{.exchange_goodsnm}{/}</td>
+				{?_print_xls!=1}<td class="td_img">{?.return_type=='70' || .return_type=='90'}{.exchange_img_url}{/}</td>{/}
+				<td>{.exchange_goods_num}</td>
+				<td>{=number_format(.diff_price)}</td>
+				<td>{?.return_invoice!=0}{delivery_list[.return_delivery_code]['name']}<br>{.return_invoice}{/}
+				{?.ex_invoice!=0}<br><span style="color:red">{delivery_list[.ex_courier_code]['name']}<br>{.ex_invoice}</span>{/}
+				</td>
+				<td>{.return_type_nm}</td>
+				{?_print_xls==1}<td>{.goods_bad_memo}</td>{/}
+				<td>{.name}<br>({.id})</td>
+				<td>{.reg_date}</td>
+				<td>{.end_reg_date}</td>
+				<td>{=str_pad(.cb_seq, 7, "0", STR_PAD_LEFT)}</td>
+				{?_print_xls!=1}
+				<td>
+					<button type="button" class="btn btn-sm btn-warning" onclick="popup('cs_reg.php?ordno={.order_no}&mall_no={.mall_no}&order_list_no={.order_list_no}&view_type=1','','1100','900')">상세</button>
+				</td>
+				{/}
+			</tr>
+		{/}
+	</tbody>
+</table>
+
+
+{?_print_xls!=1}
+<div> 총 데이터 :{=number_format(pg->recode['total'])}{pg->page['navi']}</div>
+{/}
+</form>
+
+<script>
+$("#nav_div4").addClass('active');
+document.title="{_page_title}";
+
+$(function(){
+
+	$("#print_xls").click(function(){
+		$("input[name='print_xls']").val("1");
+		$("#sendForm").submit();
+		$("input[name='print_xls']").val("0");
+	});
+})
+
+</script>
+{#footer}

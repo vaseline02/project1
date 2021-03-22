@@ -1,0 +1,101 @@
+{#header}
+<h1 class="page_title">{_page_title}</h1>
+
+<style>
+#sortable { list-style-type: none; margin: 0; padding: 0;  }
+#sortable li {padding:5px;margin:5px; }
+#sortable li div{display:inline-block}
+#sortable li div.del{color:red;cursor:pointer}
+
+html>body #sortable li {padding:5px;margin:5px; }
+.ui-state-highlight {}
+</style>
+<hr>
+<form method="post" id="main_form">
+<input type="hidden" name="mode" id="mode">
+<table class="table table-bordered" >
+	<tbody>		
+        <tr>
+			<th>분류</th>
+			<td>
+				<select name="upload_form_type" id="upload_form_type">
+					<option value="">선택</option>						
+				 {@data}
+					<option {_selected['upload_form_type'][.value_]}>{.value_}</option>
+				 {/}
+				</select>
+			</td>
+			
+		</tr>
+		<tr>
+			<th>몰명</th>
+			<td>
+				<select name="mallno" >
+					<option value="">선택</option>
+				{@data_mall}
+					<option value="{.key_}">{.value_}</option>
+				 {/}
+				</select>
+				<br/>( 필수값이 아님)
+			</td>
+		</tr>
+	
+	</tbody>
+</table>
+
+<center>
+	<button type="button" class="btn-sm btn-primary reg" id="reg">등록/수정</button>
+</center>
+
+
+
+<div class="table_title">등록목록</div>
+<ul id="sortable">
+{@ data_list}
+  <li class="ui-state-default">
+	<div style="width:95%">
+    {.upload_form_type}
+	{?.mall_name}
+		- {.mall_name}	
+	{/}
+	<input type="hidden" name="sort[]" value="{.no}">
+	</div>
+	<div class="del">X</div>
+  </li>
+{/}
+</ul>
+
+<center>
+	<button type="button" class="btn-sm btn-primary reg" id="sort">순서변경</button>
+</center>
+</form>
+
+<script>
+document.title="{_page_title}";
+
+$(function(){
+
+	$( "#sortable" ).sortable({
+      placeholder: "ui-state-highlight"
+    });
+    $( "#sortable" ).disableSelection();
+
+	$("#upload_form_type").change(function(){	
+		$("#main_form").submit();
+	});
+
+	$(".reg").click(function(){
+		$("#mode").val($(this).attr("id"));
+		$("#main_form").submit();
+	});
+	$(".del").click(function(){
+		if(confirm('삭제하시겠습니까?')){
+			var del_no=$(this).closest("li").find("input[name='sort[]']").val();
+		
+			location.href="mall_order_seq.php?del="+del_no;
+		}
+	});
+});
+
+</script>
+{#footer}

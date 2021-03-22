@@ -1,0 +1,363 @@
+{#header}
+<h1 class="page_title">{_page_title}</h1>
+
+<hr>
+
+<form method="post" id="csForm" onsubmit="return checkForm();">
+<input type="hidden" name="mode" value="{_mode}">
+<input type="hidden" name="order_no" value="{ordno}">
+<input type="hidden" name="claim_no" value="">
+
+<h1 class="page_title">기본주문정보</h1>
+<style>
+    .search_td_width{width:400px;}
+</style>
+<table class="table table-bordered" >
+	<tbody>
+		<tr>
+			<th>주문번호</th>
+            <td class="search_td_width">{ordno}</td>            
+            <th>구매자</th>
+            <td>{buyer}</td>   
+        </tr>
+        <tr>
+			<th>주소</th>
+            <td>{zipcode} {address}</td>   
+            <th>연락처</th>
+            <td>{mobile}</td>   
+        </tr>
+	</tbody>
+</table>
+
+<hr>
+
+
+<h1 class="page_title">상품정보</h1>
+
+<table id="" style="width:100%" class="listTable">
+	<thead>
+		<tr>			
+            {?!_view_type}
+            <th width='50'><input type="checkbox" class="allCheck"></th>
+            {/}
+			<th width='100'>상품명</th>
+			<th width='100'>모델명</th>
+			<th width='100'>이미지</th>
+			<th width='100'>수량</th>
+			<th width='100'>가격</th>
+			<th width='100'>송장번호</th>
+			<th width='100'>메모</th>			
+		</tr>
+	</thead>	
+	<tbody>
+        { @ goodsList }
+        <input type="hidden" name="goods_no[{.no}]" value="{.goodsno}">        
+        <input type="hidden" name="mall_no[{.no}]" value="{.mall_no}">        
+        <input type="hidden" name="ori_order_no[{.no}]" value="{.ori_ordno}">        
+		<tr class="{.line_color} trNo_{.no}">			
+            {?!_view_type}
+            <td class="centerClass"><input type="checkbox" name="order_list_no[]" id="order_list_no_{.no}" class="goodsTableAdd" data-no={.no} data-mall_goodsnm='{.mall_goodsnm}' data-order_num='{.order_num}' value={.no}></td>
+            {/}
+			<td>{.mall_goodsnm}</td>
+			<td>{.goodsnm}</td>
+			<td class="td_img">{.img_url}</td>
+			<td class="centerClass">{.order_num}</td>
+			<td>{=number_format(.order_price+.deli_price)}원</td>
+			<td>{.invoice}</td>			
+			<td>{.memo}</td>			
+		</tr>
+    	{ / }
+	</tbody>
+</table>
+
+<hr>
+{?!_view_type}
+<h1 class="page_title">접수</h1>
+
+<table class="table table-bordered" >
+	<tbody>		
+		<tr>
+            <th style="text-align: left;">
+                <div>
+                    수령자명    : <input type="text" value="{receiver}" name="receiver" style="width: 70px;"> 
+                    연락처      : <input type="text" value="{mobile}" name="mobile" style="width: 130px;">
+                </div>
+                <div style="padding-top: 10px;">                    
+                    주소        : <input type="text" value="{zipcode}" name="zipcode" style="width: 70px;" class="zipcode"> <input type="text" value="{address}" name="address" style="width: 500px;" class="address"> 
+                    <button type="button" class="btn btn-sm btn-primary searchAddress">우편번호찾기</button>
+                </div>               
+            </th>
+        </tr>
+        <tr>
+            <td>
+                <div style="margin-bottom: 10px;">
+                    <button type="button" class="btn btn-sm btn-warning" onclick="textPick('강성')">강성</button>
+                    <button type="button" class="btn btn-sm btn-warning" onclick="textPick('반품접수')">반품접수</button>
+                    <button type="button" class="btn btn-sm btn-warning" onclick="textPick('하자')">하자</button>
+                </div>
+                <div>
+                    <textarea style="overflow:auto; width:100%; height:120px;" name="contents" class="textPick"></textarea>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div style="width:100%">
+                    <ul style="position: relative;">
+                        <select name="return_type" class="returnType">                   
+                            { @ _cfg_cs_step }
+                                <option value={_cfg_cs_step.key_}>{_cfg_cs_step.value_}</option>
+                            { / }
+                        </select>
+                        <span style="margin-left: 50px;">
+                            <input type="radio" name="ing_type" id="ing_type_0" value='0' checked><label for="ing_type_0">진행중</label>
+                            <input type="radio" name="ing_type" id="ing_type_1"value='1'><label for="ing_type_1">완료</label>
+                        </span>
+                        <span style="padding-right: 10px; position: absolute; right:0px;">
+                            <input type="checkbox" name="send_type" id="send_type" class="sendType" value="1"><label for="send_type">기타발송</label>
+                        </span>
+                    </ul>
+                </div>
+            </td>            
+        </tr>
+    </tbody>
+ </table>
+ <center>
+    <button class="btn btn btn-primary buttonChange">등록</button>
+    <div class="btn btn btn-primary" onclick="javascript:history.go('cs_reg.php?ordno={_ordno}')">새로고침</div>    
+</center>
+<hr>
+{ / }
+<h1 class="page_title">접수내용</h1>
+
+<table class="table table-bordered" >
+	<tbody>		
+		<tr>
+			<td>
+                <div class="csDiv">
+                    { @ loop }
+                        <div class="csLoop">
+                            <div class="info">
+                                <ul style="position: relative;">
+                                    <div class="claimType">
+                                        {.reg_date} - {.admin_name}({.id})
+                                        {?!_view_type}
+                                        <span style="right:0px; padding-right:10px; position: absolute;">
+                                            { ?.send_type=="1" }
+                                            <button type="button" class="btn btn-sm btn-danger cancelOrder" data-no={.no}>철회요청</button>
+                                            { / }
+                                            <button type="button" class="btn btn-sm btn-warning claimModify" data-no={.no}>수정</button>
+                                        </span>
+                                        {/}
+                                    </div>
+                                    <div>
+                                        { ?.goods_no }
+                                            [{.mall_goodsnm}]                                        
+                                        { / }
+                                    </div>
+                                    <div>
+                                        진행상태 : <span class="{.ingColorType}">{_cfg_ing_step[.ing_type]}</span> 
+                                        / 문의형태 : {_cfg_cs_step[.return_type]}
+                                        { ?.send_type!=0 } / 접수상태 : {_cfg_cs_type[.send_type]}{ / }
+                                    </div>
+                                    
+                                    { ?.return_type>='40' && .return_type<'50'}
+                                        <div>수령자명 : {.receiver} / 주소 : {.zipcode} {.address} / 연락처 : {.mobile}</div>        
+                                        { ?.exchange_goods_no }                            
+                                            <div>모델명 : {.exchange_goods_nm} / 수량 : {.exchange_goods_num} / 비용 : {.diff_price}</div>
+                                        { / }
+                                    { / }                                
+                                </ul>
+                            </div>
+                            <p class="csContents">{=nl2br(.contents)}</p>
+                        </div>
+                    { / }
+                </div>
+            </td>
+		</tr>
+	</tbody>
+</table>
+
+</form>
+
+<script>
+document.title="{_page_title}";
+var textareaContents;
+var textSum;
+//클릭text
+function textPick(text){
+    textareaContents=$(".textPick").val();        
+    if(textareaContents) textSum=textareaContents+' '+text;
+    else textSum=text;
+    
+    $(".textPick").val(textSum);
+}
+function checkForm(){
+    insMode=$("input[name='mode']").val();
+    
+    if(insMode=='ins' || insMode=='mode'){
+        textareaContents=$(".textPick").val();
+        if(!textareaContents){
+            alert('내용을 입력해주세요.');
+            return false;
+        }
+        if(insMode=="ins"){
+            //발송체크를 하였으나 상품선택을 안했을경우
+            if($(".sendType").is(":checked") && !$(".goodsTableAdd").is(":checked")){
+                alert("반품,교환 접수할 상품이 선택되지 않았습니다.");return false;
+            }
+            //교환을하는데 교환상품 선택을 안했을경우
+            if($(".goodsTableAdd").is(":checked") && $(".returnType").val()>='40' && $(".returnType").val()<'50'){
+                var exchangeCheck=0;
+                $(".goodsTableAdd").each(function(index, item){
+                    if($(item).is(":checked")){                                       
+                        if(!$("input[name='exchange_goods_no["+$(item).val()+"]']").val()) exchangeCheck++;
+                    }
+                });
+                if(exchangeCheck>0){
+                    alert("교환할 상품을 선택해주세요.");
+                    return false;
+                }
+
+            }
+        }
+        if(insMode=='mod'){
+            if(!confirm("수정하시겠습니까?")) return false;
+        }
+    }
+}
+
+function exGoodsCheck(no){
+    if(!$("input[name='exchange_goods_no["+no+"]']").val()){
+        //alert("교환상품선택 후 수정가능합니다.");
+        $("input[name='exchange_goods_nm["+no+"]']").val("");
+    }
+
+}
+//일반문의일경우 발송선택안되게
+$(".sendType").click(function(){    
+    if($(".returnType").val()==0){
+        alert('일반문의 상태에서는 선택하실수 없습니다.');
+        $("input:checkbox[name='send_type']").prop('checked', false);
+    }
+});
+
+//발송선택후 일반문의로 변경시 체크해제
+$(".returnType").change(function(){    
+    if($(".returnType").val()==0){        
+        $("input:checkbox[name='send_type']").prop('checked', false);
+    }
+});
+
+//발송요청했던 cs건을 철회하는 버튼
+$(".cancelOrder").click(function(){
+    if(confirm("발송철회 요청하시곘습니까?")){
+        $("input[name='mode']").val("can");
+        $("input[name='claim_no']").val($(this).data('no'));     
+        $("form[id='csForm']").submit();
+    }
+});
+
+//cs건 수정시 ajax
+$(".claimModify").click(function (){
+    $.ajax({
+        url: "./cs_ajax.php",
+        type: "POST",
+        cache: false,
+        dataType: "json",
+        data: "no="+$(this).data('no'),
+        success: function(data){
+            var subject = $('.goodsTableAdd');
+            $(subject).each(function(index, item){
+                //console.log($(item).data("no"));
+                if($(item).is(":checked")){                   
+                    $(item).click(); 
+                }
+                $(item).attr( 'disabled', true );               
+            });
+
+            $(".buttonChange").addClass("btn-warning");
+            $(".buttonChange").removeClass("btn-primary");
+            $(".buttonChange").text("수정");
+
+            $("input[name='mode']").val("mod");
+            $("input[name='claim_no']").val(data['no']);                      
+            $("textarea[name='contents']").val(data['contents']);
+            $("input[name='receiver']").val(data['receiver']);
+            $("input[name='zipcode']").val(data['zipcode']);
+            $("input[name='address']").val(data['address']);
+            $("input[name='mall_goodsnm']").val(data['mall_goodsnm']);
+            $("input[name='mobile']").val(data['mobile']);
+            $("select[name='return_type']").val(data['return_type']).prop("selected",true);
+            $("select[name='return_type']").attr("disabled",true);
+            $("input:radio[name='ing_type']:radio[value="+data['ing_type']+"]").prop('checked', true);
+            if(data['send_type']){
+                $("input:checkbox[name='send_type']").prop('checked', true);
+            }else{
+                $("input:checkbox[name='send_type']").prop('checked', false);
+            }
+            $("input:checkbox[name='send_type']").attr("disabled",true);
+
+            if(data['order_list_no']){
+                $("#order_list_no_"+data['order_list_no']).attr( 'disabled', false );           
+                $("#order_list_no_"+data['order_list_no']).click(); 
+                $("input[name='exchange_goods_no["+data['order_list_no']+"]']").val(data['exchange_goods_no']);
+                $("input[name='exchange_goods_nm["+data['order_list_no']+"]']").val(data['exchange_goods_nm']);
+                $("input[name='exchange_goods_num["+data['order_list_no']+"]']").val(data['exchange_goods_num']);
+                $("input[name='diff_price["+data['order_list_no']+"]']").val(data['diff_price']);
+            }
+        },
+        error: function (request, status, error){        
+            console.log(error);
+        }
+
+    });
+
+});
+
+//상품 체크시 교환관련 항목 노출
+$(".goodsTableAdd").click(function(){
+    var goodsNo=$(this).data('no');
+    var mallGoodsnm=$(this).data('mall_goodsnm');
+    var orderNum=$(this).data('order_num');
+    var checkYn=($(this).is(":checked"));
+    var thLength=$(".listTable th").length;
+    var addHtml="";
+    
+    if(checkYn){
+        addHtml="<tr class='trNo_"+goodsNo+"'>";
+        addHtml+="  <input type='hidden' name='exchange_goods_no["+goodsNo+"]'>";
+        addHtml+="  <th style='text-align: left;' colspan="+thLength+">";
+        addHtml+="      <div style='padding-top: 10px;'>";
+        addHtml+="          구매상품 : <input type='text' value='"+mallGoodsnm+"' name='mall_goodsnm["+goodsNo+"]' style='width: 500px;''> ";
+        addHtml+="      </div>";
+        addHtml+="      <div style='padding-top: 10px;'>";
+        addHtml+="          모델명 : <input type='text' value='' name='exchange_goods_nm["+goodsNo+"]' onkeyup='exGoodsCheck("+goodsNo+")' style='width: 400px;' readonly> ";
+        addHtml+="          수량 : <input type='text' value='1' name='exchange_goods_num["+goodsNo+"]' style='width: 50px;' onKeyup=\"this.value=this.value.replace(/[^0-9]/g,'');\"> ";
+        addHtml+="          비용 : <input type='text' value='0' name='diff_price["+goodsNo+"]' style='width: 130px;''> ";
+        addHtml+="          <button type='button' class='btn btn-sm btn-warning' onclick='popup(\"goods_search.php?goodsno="+goodsNo+"\",\"goods_search\",\"1000\",\"900\")'>교환상품선택</button>";
+        addHtml+="      </div>";
+        addHtml+="      <div style='color:red'>";
+        addHtml+="          * 교환을 할경우 교환상품선택을 클릭하여 작성해주세요.<br>";
+        addHtml+="          * 반품을 할경우 반품할 수량만 입력해주세요.";
+        addHtml+="      </div>";
+        addHtml+="  </th>";
+        addHtml+="</tr>";
+
+        $('.listTable > tbody > .trNo_'+goodsNo+':last').after(addHtml);
+    }else{
+        $('.trNo_'+goodsNo+':last').remove();
+    }
+});
+
+//전체체크        
+$(".allCheck").click(function(){    
+    var subject = $('.goodsTableAdd');
+    $(subject).each(function(index, item){
+        $(item).click(); 
+    });
+});
+    
+</script>
+
+{#footer}

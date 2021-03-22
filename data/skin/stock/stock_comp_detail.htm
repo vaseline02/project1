@@ -1,0 +1,202 @@
+{#header}
+<div class="col-lg-12 statusbox-header"><h3>{_page_title}<span></span></h3></div>
+
+<form enctype="multipart/form-data" method="post">
+<input type="hidden" name="group_id" value="{_group_id}">
+<table class="table table-bordered" >
+	<tr>
+		<th style="width:200px;">면장/인보이스<br> 업로드</th>
+		<td>
+			<input type="file" name="excelFile[]" required/><button class="btn btn-primary" >업로드</button>
+			<button type="button" class="btn btn-success" onclick="location.href='../xls_file/import_upload_sample.xlsx'">양식 다운로드</button>
+			( 업로드시 기존 면장내용을 삭제 후 재업로드됩니다. )
+		</td>
+	</tr>
+</table>
+</form>
+
+{?import_data}
+<div>
+	<div class="col-lg-6">
+		수입면장
+		<textarea name="" id="" rows="10" style="width:100%;height:150px;">
+		{@import_data.import_licence}
+			 {.index_+1}. {.value_.goodsnm} / {.value_.img_name} / {.value_.cnt} / {.value_.list_no} / {.value_.import_no} / {.value_.memo} / {.reg_date} 
+		{/}
+		</textarea>
+	</div>
+	<div class="col-lg-6">
+		인보이스
+		<textarea name="" id="" rows="10" style="width:100%;height:150px;">
+		{@import_data.invoice}
+			 {.index_+1}. {.value_.goodsnm} / {.value_.img_name} / {.value_.cnt} / {.value_.list_no} / {.value_.import_no} / {.value_.memo} / {.reg_date} 
+		{/}
+		</textarea>
+	</div>
+</div>
+{/}
+
+<form method="post" name="listForm" id="listForm">
+<input type="hidden" name="mode" value="">
+{@loop}
+<div class="" style="clear:both">
+
+<hr>
+<table class="table table-bordered" >
+	<tr>
+		<th>그룹번호</th>
+		<td class="table_title" style="width:60%; height:50px; text-align:left; padding-left:20px;">{_title[.key_]} ( {.key_} )</td>
+		<th>통관일</th>
+		<td style="text-align:center;">{_pass_date}</td>
+		<th>면장등록일</th>
+		<td style="text-align:center;">{_license_date}</td>
+	</tr>
+</table>
+
+<!--<div class="table_title">{_title[.key_]} ( {.key_} ) - {?_pass_date}통관일 : {_pass_date}{/} {?_license_date} 면장등록일 : {_license_date}{/}</div>-->
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+		<tr>
+			{?_print_xls!=1}
+			<th><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>
+			{/}
+			<th>브랜드</th>
+			<th>분류</th>
+			{?_print_xls!=1}<th>이미지</th>{/}
+			<th>모델명1</th>
+			<th>모델명2</th>
+			<th>원산지</th>
+			<th>원가</th>
+			<th>예정수량</th>
+			<th>입고된수량</th>
+			
+			<th>메모</th>
+			<th>등록일</th>
+			<th>예정일</th>
+			<th>수입면장</th>			
+			<th>인보이스</th>			
+		</tr>
+	</thead>
+	<tbody>	
+	{@.value_}
+		<tr>	
+			{?_print_xls!=1}
+			<td>
+			<input type="checkbox" class="chk_no" name="chk_no[]" value="{..no}" >
+			</td>
+			{/}
+			<td>{..brandnm}</td>
+			<td>{..catenm}</td>
+			{?_print_xls!=1}<td class="td_img">{..img_url}</td>{/}
+			<td>{..goodsnm}</td>
+			<td>{..goodsnm_sub}</td>
+			<td>{..origin}</td>
+			<td>{=number_format(..cost)}</td>
+			<td>
+				{?_print_xls!=1}
+					<span class="stock_num_reg">{=number_format(..stock_num_reg)}</span>
+					{?_import_model_cnt[..goodsno]['import_licence']}
+						{?_import_model_cnt[..goodsno]['import_licence']>_ins_model_cnt[..goodsno]}
+							<span style="color:red">▲</span>
+						{:_import_model_cnt[..goodsno]['import_licence']<_ins_model_cnt[..goodsno]}
+							<span style="color:blue">▼</span>
+						{/}
+					{/}
+					{?_import_model_cnt[..goodsno]['invoice']}
+						{?_import_model_cnt[..goodsno]['invoice']>_ins_model_cnt[..goodsno]}
+							<span style="color:red">▲</span>
+						{:_import_model_cnt[..goodsno]['invoice']<_ins_model_cnt[..goodsno]}
+							<span style="color:blue">▼</span>
+						{/}
+					{/}
+				{:}
+					{=number_format(..stock_num_reg)}
+				{/}
+			</td>
+			<td class="stock_num">{=number_format(..stock_num)}</td>
+			
+			<td>{..memo}</td>
+			<td>{..reg_date}</td>
+			<td>{?..index_==0}{..cal_date}{/}</td>
+			<td>
+				{@..import_licence}
+					{...value_}<br>
+				{/}
+			</td>			
+			<td>
+				{@..invoice}
+					{...value_}<br>
+				{/}
+			</td>		
+		</tr>
+	{/}
+	</tbody>
+</table>
+</div>
+{/}
+
+
+
+{?_print_xls!=1}
+
+<div>{pg->page['navi']} 총 데이터 :{=number_format(pg->recode['total'])}</div>
+<div class="bottom_btn_box">
+	<div class="box_left">		
+		<div class="btn btn-sm btn-primary confirmCheck" data-mode='confirm' data-mess="완료처리">완료처리</div>
+		|
+		<select name="date_type">
+			<option value="pass_date">통관일</option>
+			<option value="license_date">면장등록일</option>
+		</select>
+		<input type="text" name="input_date" id="input_date" class="datepicker_common" autocomplete="off">
+		<button type="button" class="btn btn-primary confirmCheck" data-mode='date_change' data-mess="변경">수정</button>
+	</div>
+	<div  class="box_right">	
+		<input type="text" name="f_group_id" id="f_group_id" autocomplete="off">
+		<button type="button" class="btn btn-primary confirmCheck" data-mode='f_group_id' data-mess="그룹지정">통관그룹지정</button>
+	</div>
+</div>
+<fieldset class="page_field_info">
+  <legend>참 고</legend>
+  <ul>
+	
+  </ul>
+</fieldset>
+
+{/}
+
+</form>
+<script>
+document.title="{_page_title}";
+
+
+$(".confirmCheck").click(function(){
+	var mode=$(this).data("mode");
+	var mess=$(this).data("mess");
+
+	if(mode=='f_group_id'){
+		if( $(".chk_no:checked").length <=0 ){
+			alert('그룹지정할 상품을 선택해주세요.');
+			return;
+		}
+
+		if( $("#f_group_id").val()=='' ){
+			alert('그룹코드를 입력해주세요.');
+			return;	
+		}
+	}
+
+	if(mode=="date_change" && !$("#input_date").val()){
+		alert("날짜를 입력해주세요.");
+		return false;
+	}else{
+		if(confirm(mess+" 하시겠습니까?")){
+			$("input[name='mode']").val(mode);
+			$("form[name='listForm']").submit();	
+		}
+	}
+
+});
+
+</script>
+{#footer}

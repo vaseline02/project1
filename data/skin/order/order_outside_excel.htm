@@ -1,0 +1,67 @@
+<div style="color:red">※빨간색으로 표시된 값만 업로드 가능</div>
+<table border="1">
+	
+    <tr>
+        <td></td>
+        <td>담당자</td>
+        <td>주문일</td>
+        <td style="color:red">발주일</td>
+        <td style="color:red">브랜드</td>
+        <td>주문상품명</td>
+        <td>수량</td>
+        <td style="color:red">소비자가</td>
+        <td style="color:red">매입단가</td>
+        <td style="color:red">업체배송비</td>
+        <td>매입가*수량</td>
+        <td>합계금</td>
+		<td style="color:red">비고(추가)</td>
+        <td>품절확인</td>
+        <td>판매가</td>
+        <td>쇼핑몰명</td>
+        <td>주문번호</td>
+        <td>품목코드</td>
+        <td>수령자명</td>
+        <td>우편번호</td>
+        <td>수령자주소</td>
+        <td>수령자전화번호</td>
+        <td>수령자휴대폰</td>
+        <td>주문요청사항</td>
+        <td style="color:red">택배사</td>
+        <td style="color:red">운송장번호</td>
+        <td>업체명</td>
+        <td style="color:red">업체코드</td>
+    </tr>
+    
+    {@loop}
+    <tr>
+        <td>{(.index_+1)}</td>
+        <td>{.c_mem_name}</td>
+        <td>{.reg_date}</td>
+        <td>{.mod_date}</td>
+        <td>{.brandnm}</td>
+        <td>{.goodsnm}</td>
+        <td>{.order_num}</td>
+        <td>{.consumer_price}</td>
+        <td>{.purchase_price}</td>
+        <td>{.ent_deli_price}</td>
+        <td>{.purchase_price * .order_num}</td>
+        <td>{ (.purchase_price * .order_num ) + .ent_deli_price}</td>
+		<td></td>
+        <td></td>
+        <td>{.settle_price}</td>
+        <td>{.mall_name}</td>
+        <td class="text_type">{.ordno}</td>
+        <td>{.mall_key}</td>
+        <td>{.receiver}</td>
+        <td class="text_type">{.zipcode}</td>
+        <td>{.address}</td>
+        <td>{.buyer_mobile}</td>
+        <td>{.mobile}</td>
+        <td>{.order_memo}</td>
+        <td>{_delivery_list[.courier_code]['name']}</td>
+        <td>{.invoice}</td>
+        <td>{.d_name}</td>
+        <td class="text_type">{.d_code}</td>
+    </tr>
+    {/}
+    </table>

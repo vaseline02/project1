@@ -1,0 +1,53 @@
+<table border="1">
+    <tr>
+        <td>모델명</td>
+        <td>위치</td>
+        <td>(IN,OUT)</td>
+        <td>거래처</td>
+        <td>수량</td>
+        <td>원가</td>
+        <td>주문번호</td>
+        <td>주소</td>
+        <td>주문자</td>
+        <td>수취인</td>
+        <td>전화번호</td>
+        <td>판매가</td>
+        <td>수수료율</td>
+        <td>송장번호</td>
+        <td>메모</td>
+        <td>고객유형</td>
+        <td>관리자메모(추가)</td>
+		<td>총재고</td>
+		<td>입고예정</td>
+		<td>사무실</td>
+		<td>3자물류</td>
+		<td>몰명</td>
+    </tr>
+    
+    {@loop}
+    <tr>
+        <td style='mso-number-format:"\@";'>{.goodsnm}</td>
+        <td>사무실</td>
+        <td>IN</td>
+        <td>반품</td>
+        <td style='mso-number-format:"\@";'>{.exchange_goods_num}</td>
+        <td>{.order_cost}</td>
+        <td style='mso-number-format:"\@";'>{.ordno}</td>
+        <td></td>
+        <td>{.buyer}</td>
+        <td>{.receiver}</td>
+        <td style='mso-number-format:"\@";'></td>
+        <td>{.settle_price}</td>
+        <td></td>
+        <td>{.invoice_text}</td>
+        <td>{.bad_memo}</td>
+        <td></td>
+        <td></td>
+        <td>{.cur_cnt}</td>
+		<td>{.codeno_3}</td>
+		<td>{.codeno_1}</td>
+		<td>{.codeno_51}</td>
+		<td>{.mall_name}</td>
+    </tr>
+    {/}
+    </table>

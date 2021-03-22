@@ -1,0 +1,43 @@
+{#header}
+
+<style type="text/css">
+
+</style>
+
+<div class="product_wrap" style="background-color:#fff;padding:0px 20px;">
+<div class="title_top">WHAT'S NEW</div>
+{@loop}
+	<div class="product_layer col-xs-12 col-sm-12 col-md-4 col-lg-4">
+		<div class="product_layer_inner">
+			<div>
+			<a href="../goods/goods_view.php?goodsno={.no}">
+				{?is_mobile}
+					<img src="{.img_url}" alt="" style="width:70%">
+				{:}
+					<img class="lazy" src="../data/skin/img/white.jpg" data-original="{.img_url}"  width="70%">
+				{/}
+
+			</a>
+			</div>
+			<div class="list_model_info">
+				<div style="text-align:{? is_mobile}center{:}center{/};margin:auto;width:{? is_mobile}95%{:}70%{/}">
+					<p>{.modelstock_}</p>
+					<p>{?.balance<=0}<img src="../data/skin/img/soldout_price.jpg" alt="">{:}KRW {=number_format(.wd_marketprice)}{/}</p>
+					<!--
+					<p><strong>{.title_option2}&nbsp;&nbsp;&nbsp;{.modelstock_}</strong></p>
+					<p><strong>KRW{=number_format(.wd_marketprice)}</strong> {?.balance<=0}<span class="soldout">SOLD OUT</span>{/}</p>
+					<p>FRAME WIDTH : {.wd_fullsiz}mm&nbsp;&nbsp;&nbsp;SIDE : {.wd_bridgesiz}mm</p>
+					<p>LENS WIDTH : {.wd_widthsiz}mm&nbsp;&nbsp;&nbsp;LENS HEIGHT : {.wd_heightsiz}mm</p>
+					<p>MATERIAL : {.quality}</p>
+					<p>{.cnt_color} COLOR</p>
+					-->
+				</div>	
+			</div>
+		</div>
+	</div>
+
+{/}
+</div>
+
+
+{#footer}

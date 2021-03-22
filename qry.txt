@@ -1,0 +1,54 @@
+insert into new_erp.goods_cnt_loc_compare (goodsno,cur_cnt
+,codeno_1,codeno_3,codeno_51,codeno_55
+,codeno_66,codeno_75,codeno_85,codeno_86
+,codeno_87,codeno_91,codeno_93,codeno_100
+,codeno_101,codeno_104,codeno_110,codeno_112
+,codeno_113,codeno_114,codeno_115,codeno_116
+,codeno_117,codeno_125,codeno_127,codeno_128
+) 
+select tm.m_no
+,@sum_cur_cnt:=ifnull(sum(tm.cur_cnt),0)
+,@sum_codeno_1:=sum(if(tm.place = '사무실',tm.cur_cnt,0))
+,@sum_codeno_3:=sum(if(tm.place = '입고 예정',tm.cur_cnt,0))
+,@sum_codeno_51:=sum(if(tm.place = '3자물류',tm.cur_cnt,0)) 
+,@sum_codeno_55:=sum(if(tm.place = '마케팅매입',tm.cur_cnt,0)) 
+,@sum_codeno_66:=sum(if(tm.place = '쿠팡',tm.cur_cnt,0)) 
+,@sum_codeno_75:=sum(if(tm.place = '쇼룸 DP',tm.cur_cnt,0)) 
+,@sum_codeno_85:=sum(if(tm.place = '프리스로우(원주)',tm.cur_cnt,0)) 
+,@sum_codeno_86:=sum(if(tm.place = '인비트리(프라다 위탁)',tm.cur_cnt,0)) 
+,@sum_codeno_87:=sum(if(tm.place = '방송',tm.cur_cnt,0)) 
+,@sum_codeno_91:=sum(if(tm.place = '영인터',tm.cur_cnt,0)) 
+,@sum_codeno_93:=sum(if(tm.place = 'LF사입',tm.cur_cnt,0)) 
+,@sum_codeno_100:=sum(if(tm.place = '연예인협찬',tm.cur_cnt,0)) 
+,@sum_codeno_101:=sum(if(tm.place = '마케팅 샘플(협찬)',tm.cur_cnt,0)) 
+,@sum_codeno_104:=sum(if(tm.place = '외부 샘플',tm.cur_cnt,0)) 
+,@sum_codeno_110:=sum(if(tm.place = '한성INC',tm.cur_cnt,0)) 
+
+,@sum_codeno_112:=sum(if(tm.place = '골든 샘플',tm.cur_cnt,0)) 
+,@sum_codeno_113:=sum(if(tm.place = '재고 체크',tm.cur_cnt,0)) 
+,@sum_codeno_114:=sum(if(tm.place = '현대백화점 위탁',tm.cur_cnt,0)) 
+,@sum_codeno_115:=sum(if(tm.place = '현대홈쇼핑',tm.cur_cnt,0)) 
+,@sum_codeno_116:=sum(if(tm.place = '발송대기',tm.cur_cnt,0)) 
+
+,@sum_codeno_117:=sum(if(tm.place = '저스트원더',tm.cur_cnt,0)) 
+,@sum_codeno_125:=sum(if(tm.place = '원마케팅',tm.cur_cnt,0)) 
+,@sum_codeno_127:=sum(if(tm.place = '재고보류',tm.cur_cnt,0)) 
+,@sum_codeno_128:=sum(if(tm.place = '사진 샘플',tm.cur_cnt,0)) 
+
+from timemecca1.stock as tm  group by tm.m_no 
+
+ON DUPLICATE KEY update cur_cnt=ifnull(@sum_cur_cnt,0)
+,codeno_1=ifnull(@sum_codeno_1,0),codeno_3=ifnull(@sum_codeno_3,0),codeno_51=ifnull(@sum_codeno_51,0),codeno_55=ifnull(@sum_codeno_55,0)
+,codeno_66=ifnull(@sum_codeno_66,0),codeno_75=ifnull(@sum_codeno_75,0),codeno_85=ifnull(@sum_codeno_85,0),codeno_86=ifnull(@sum_codeno_86,0)
+,codeno_87=ifnull(@sum_codeno_87,0),codeno_91=ifnull(@sum_codeno_91,0),codeno_93=ifnull(@sum_codeno_93,0),codeno_100=ifnull(@sum_codeno_100,0)
+,codeno_101=ifnull(@sum_codeno_101,0),codeno_104=ifnull(@sum_codeno_104,0),codeno_110=ifnull(@sum_codeno_110,0),codeno_112=ifnull(@sum_codeno_112,0)
+,codeno_113=ifnull(@sum_codeno_113,0),codeno_114=ifnull(@sum_codeno_114,0),codeno_115=ifnull(@sum_codeno_115,0),codeno_116=ifnull(@sum_codeno_116,0)
+,codeno_117=ifnull(@sum_codeno_117,0),codeno_125=ifnull(@sum_codeno_125,0),codeno_127=ifnull(@sum_codeno_127,0),codeno_128=ifnull(@sum_codeno_128,0)
+
+
+
+select gcl.goodsno, gcl.cur_cnt, gclc.cur_cnt,sum(ol.order_num) from goods_cnt_loc gcl
+join order_list ol on ol.goodsno=gcl.goodsno and ol.reg_date=curdate()
+join goods_cnt_loc_compare gclc on gcl.goodsno=gclc.goodsno
+where gcl.cur_cnt!=gclc.cur_cnt
+group by gcl.goodsno

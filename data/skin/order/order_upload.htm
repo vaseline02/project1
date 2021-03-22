@@ -1,0 +1,137 @@
+{#header}
+<div class="row">
+<div class="col-lg-12 statusbox-header"><h3>{_page_title}<span></span></h3></div>
+
+<hr>
+{=include_file("order/order_nav.htm")}
+{?_print_xls!=1}
+
+<style>
+.tabletext-center td{text-align:center !important;}
+.tabletext-center td.thcolor{background-color:#f3f3f3;}
+.upload_input{width:100px;}
+table.table th{width:50px;}
+</style>
+
+
+<form id="upload_form" enctype="multipart/form-data" method="post" action="_order_indb.php" >
+<input type="hidden" name="upload_form_type" id="upload_form_type">
+
+{@arr_mall}
+<table class="table table-bordered tabletext-center" >
+    <tr>
+        <th rowspan="2">구분</th>
+		{@.value_}
+        <td  colspan="{=count(..value_)}" class="thcolor">
+		{..key_} {?today_order_type[..key_]}({today_order_type[..key_]}){/}
+		<button type="button" class="del_today_order" id="{..key_}" > 삭제 </button>	
+		<input type="hidden" class="up_name" value="{..key_}">
+		<br/><input type="file" name="excelFile[]" class="upload_input" ><button type="button" class="btn-sm btn-primary btn_order_upload">등록</button>
+		{?..key_=='B2B'}
+		<br/><button type="button" class="btn-sm btn-primary btn_order_upload nonexcel_b2b">도매주문 가져오기( {_b2b_cnt}건 )</button>
+		{/}
+		</td>
+		{/}
+		{?.index_==2}<th style="width:60px">합계</th>{/}
+    </tr>
+	<tr>
+		{@.value_}
+			{@..value_}
+				<td>
+				{...value_}
+				</td>
+			{/}
+		{/}
+		{?.index_==2}<td></td>{/}
+    </tr>
+	<tr>
+        <th>수량</th>
+		{@.value_}
+			{@..value_}
+				<td >
+					{=number_format(today_order[..key_][...value_])}<br/>
+					
+				</td>
+
+			{/}
+		{/}
+		{?.index_==2}<td>{_tot_order}</td>{/}
+    </tr>
+
+</table>
+{/}
+
+
+
+</form>
+<!--
+<form id="upload_form" enctype="multipart/form-data" method="post" action="_order_indb.php" onsubmit="return chkform();">
+<table class="table table-bordered" >
+    <tr>
+        <th>파일</th>
+        <td>
+			<select name="upload_form_type" id="upload_form_type">
+				<option>==몰명==</option>
+			{@_cfg_mall_detail}
+				<option value="{.value_}">{.value_}</option>
+			{/}
+			</select>
+			<input type="file" name="excelFile[]" required/><button class="btn-sm btn-primary">업로드</button>
+			(업로드가 안될시 엑셀 형식으로 새로 저장 후 업로드 )
+		</td>
+    </tr>
+</table>
+</form>
+-->
+{/}
+</div>
+
+
+<form method="post" id="main_form">
+</form>
+<fieldset class="page_field_info">
+  <legend>참 고</legend>
+  <ul>
+	<li>몰명선택-> 파일등록(파일명 규정대로 체크)-> 업로드 순으로 등록하면 단계별로 자동 구분되어 등록됨.</li>
+	<li>파일명을 해당 몰명-**으로 등록(ex. 타임메카-날짜 또는 타임메카-번호 등 **부분은 없거나 무엇이어도 상관없음. '-' 의 앞부분을 정확하게 기입. 그외 등록실패됨)</li>
+	<li>업로드가 안될시 엑셀 형식으로 새로 저장 후 업로드 </li>
+	<li><button type="button">삭제</button>버튼은 금일 등록분 중 재고차감이 되지않은 주문과 취소주문이 삭제됨 (1,2,3,4,6)</li>
+	<li>주문수량은 "발송확정" 단계에서 주문처리완료 처리시 사라짐.</li>
+  </ul>
+</fieldset>
+
+
+<script>
+document.title="{_page_title}";
+
+$("#nav_div0").addClass('active');
+
+$(function(){
+
+	$(".btn_order_upload").click(function(){
+		$("#upload_form_type").val( $(this).closest("td").find(".up_name").val());
+
+
+		if(  $(this).hasClass("nonexcel_b2b") ) $("#upload_form_type").val("nonexcel_b2b");
+
+		if(confirm('등록하시겠습니까?')){
+
+			$(".upload_input").not($(this).closest("td").find(".upload_input")).attr("disabled","disabled");
+			$("#upload_form").submit();
+		}
+	});
+
+	$(".del_today_order").click(function(){
+		
+		var mall=$(this).attr("id");
+
+		if(confirm('금일 '+mall+' 주문이 삭제됩니다. 삭제하시겠습니까? (재고차감이 된 주문은 삭제되지 않음)')){
+			
+			location.href="order_upload.php?mode=del_today_order&del_mall="+mall;	
+		}
+		
+	});
+})
+
+</script>
+{#footer}

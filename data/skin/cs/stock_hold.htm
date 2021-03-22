@@ -1,0 +1,82 @@
+{#header}
+<h1>{_page_title}</h1>
+
+<hr>
+
+<style>
+.search_td_width{width:800px;}
+</style>
+<script>
+    function checkForm(){
+        if(!$("input[name='cnt']").val()){
+            alert("수량을 입력해주세요.");
+            return false;
+        }
+    }
+</script>
+<form method="post" name="insForm" onsubmit="return checkForm()">
+    <input type="hidden" name="mode" value="ins">
+    <input type="hidden" name="goodsnm" value="{goodsnm}">
+    <input type="hidden" name="return_url" value="{_SERVER['QUERY_STRING']}">  
+	<table class="table table-bordered" >
+
+		<tr>
+			<th>상품명</th>
+            <td class="search_td_width">{goodsnm}</td>			            
+        </tr>
+        
+        <tr>
+			<th>수량</th>
+            <td class="search_td_width"><input type="text" style="width:100px" name="cnt"></td>			            
+        </tr>
+        <tr>
+			<th>메모</th>
+            <td class="search_td_width"><input type="text" style="width:100%" name="memo"></td>			            
+		</tr>
+		
+	</table>
+	<center>
+		<button class="btn btn-sm btn-primary" id="">등 록</button>
+	</center>
+</form>
+<form method="post" name="listForm">
+    <input type="hidden" name="mode" value="mod">
+    <input type="hidden" name="no" value="">
+    <input type="hidden" name="return_url" value="{_SERVER['QUERY_STRING']}">  
+    <table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+        <thead>
+            <tr>			
+                <th>주문번호</th>
+                <th>수량</th>
+                <th>메모</th>
+                <th width='200'>등록일</th>
+                <th width='50'></th>
+            </tr>
+        </thead>	
+        <tbody>
+            {@loop}
+            <tr>			
+                <td>{.order_no}</td>
+                <td>{=number_format(.cnt)}</td>
+                <td>{.memo}</td>
+                <td>{.reg_date}</td> 
+                <td><button type="button" class="btn btn-sm btn-warning holdCancel" data-no={.no}>해제</button></td>
+            </tr>
+            {/}
+        </tbody>
+    </table>
+</form>
+
+<script>
+
+document.title="{_page_title}";
+
+$(".holdCancel").click(function(){
+    if(confirm("해제하시겠습니까?")){
+        var holdNo=$(this).data('no');
+        $("input[name='no']").val(holdNo);
+        $("form[name='listForm']").submit();
+    }
+});
+</script>
+{#footer}

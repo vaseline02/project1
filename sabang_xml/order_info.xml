@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<SABANG_ORDER_LIST>						
+	<HEADER>					
+		<SEND_COMPAYNY_ID>naskkatm</SEND_COMPAYNY_ID>				
+		<SEND_AUTH_KEY>A3B3xZ2AWX2802WEBXJKS7xXdB3TJN5AGY</SEND_AUTH_KEY>				
+		<SEND_DATE>20200109</SEND_DATE>				
+	</HEADER>					
+	<DATA>                					
+		<ORD_ST_DATE>20200108</ORD_ST_DATE>      				
+		<ORD_ED_DATE>20200109</ORD_ED_DATE>      				
+		<ORD_FIELD><![CDATA[idx|order_id|mall_id|mall_user_id]]></ORD_FIELD>       				
+	</DATA>					
+</SABANG_ORDER_LIST>						
+

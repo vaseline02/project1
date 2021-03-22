@@ -1,0 +1,175 @@
+{#header}
+<h1 class="page_title">{_page_title}</h1>
+
+<hr>
+
+<form method="post" id="mainForm" >
+<input type="hidden" name="mode" value="{_mode}">
+<input type="hidden" name="m_no" value="{_m_no}">
+<table class="table table-bordered" >
+	<tbody>
+		<tr>
+			<th>아이디</th>
+			<td>
+				{?_mode=='ins'}
+				<input type="text" name="id" value="{id}" required>
+				{:}
+				{id}
+				{/}
+			</td>
+		</tr>
+
+		{?_mode=='ins'}
+		<tr>
+			<th>비밀번호</th>
+			<td><input type="password" class="keyup_chk" name="pw" id="passwd" value="{pw}" required>
+			<div class="chk_passwd" ></div>
+			<input type="hidden" name="chk_passwd" class="submit_ok" alt="비밀번호" value=0>
+			</td>
+		</tr>
+		{:?_mode=='mod'}
+		<tr>
+			<th>비밀번호변경</th>
+			<td><input type="password" class="keyup_chk" name="pw_chg" id="passwd"> (변경시에만 입력하세요)
+			<div class="chk_passwd" ></div>
+			<input type="hidden" name="chk_passwd" class="submit_ok" alt="비밀번호" value=1>
+			</td>
+		</tr>		
+		{/}
+		<tr>
+			<th>이름</th>
+			<td><input type="text" name="name" value="{name}" required></td>
+		</tr>
+		<tr>
+			<th>이메일</th>
+			<td><input type="text" name="email" value="{email}"></td>
+		</tr>
+		<tr>
+			<th>모바일</th>
+			<td>
+				<input type="text" class="number_only" name="mobile[]" maxlength="4" size="4" value="{mobile[0]}"> -
+				<input type="text" class="number_only" name="mobile[]" maxlength="4" size="4" value="{mobile[1]}"> -
+				<input type="text" class="number_only" name="mobile[]" maxlength="4" size="4" value="{mobile[2]}">
+			</td>
+		</tr>
+		<tr>
+			<th>직급</th>
+			<td><input type="text" name="position" value="{position}"></td>
+		</tr>
+		<tr>
+			<th>부서</th>
+			<td>
+				<select name="team" id="">
+					{@_arr_posi}
+						<optgroup label="{.key_}">
+						{@.value_}	
+							<option value="{.key_}-{..value_}" {_selected['team'][.key_][..value_]}>{..value_} </option>
+						{/}
+						</optgroup>	
+					{/}
+				</select>
+			</td>
+		</tr>
+		{?_h_control['memu']}
+		<tr>
+			<th>권한설정</th>
+			<td>
+			<select name="level" id="">
+				<option value="3" {_selected['level']['3']}>일반</option>	
+				<option value="2" {_selected['level']['2']}>팀장</option>	
+				<option value="1" {_selected['level']['1']}>임원</option>	
+			</select>
+			</td>
+		</tr>
+		{/}
+		<tr>
+			<th>사용여부</th>
+			<td>
+			<label style="font-weight: normal;"><input type="radio" name="state" value="y" {_checked['state']['y']}>사용</label>
+			<label style="font-weight: normal;"><input type="radio" name="state" value="n" {_checked['state']['n']}>미사용</label>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+{?_h_control['memu']}
+<h1 class="page_title">메뉴설정</h1>
+
+<hr>
+<table class="table table-bordered" >
+	<tbody>
+	{@arr_menu}
+		<tr>
+			<th>{.key_}</th>
+			<td>
+			{@.value_}
+			<div style="width:24%;text-align:left;padding:4px;display:inline-block">
+				<input type="checkbox" name="chk_menu[]" value="{..sn}" id="{..sn}" {_checked['menu'][..sn]}> 
+				<label for="{..sn}">{..menu_snm}</label>
+			</div>
+			{/}
+			</td>
+		</tr>
+	{/}
+	</tbody>
+</table>
+{/}
+<center>
+	<div class="btn btn-lg btn-primary chkForm">등록/수정</div>
+</center>
+</form>
+<script>
+document.title="{_page_title}";
+
+$(function(){
+	$(".keyup_chk").keyup(function(){
+		var chk=$(this).attr("id");
+		if(chk=='passwd'){
+			var pwMess=chkPW();
+	
+			if(pwMess=="ok"){
+				//$(".chk_"+chk).html("<span style='color:blue'>사용가능</span>");
+				$(".chk_"+chk).html("");
+				$("input[name='chk_"+chk+"']").val(1);
+			}else{
+				$(".chk_"+chk).html("<span style='color:red'>"+pwMess+"</span>");
+				$("input[name='chk_"+chk+"']").val(0);
+			}
+		}
+	});
+
+})
+
+
+$(".chkForm").click(function (){
+	
+	var chksub=1;
+	var chk_val='';
+	var mess="";
+	$(".submit_ok").each(function(){
+
+		if( $(this).val()==0 ){
+			chksub=0;
+			chk_val=$(this).attr("alt");
+			return false;
+		}
+
+	});
+
+	if(chksub){
+		{?_mode=='ins'}
+			mess="등록";
+		{:}
+			mess="수정";
+		{/}
+		if(confirm(mess+' 하시겠습니까?')){
+			$("#mainForm").submit();
+		}
+	}else{
+		alert('['+chk_val+'] 필수사항');
+		return false;
+	}
+
+});
+</script>
+{#footer}

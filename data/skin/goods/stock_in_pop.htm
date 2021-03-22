@@ -1,0 +1,33 @@
+{#header}
+<div class="row">
+	<div class="col-lg-12 statusbox-header"><h3>{_page_title}<!--<span>Customer Service Management</span>--></h3></div>
+</div>
+
+<form method="post" id="excelForm" name="excelForm">
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+		<tr>			
+			<th>모델명</th>
+			<th>미입고수량</th>
+			<th data-orderable="false">내용</th>
+			<th>날짜</th>
+		</tr>
+	</thead>	
+	<tbody>
+		{@loop}		
+		<tr>			
+			<td>{.goodsnm}</td>
+			<td>{.stock_num_reg-.stock_num}</td>
+			<td>{.title}</td>
+			<td>{.calendar_date}</td>
+		</tr>
+		{/}
+	</tbody>
+</table>
+</form>
+
+<script>
+document.title="{_page_title}";
+
+</script>
+{#footer}

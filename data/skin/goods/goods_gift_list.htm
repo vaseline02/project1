@@ -1,0 +1,93 @@
+{#header}
+<div class="row">
+	<div class="col-lg-12 statusbox-header"><h3>{_page_title}<!--<span>Customer Service Management</span>--></h3></div>
+</div>
+
+<form method="post" name="giftForm">
+<input type="hidden" name="mode">
+<input type="hidden" name="no">
+<div class="row">
+	<div class="col-lg-12">
+		<div class="common-table-wrapper">
+			<table class="table common-table">
+				<caption>
+					<div class="input-group col-lg-12 common-table-search2">
+						<span class="common-table-result">총 <b>{=number_format(pg->recode['total'])}</b>건</span>
+						<div class="input-group common-table-search">
+							<!-- <input type="text" class="form-control" placeholder="결과내 검색"> -->
+							<span class="input-group-btn"><button class="btn btn-primary" type="button" onclick="popup('goods_gift_reg.php','gift_reg','1100','900')">메뉴등록</button></span>
+						</div>
+					</div>
+				</caption>
+				<colgroup>
+					<col width="15%" />
+					<col width="15%" />
+					<col/>
+					<col width="15%" />
+					<!-- <col width="5%" /> -->
+					<col width="10%" />
+					<col width="3%" />
+					
+				</colgroup>
+				<thead>
+					<tr>
+						<th>사은품명</th>
+						<th>적용브랜드</th>
+						<th>적용카테고리</th>
+						<th>적용상품명</th>
+						<!-- <th>노출여부</th> -->
+						<th>등록일</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+				{@loop}
+					<tr>
+						<td>{.giftgoodsnm}</td>
+						<td>{.brandnm}</td>
+						<td>
+                            {?.cate_1}{.cate_1}{/}
+                            {?.cate_2} >> {.cate_2}{/}
+                            {?.cate_3} >> {.cate_3}{/}
+                            {?.cate_4} >> {.cate_4}{/}                        
+                        </td>
+						<td>{.goodsnm}</td>
+						<!-- <td>{.view_yn}</td> -->
+						<td>{.reg_date}</td>
+			
+						<td>
+                            <div class="input-group fileload-list-small-button">
+                                <span class="input-group-btn"><button class="btn btn-danger del" data-no={.no} data-mode="del" type="button">삭제</button></span>
+                            </div>
+						</td>
+					</tr>
+				{/}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+</form>
+{?_print_xls!=1}
+<div>{pg->page['navi']}</div>
+{/}
+
+<script>
+
+document.title="{_page_title}";
+
+$(".del").click(function(){
+
+    var no=$(this).data("no");
+    var mode=$(this).data("mode");
+
+    $("input[name=mode]").val(mode);
+    $("input[name=no]").val(no);
+
+    if(confirm("삭제하시겠습니까?")){
+        $("form[name=giftForm]").submit();
+    }
+});
+
+</script>
+{#footer}

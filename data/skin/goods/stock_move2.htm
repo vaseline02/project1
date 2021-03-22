@@ -1,0 +1,194 @@
+{#header}
+{?_print_xls!=1}
+<div class="col-lg-12 statusbox-header"><h3>{_page_title}<span></span></h3></div>
+
+<form method="post" id="glb_search_form">
+    <input type="hidden"name="print_xls" value="">
+    <div class="col-lg-12">
+        <div class="panel panel-default panel-stock margin20">
+            <div class="searchbox-default">
+                <table class="table fileload-list-small">
+                    <colgroup>
+                        <col width="12%" />
+                        <col width="35%" />
+                        <col width="12%" />
+                        <col width="35%" />
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <th scope="row" class="align-left">브랜드</th>
+                            <td class="receive-title no-gutters">
+                                <div class="col-xs-12"><input type="text" class="form-control" name="s_brand" value="{_POST['s_brand']}"/></div>
+                            </td>
+                            <th scope="row">모델명</th>
+                            <td class="receive-title no-gutters">
+                                <div class="col-xs-12"><input type="text" class="form-control" name="s_model" value="{_POST['s_model']}"/></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">모델명 다중검색</th>
+                            <td class="receive-title no-gutters">
+                                <div class="col-xs-12">
+                                    <dl class="multitext-search">
+                                        <dd><textarea class="form-control" name="s_paste" id="" cols="30" rows="3">{_POST['s_paste']}</textarea></dd>
+                                    </dl>
+                                </div>
+                            </td>
+                            <th scope="row">정렬</th>
+                            <td class="receive-title no-gutters">
+                                <select name="codedata_sort">
+                                    <option value="">==선택==</option>
+                                    {@_codedata}
+                                    <option value='{.no}' {_selected['codedata_sort'][.no]}>{.cd}</option>
+                                    {/}
+                                </select>
+                                &nbsp;
+                                <label style="font-weight: normal;"><input type="radio" name="sort_type" value="asc" {_checked['sort_type']['asc']}>오름차순</label>
+                                &nbsp;
+                                <label style="font-weight: normal;"><input type="radio" name="sort_type" value="desc" {_checked['sort_type']['desc']}>내림차순</label>
+                                &nbsp;
+                                <label style="font-weight: normal;"><input type="checkbox" name="stock_check" value="Y" {_checked['stock_check']['Y']}>재고있음</label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">    
+                <div class="text-center table-btn-group">
+                    <button class="btn btn-primary">검 색</button> 
+                    <button type="button" class="btn btn-success" id="print_xls">엑셀 다운로드</button>
+                <!-- <button type="button" class="btn btn-success" id="print_xls">엑셀 다운로드</button>
+                    [<input type="checkbox"  value="1" name='search_noimg' id='search_noimg' {_s_res['checked']['search_noimg']['1']}>
+                    <label class=" label label-success" for="search_noimg">이미지 {?_my_page=='goods_list.php' || _my_page=='event_price.php'}포함{:}제외{/}</label>]-->
+                </div>	
+            </div>
+        
+        </div>
+    </div>
+</form>
+
+<form enctype="multipart/form-data" id="excel_form" method="post">
+<input type="hidden"name="print_xls" value="">
+<table class="table table-bordered" >
+    <tr>
+		<th>재고이동</th>
+        <td><div type="button" class="btn btn-sm btn-primary" onclick="popup('stock_move_excel_reg.php','stock_change_reg','1100','900')">엑셀등록팝업</div></td>
+		<td style="text-align:right">
+			<input type="text" class=" datepicker_common" placeholder="시작일" aria-describedby="basic-addon2" name="s_date" id="s_date" readonly /> ~
+			<input type="text" class=" datepicker_common" placeholder="종료일" aria-describedby="basic-addon2" name="e_date" id="e_date" readonly />
+			<button type="button" class="btn btn-sm btn-success" id="excel_download">엑셀다운로드(재고이동)</button>
+		</td>
+    </tr>
+</table>
+</form>
+
+{/}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="common-table-wrapper">
+            <table class="table common-table" border="{_xls_border}">
+                {?_print_xls!=1}
+                <caption>
+                    <div class="input-group col-lg-12 common-table-search2">
+                        <span class="common-table-result">총 <b>{=number_format(pg->recode['total'])}</b>건</span>
+                        <div class="input-group common-table-search">
+                        </div>
+                    </div>
+                </caption>                
+                <colgroup>
+                    <col width="5%" />
+                    <col width="4%" />
+                    <col width="3%"/>
+                    <col width="7%" />
+                    <col width="7%" />
+                    {@_codedata}
+                    <col/>
+                    {/}
+                </colgroup>
+                {/}
+                <thead>
+                    <tr>
+                        <th>브랜드</th>
+                        <th>분류</th>
+                        {?_print_xls!=1}<th>이미지</th>{/}
+                        <th>모델명1</th>
+                        <th>모델명2</th>
+                        <th>현재고</th>
+                        {@_codedata}
+                            <th>{.cd}</th>
+                        {/}
+                    </tr>
+                </thead>
+                <tbody>
+                    {@loop}
+                        <tr>
+                            <td>{.brandnm}</td>
+                            <td>{.prod_type}</td>
+                            {?_print_xls!=1}<td class="td_img" >{.img_url}</td>{/}
+                            <td class="text_type"><a href="#1" onclick="popup('stock_move_reg.php?no={.no}','stock_move_reg','1100','900')">{.goodsnm}</a></td>
+                            <td class="text_type">{.goodsnm_sub}</td>
+                            <td>{.cur_cnt}</td>
+                            {@.codedata}
+                                <td>{..value_}</td>
+                            {/}
+                        </tr>
+                    {/}
+                    <tr style="border-top:1px solid black;">
+                        {?_print_xls!=1}
+                        <td colspan='5' style="border-top:1px solid black; text-align: center;">합계</td>
+                        {:}
+                        <td colspan='4' style="border-top:1px solid black; text-align: center;">합계</td>
+                        {/}
+                        {@sumStock}
+                        <td style="border-top:1px solid black;">{=number_format(.value_)}</td>
+                        {/}
+                    </tr>
+                    
+                    </tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{?_print_xls!=1}
+<div>{pg->page['navi']}</div>
+{/}
+
+<script>
+document.title="{_page_title}";
+$(function(){
+
+$("#excel_download").click(function(){
+
+	if($("#s_date").val()==''){
+		alert('출력할 시작일 선택해주세요.');
+		return;
+	}
+
+	if($("#e_date").val()==''){
+		alert('출력할 종료일 선택해주세요.');
+		return;
+	}
+ 
+	$("#excel_form").attr("action","stock_move_excel.php");
+	$("input[name='print_xls']").val("1");
+	$("#excel_form").submit();
+	$("#excel_form").attr("action","");
+	$("input[name='print_xls']").val("");
+});
+
+
+$("#print_xls").click(function(){
+    $("input[name='print_xls']").val("1");
+    $("#glb_search_form").submit();
+    $("input[name='print_xls']").val("0");
+});
+})
+</script>
+{#footer}

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" /> 
+<title>INDUSTRIAL</title>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="../js/jquery-ui.js"></script>
+<script src="../js/jquery.backstretch.min.js"></script>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+<script src="../js/smoothPageScroll.js"></script>
+<script src="../js/ScrollToPlugin.min.js"></script>
+<script src="../js/jquery.lazyload.js"></script>
+<script src="../js/jquery.slides.min.js"></script>
+<script src="../js/jquery.sudoSlider.min.js"></script>
+
+
+
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0-wip/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="../data/skin/bootstrap.css">
+<link rel="stylesheet" href="../data/skin/style_test.css">
+
+
+</head>
+<body>
+
+<!-- 검색 레이어 -->
+<div class="layer" >
+	<div class="bg"></div>
+	<div id="search" class="pop-layer pc_pop-layer col-xs-12 {_menu_size}" style="padding:0px">
+				<div class="btn-r">
+					<a href="#" class="cbtn">CLOSE</a>
+				</div>
+				<!--// content-->
+
+			<div class="textSearch pop-conts " >
+			<input type="text" id='sword' autocomplete="no" placeholder="Search" name="sword" value="{_GET['sword']}" >
+				<div >
+					<a href="#" class="gobtn" onclick="search_go();">GO</a>
+				</div>			
+			</div>
+		
+	</div>
+	<div class="bg"></div>
+
+		<div id="login" class="pop-layer pc_pop-layer overf" >
+
+				<div class="btn-r">
+					<a href="#" class="cbtn">CLOSE</a>
+				</div>
+				<!--// content-->
+			<div style=" width: 100%; height: 50%; display: table;    ">
+				<div class="textLogin" >
+					<form method=post action="{loginActionUrl}" id=form name=form>
+						<input type=hidden name=returnUrl value="{_returnUrl}">
+							<p class="menu_font_style">RETURNING CUSTOMER</p>
+							<input type="text" id="id" type=text name=m_id size=20 tabindex=1 autocomplete="no" placeholder="ID"   >
+							<input type="password" autocomplete="no" placeholder="PASSWORD" name=password size=20 tabindex=2 >
+								<div  class="login_btn">
+								<button id="login_btn"  type="submit" >
+								<span >LOGIN</span>
+								</button>
+								</div>
+								<div  class="login_color_font"><A HREF="../member/join.php" onFocus="blur()">JOIN</A> | <A HREF="../member/find_id.php" onFocus="blur()">FIND ID</A> | <A HREF="../member/find_pwd.php" onFocus="blur()">FIND PWD</A> </div>
+
+					</form>
+				</div>
+			</div>
+			
+			<div style=" width: 100%; height: 50%; display: table;    ">
+
+			<div class="textLogin" >
+				<form id="form" method=post action="../member/login_ok.php" onsubmit="return chkForm(this)">
+					<input type=hidden name=mode value="guest">
+					<input type=hidden name=returnUrl value="{_returnUrl}">
+
+					<p class="menu_font_style">NONMEMBER</p>
+					<input type="text" id='order_name' autocomplete="no" placeholder="ORDER NAME" name=nameOrder size=10 required label='주문자명'  >
+					<input type="text" id='order_no' autocomplete="no" placeholder="ORDER NO"  name=ordno size=20 required label='주문번호' >
+					<div  class="login_btn">
+					<button id="login_btn" type="submit" >
+					<span >CHECK</span>
+					</button>
+					</div>			
+				</form>
+			</div>
+		</div>			
+		
+	</div>
+</div>
+
+<div id="navbar" class="navbar-collapse collapse col-xs-5 {_menu_size}" style="position:fixed;top:0;left:0;bottom:0;overflow-y:initial;z-index:5">
+	
+	<div class="line_layer" style=" border-left: 1px solid #FFFFFF; box-sizing: border-box;text-align:left;height:100%;width:250px;position:absolute;right:-250px;display:none;">
+		<div style="height:55px;" class="hidden-xs"></div>
+		<div class="line_title">SUNGLASS</div>
+		<div >
+			{@ _data_line}
+				<p><a href="../goods/goods_list.php?line={.title_option2}">{.title_option2}</a></p>
+			{/}
+		</div>
+	</div>
+	
+		
+
+	<div style="width:100%;margin:20px 0px;text-align:center">
+		<a href="../main/index.php"><img src="../data/skin/img/logo.png" alt="" style="width:85%" class="hidden-xs"></a>
+	</div>
+	<div style="text-align:center;margin:150px 0px;">
+		<p><a class="product_p">PRODUCT</a></p>
+		<p><a class="" onclick="layer_open('search');return false;">SEARCH</a></p>
+		<!--<p><a class="" href="../board/list.php?id=notice">NOTICE</a></p>-->
+		<p><a class="" href="../gallery/gallery_list.php">CELEBRITY</a></p>
+		<p><a href="https://instagram.com/industrial_berlin/" target="_blank">INSTAGRAM</a></p>
+		<p><a href="http://blog.naver.com/tricyclo" target="_blank">BLOG</a></p>			
+	</div>
+	<div></div>
+</div><!--/.nav-collapse -->
+
+
+<table style="height:100%;width:100%" cellpadding=0 cellspacing=0 border=0>
+	<tr>
+		<td class="navbar-toggle" style="margin:0px;padding:0px;width:100%;text-align:center;z-index:10">
+
+			<div class="navbar-toggle top_bar bg_color_f border_btm" style=" width:100%;margin:0px;border-bottom:1px solid #fff;">
+				<div id="top_main_logo">
+					<a href="../main/index.php">
+						<img src="../data/skin/img/logo2.png" width="120px" align="adsmiddle">
+					</a>
+				</div>
+			</div>
+			<div class="navbar m_btn" style="top:0;right:0; position:fixed;height:50px">
+			  <div class="container" >
+				<div class="navbar-header" >
+				  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" style="border:0px;height:100%">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				  </button>
+				</div>
+			  </div>
+			</div>
+		</td>
+	</tr>
+
+
+
+	<tr>
+		<td><div class="list_top_wrap" ></div></td>
+	</tr>
+
+	<tr>
+		<td>
+		<table style="height:100%;width:100%" cellpadding=0 cellspacing=0 border=0>
+			<tr>
+				<td id="left" class="hidden-xs {_menu_size}"></td>
+				<td id="main_td">	

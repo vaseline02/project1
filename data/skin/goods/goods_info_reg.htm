@@ -1,0 +1,180 @@
+{#header}
+<div class="row">
+	<div class="col-lg-12 statusbox-header"><h3>{_page_title}</h3></div>
+</div>
+{?_sess['h_level']>=200}
+※goods_info db에 컬럼추가 필요(후에 삭제를 고려하여 기능으로 추가 해야함)
+<form method="post" name="goodsInfoForm">
+<input type="hidden" name="mode" value="ins">
+<input type="hidden" name="no" value="">
+	<div class="row">
+		<div class="col-lg-12">
+			
+			<div class="panel panel-default panel-stock margin20">
+				<table class="table fileload-list-small">
+					<caption>
+						<div class="input-group col-lg-12 fileload-list-small-title">
+							<span class="fileload-list-small-result"><b></b></span>					
+							<div class="input-group fileload-list-small-button">
+								<span class="input-group-btn"><button type="button" class="btn btn-primary checkForm" data-chk='1'>등록/수정</button></span>
+							</div>							
+						</div>
+					</caption>
+					<colgroup>
+						<col width="12%" />
+                        <col width="22%" />
+                        <col width="12%" />
+						<col width="22%" />
+						<col width="15%" />
+						<col width="19%" />
+					</colgroup>
+					<tbody>
+                        <tr>
+							<th scope="row">컬럼명</th>
+							<td class="receive-title no-gutters">
+                                <input type='text' class="form-control" name='colum_name'>
+                            </td>
+                            <th scope="row">이름</th>
+							<td class="receive-title no-gutters">
+                                <input type='text' class="form-control" name='info_name'>
+                            </td>
+							<th scope="row">필터사용여부(y/n)</th>
+							<td class="receive-title no-gutters">
+                                <input type='text' class="form-control" name='use_filter'>
+                            </td>
+                        </tr>						
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</form>
+{/}
+<form method="post" name="goodsInfoForm2">
+<input type="hidden" name="mode" value="cate_update">
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="common-table-wrapper">
+			<table class="table common-table">
+				<caption>
+					<div class="input-group col-lg-12 common-table-search2">
+						<span class="common-table-result">총 <b>{=number_format(count(loop))}</b>건{?category} <span>[{category['catenm']}]</span> {/}</span>
+						<div class="input-group common-table-search">
+                            {?_GET['cate']}
+                                <span class="input-group-btn"><button type="button" class="btn btn-primary checkForm" data-chk='2'>등록/수정</button></span>
+                            {/}
+						</div>
+					</div>
+				</caption>
+                <colgroup>
+                    {?_GET['cate']}
+                    <col width="3%" />
+                    {/}
+					<col width="20%"/>
+                    <col/>
+                    {?_GET['cate']}
+                    <col width="3%" />
+                    {/}
+                    <col width="20%" />
+                    
+					<col/>
+					
+				</colgroup>
+				<thead>
+					<tr>
+                        {?_GET['cate']}
+                        <th><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>			
+                        {/}
+						<th>컬럼명</th>
+                        <th>이름</th>
+                        {?_GET['cate']}
+                        <th>순서</th>
+                        {/}
+						<th>등록일</th>
+						{?_sess['h_level']>=200}
+						<th>필터사용</th>
+						<th></th>
+						{/}
+					</tr>
+				</thead>
+				<tbody>
+				{@loop}
+					<tr>
+                        {?_GET['cate']}
+                        <td><input type="checkbox" class="chk_no" name="chk_no[]" value="{.no}" {checked[.no]}></td>
+                        {/}
+						<td>{.colum_name}</td>
+                        <td>
+							{.info_name}
+						</td>
+                        {?_GET['cate']}
+                        <td class="receive-title no-gutters">
+                            <input type='text' class="form-control" name='sort[{.no}]' value='{sort[.no]}' style="width:50px;">
+                        </td>
+                        {/}
+                        <td>{.reg_date}</td>
+                        {?_sess['h_level']>=200}
+						<td>{.use_filter}</td>
+						<td>                    
+                            <div class="input-group fileload-list-small-button">
+                                <span class="input-group-btn"><button class="btn btn-danger del" data-no={.no} data-mode="del" type="button">삭제</button></span>
+                            </div>
+                        </td>
+                        {/}
+					</tr>
+				{/}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+</form>
+<script>
+document.title="{_page_title}";
+
+$(".checkForm").click(function(){
+    var chk=$(this).data('chk');
+    var colum_name=$("input[name='colum_name']").val();
+    var info_name=$("input[name='info_name']").val();
+
+    if(chk=='1'){
+        if(!colum_name){
+            alert('컬럼명을 입력해주세요.');
+            return false;
+        }else if(!info_name){
+            alert('이름을 입력해주세요.');
+            return false;
+        }else{        
+            
+            if(confirm("등록하시겠습니까?")){
+                $("form[name=goodsInfoForm]").submit();
+            }
+        }
+    }else if(chk=='2'){
+        if(!$(".chk_no").is(":checked")){
+            alert("선택된 속성이 없습니다.");
+            return false;
+        }else{			
+            if(confirm("등록하시겠습니까?")){
+                $("form[name=goodsInfoForm2]").submit();
+            }
+        }        
+    }
+});
+
+$(".del").click(function(){
+    var no=$(this).data("no");
+    var mode=$(this).data("mode");
+
+    $("input[name=mode]").val(mode);
+    $("input[name=no]").val(no);
+
+    if(confirm("삭제하시겠습니까?")){
+        $("form[name=goodsInfoForm]").submit();
+    }
+});
+
+
+</script>
+{#footer}

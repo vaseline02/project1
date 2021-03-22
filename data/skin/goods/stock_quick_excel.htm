@@ -1,0 +1,17 @@
+<table border="1">
+    <tr>
+        <td>브랜드</td>
+        <td>모델명</td>
+        <td>바코드</td>
+        <td>수량</td>
+    </tr>
+    
+    {@loop}
+    <tr>
+        <td>{.brandnm}</td>
+        <td>{.goodsnm}</td>
+        <td style='mso-number-format:"\@";'>{.barcode}</td>
+        <td>{.quantity}</td>
+    </tr>
+    {/}
+</table>

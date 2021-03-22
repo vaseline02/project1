@@ -1,0 +1,75 @@
+{#header}
+<h1 class="page_title">{_page_title}</h1>
+
+<hr>
+
+<form method="post" >
+<input type="hidden" name="mode" value="{_mode}">
+<input type="hidden" name="m_no" value="{_m_no}">
+<table class="table table-bordered" >
+	<tbody>
+		<tr>
+			<th>카테고리 추가</th>
+			<td>
+				<select id="sel_cate">
+					<option value="">카테고리 선택</option>
+					<option value="001">의류</option>
+					<option value="002">구두/신발</option>
+					<option value="003">가방</option>
+					<option value="004">패션잡화</option>
+					<option value="">직접입력</option>
+				</select>
+				<input type="text" name="code" id="code" required>
+				<input type="text" name="name" required placeholder="실제 데이터명 입력">
+				
+			</td>
+		</tr>
+
+	</tbody>
+</table>
+<center>
+	<button class="btn btn-primary">등 록</button>
+</center>
+</form>
+
+
+<h1 class="page_title" style="margin-top:100px;">카테고리 리스트</h1>
+
+<hr>
+
+<form method="post" >
+<table class="table table-bordered" >
+	<tr>
+		<th style="width:150px;">카테고리 코드</th>
+		<th style="width:auto;">실제 데이터명</th>
+	</tr>
+	{@arr_menu}
+		<tr>
+			<td>{.key_}</td>
+			<td>
+			{@.value_}
+			<div style="text-align:left;padding:4px;display:inline-block">
+				<input type="checkbox" name="del_menu[]" value="{..no}" id="{..no}"> 
+				<label for="{..no}">{..name}</label>
+			</div>
+			{/}
+			</td>
+		</tr>
+	{/}
+</table>
+<center>
+	<button class="btn btn-danger">선택 삭제</button>
+</center>
+</form>
+<script>
+document.title="{_page_title}";
+
+$(function(){
+	
+	$("#sel_cate").change(function(){
+		$("#code").val( $(this).val());
+	});
+});
+
+</script>
+{#footer}

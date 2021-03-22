@@ -1,0 +1,72 @@
+{#header}
+<h1 class="page_title">{_page_title}</h1>
+
+<hr>
+
+<form method="post" name="barcodeForm">
+<input type="hidden" name="mode" value="ins">
+<input type="hidden" name="dno" value="">
+<input type="hidden" name="goodsnm" value="{goodsnm}">
+
+<h1 class="page_title"></h1>
+<table class="table table-bordered" >
+    <tbody>
+        <tr>
+            <th>상품명</th>
+            <td class="search_td_width">{goodsnm}</td>                       
+        </tr>        
+        <tr>
+            <th>바코드등록</th>
+            <td><input type="text" name="barcode" style="width: 300px;"> <div type="button" class="btn btn-sm btn-primary checkForm" data-mode='ins'>등록</div></td>
+        </tr>
+    </tbody>
+</table>
+
+<hr>
+
+<h1 class="page_title">바코드정보</h1>
+
+<table id="" style="width:100%" class="listTable">
+	<thead>
+		<tr>			
+           <th>바코드</th>			
+           <th width='100px'></th>
+		</tr>
+	</thead>	
+	<tbody>
+        { @ loop }        
+		<tr>			
+       		<td>{.barcode}</td>			
+       		<td style="text-align: center;"><div type="button" class="btn btn-sm btn-danger checkForm" data-mode="del" data-no="{.no}">삭제</div></td>			
+		</tr>
+    	{ / }
+	</tbody>
+</table>
+
+</form>
+
+<script>
+
+document.title="{_page_title}";
+
+$(".checkForm").click(function (){
+    var mode=$(this).data('mode');
+    $("input[name='mode']").val(mode);
+    if(mode=='ins'){        
+        if(!$("input[name='barcode']").val()){
+            alert('바코드를 입력해주세요.');
+            return false;
+        }else{
+            $("form[name='barcodeForm']").submit();
+        }
+    }else if(mode=='del'){
+        if(confirm('삭제하시겠습니까?')){
+            var no=$(this).data('no');
+            $("input[name='dno']").val(no)
+            $("form[name='barcodeForm']").submit();
+        }
+    }
+});
+</script>
+
+{#footer}

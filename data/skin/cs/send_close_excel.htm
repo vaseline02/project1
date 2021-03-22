@@ -1,0 +1,41 @@
+<table border="1">
+    <tr>
+        <td>모델명</td>
+        <td>위치</td>
+        <td>(IN,OUT)</td>
+        <td>거래처</td>
+        <td>수량</td>
+        <td>원가</td>
+        <td>주문번호</td>
+        <td>주소</td>
+        <td>주문자</td>
+        <td>수취인</td>
+        <td>전화번호</td>
+        <td>판매가</td>
+        <td>수수료율</td>
+        <td>송장번호</td>
+        <td>메모</td>
+        <td>고객유형</td>
+    </tr>
+    
+    {@loop}
+    <tr>
+        <td style='mso-number-format:"\@";'>{.goodsnm}</td>
+        <td>{.place_name}</td>
+        <td>{.inout}</td>
+        <td>{.ent_name}</td>
+        <td style='mso-number-format:"\@";'>{.order_num}</td>
+        <td></td>
+        <td style='mso-number-format:"\@";'>{.order_no}</td>
+        <td></td>
+        <td>{.buyer}</td>
+        <td>{.receiver}</td>
+        <td>{.mobile}</td>
+        <td>{.order_price}</td>
+        <td></td>
+        <td>{.ent_name}</td>
+        <td></td>
+        <td></td>
+    </tr>
+    {/}
+    </table>

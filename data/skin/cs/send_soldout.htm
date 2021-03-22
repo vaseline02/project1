@@ -1,0 +1,116 @@
+{#header}
+<h1>{_page_title}</h1>
+
+<hr>
+
+<style>
+.search_td_width{width:800px;}
+</style>
+
+{?_print_xls!=1}
+<form method="post">
+	<table class="table table-bordered" >
+
+		<tr>
+			<th>고객명</th>
+			<td class="search_td_width"><input type="text" name="s_receiver" value="{_POST['s_receiver']}"></td>
+			<th>몰명</th>
+			<td>
+				
+				<select name="s_mall_no">
+					<option value="">선택</option>
+					{ @ mall_list }
+						<option value={.no} {_selected['mall_no'][.no]}>{.mall_name}</option>
+					{ / }
+				</select>
+				
+			</td>
+			
+		</tr>
+		<tr>
+			<th>송장번호</th>
+			<td class="search_td_width"><input type="text" name="s_invoice" value="{_POST['s_invoice']}"></td>
+			<th>모델명</th>
+			<td><input type="text" name="s_mall_goodsnm" value="{_POST['s_mall_goodsnm']}"></td>
+		</tr>
+			<th>주문번호</th>
+			<td><input type="text" name="s_ordno" value="{_POST['s_ordno']}"></td>
+			
+			<th>등록일자</th>
+			<td>
+			<input type="text" name="s_date" id="s_date" class="datepicker_common" autocomplete="off" value="{_s_date_value}"> ~ 
+			<input type="text" name="e_date" id="e_date" class="datepicker_common" autocomplete="off" value="{_e_date_value}">
+			</td>
+			
+		</tr>
+		</tr>
+			<th>작성자</th>
+			<td><input type="text" name="s_admin" value="{_POST['s_admin']}"></td>
+			
+			<th>진행상태</th>
+			<td>
+				<select name="s_ing_type">
+					<option value="">선택</option>
+				{ @_cfg_ing_step }
+					<option value={_cfg_ing_step.key_} {_selected['ing_type'][_cfg_ing_step.key_]}>{_cfg_ing_step.value_}</option>
+				{ / }
+				</select>
+			</td>
+			
+		</tr>
+	</table>
+	<center>
+		<button class="btn btn-primary" id="">검 색</button>
+	</center>
+</form>
+
+{/}
+
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+		<tr>			
+			<th width='50'>몰명</th>
+			<th width='100'>주문번호</th>
+			<th>상품명</th>
+			<th>이미지</th>
+			<th width='100'>옵션명</th>
+			<th width='50'>수량</th>
+			<th width='50'>가격</th>
+			<th width='50'>구매자<br>수령자</th>
+			<th width='100'>연락처<br>모바일</th>
+			<th>주소</th>
+			<th width='100'>송장번호</th>
+			<th width='100'>작성자</th>
+			<th width='70'>진행상태</th>
+			<th></th>
+		</tr>
+	</thead>	
+	<tbody>
+		{@loop}
+		<tr class="{.line_color}">			
+			<td>{.mall_name}</td>
+			<td>{.ordno} {?.copy_seq>0}복사본{/}</td>
+			<td>{.mall_goodsnm}</td>
+			<td class="td_img">{.img_url}</td>
+			<td>{.goodsnm}</td>
+			<td>{.order_num}</td>
+			<td>{=number_format(.order_price)}</td>
+			<td>{.buyer}<br/>{.receiver}</td>
+			<td>{.buyer_mobile}<br/>{.mobile}</td>
+			<td>{.zipcode} {.address}</td>
+			<td>{?.invoice!=0}{.invoice}{/}</td>
+			<td>{?.admin_no}{.name}<br>({.id}){/}</td>
+			<td>{.ing_type}</td>
+			<td><button type="button" class="btn btn-sm btn-warning" onclick="popup('cs_reg.php?ordno={.ordno}&mall_no={.mall_no}','','1100','900')">CS등록</button></td>
+		</tr>
+	{/}
+	</tbody>
+</table>
+
+
+<script>
+
+document.title="{_page_title}";
+
+</script>
+{#footer}

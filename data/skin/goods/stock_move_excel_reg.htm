@@ -1,0 +1,72 @@
+{#header}
+<div class="row">
+	<div class="col-lg-12 statusbox-header"><h3>{_page_title}<!--<span>Customer Service Management</span>--></h3></div>
+</div>
+<form enctype="multipart/form-data" id="excel_form" method="post">
+<input type="hidden"name="print_xls" value="">
+<table class="table table-bordered" >
+    <tr>
+		<th>엑셀등록</th>
+        <td><input type="file" name="excelFile[]" required/><button class="btn btn-sm btn-primary">업로드</button></td>
+    </tr>
+</table>
+</form>
+
+{?_err_msg}
+<div style="overflow: auto; height:400px;">
+{@_err_msg}
+	{.value_}<br>
+{/}
+</div>
+{:excel_loop}
+<form method="post" id="excelForm" name="excelForm">
+<input type="hidden" name="mode" value="excel_move">
+<input type="hidden" name="total_cnt" value="{_sum_quantity}">
+{@excel_loop}
+<input type="hidden" name="no[{.key_}]" value='{.key_}'>
+<input type="hidden" name="goodsnm[{.key_}]" value='{.goodsnm}'>
+<input type="hidden" name="quantity[{.key_}]" value='{.quantity}'>
+<input type="hidden" name="s_move[{.key_}]" value='{.s_move}'>
+<input type="hidden" name="e_move[{.key_}]" value='{.e_move}'>
+<input type="hidden" name="memo[{.key_}]" value='{.memo}'>
+{/}
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+		<tr>			
+			<th>모델명</th>
+			<th>수량</th>
+			<th data-orderable="false">차감위치</th>
+			<th>증가위치</th>
+			<th>메모</th>
+		</tr>
+	</thead>	
+	<tbody>
+		{@excel_loop}		
+		<tr>			
+			<td>{.goodsnm}</td>
+			<td>{.quantity}</td>
+			<td>{.s_move}</td>
+			<td>{.e_move}</td>
+			<td>{.memo}</td>
+		</tr>
+		{/}
+	</tbody>
+
+</table>
+<div>이동예정수량 : {=number_format(_sum_quantity)}</div>
+<div style="text-align:right"><div class="btn btn-sm btn-primary checkForm">확정</button></div></div>
+
+</form>
+{/}
+<script>
+document.title="{_page_title}";
+$(".checkForm").click(function(){
+	var cnt=$("input[name='total_cnt']").val();
+	
+	if(confirm(cnt+'개의 재고를 이동 하시겠습니까?')){
+		$("form[id='excelForm']").submit();
+	}	
+});
+
+</script>
+{#footer}

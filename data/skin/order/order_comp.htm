@@ -1,0 +1,123 @@
+{#header}
+{?_print_xls!=1}
+<h1>{_page_title}</h1>
+<hr>
+
+<style>
+.search_td_width{width:500px;}
+</style>
+
+{?_print_xls!=1}
+<form method="post">
+<table class="table table-bordered" >
+
+	<tr>
+		<th>몰명</th>
+		<td class="search_td_width"><input type="text" name="s_mall" value="{_POST['s_mall']}"></td>
+		<th>옵션명</th>
+		<td><input type="text" name="s_model" value="{_POST['s_model']}"></td>
+		
+	</tr>
+	<tr>
+		<th>고객명</th>
+		<td class="search_td_width"><input type="text" name="s_receiver" value="{_POST['s_receiver']}"></td>
+		<th>연락처</th>
+		<td><input type="text" name="s_mobile" value="{_POST['s_mobile']}"></td>
+	</tr>
+	<tr>
+		<th>주문일자</th>
+		<td>
+		<input type="text" name="s_date" id="s_date" class="datepicker_common" autocomplete="off" value="{_POST['s_date']}"> ~ 
+		<input type="text" name="e_date" id="e_date" class="datepicker_common" autocomplete="off" value="{_POST['e_date']}">
+		</td>
+		<th>주문번호</th>
+		<td>
+			<input type="text" name="s_ordno" value="{_POST['s_ordno']}">
+			<label style="font-weight: normal;"><input type="checkbox" name="s_cancel" value="Y" {_checked["s_cancel"]["Y"]}>주문취소건</label>
+		</td>
+		
+	</tr>
+</table>
+<center>
+	<button class="btn btn-primary" id="">검 색</button>
+</center>
+</form>
+
+{/}
+
+{/}
+<form method="post" id="main_form">
+{?_print_xls!=1}
+<input type="hidden" name="mode" id="mode">
+<input type="hidden"name="print_xls" value="">
+{/}
+<table id="" class="display display_dt" data-height="740" style="width:100%" border="{_xls_border}">
+
+	{=include_file("outline/table_width_order.htm")}
+	<thead>
+		<tr>
+			{?_print_xls!=1}<th class="sorting_disabled"><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>{/}
+			{=include_file("order/_order_cols.htm")}
+			<th width="100">배송지</th>
+			<th width="100">송장번호</th>
+		</tr>
+	</thead>
+	<tbody>
+	{@loop}
+		<tr class="{.line_color}">
+			{?_print_xls!=1}
+			<td>
+				<input type="checkbox" class="chk_no" name="chk_no[]" value="{.no}">
+				<input type="hidden" name="hid_invoice[{.no}]" value="{.invoice}">
+			</td>
+			{/}
+			<td>{.mall_name}</td>
+			<td>{.ordno} {?.copy_seq>0}복사본{/}</td>
+			<td>{.mall_goodsnm}</td>
+			<td style='mso-number-format:"\@";'>{.goodsnm}</td>
+			<td>{.order_num}</td>
+			<td>{=number_format(.settle_price)}</td>
+			<td>{.buyer}<br/>{.receiver}</td>
+
+			<td>{.phone}<br/>{.mobile}</td>
+			<td>{.zipcode} {.address}</td>
+			<td>{.memo}</td>
+			<td style="color:{.bundle_color}">{.bundle}</td>
+			<td>{.reg_date}</td>
+			<td>{.place_name}</td>
+			<td>{?.invoice!=0}{.invoice}{/}</td>
+		</tr>
+	{/}
+	</tbody>
+</table>
+
+{?_print_xls!=1}
+
+
+<div>{pg->page['navi']} 총 데이터 :{=number_format(pg->recode['total'])}</div>
+
+
+<div class="bottom_btn_box">
+	<div class="box_left">
+
+	</div>
+	<div  class="box_right">
+	<!--<button type="button" class="btn btn-success" id="print_xls">엑셀 다운로드</button>-->
+	</div>
+</div>
+
+<fieldset class="page_field_info">
+  <legend>참 고</legend>
+  <ul>
+	<li></li>
+  </ul>
+</fieldset>
+{/}
+</form>
+
+
+
+<script>
+	document.title="{_page_title}";
+</script>
+{#footer}

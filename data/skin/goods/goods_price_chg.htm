@@ -1,0 +1,48 @@
+{#header}
+<div class="col-lg-12 statusbox-header"><h3>{_page_title}<span></span></h3></div>
+
+<form method="post" id="main_form">
+	<table id="" class="display " data-height="740" data-order="false" style="width:100%" border="{_xls_border}">
+		<caption>
+			<div class="input-group col-lg-12 common-table-search2">
+				<span class="common-table-result">{_goodsnm_title}</span>
+				<div class="input-group common-table-search">
+				</div>
+			</div>
+		</caption> 
+
+		<table id="" class="display display_s" data-height="540" style="width:100%" border="{_xls_border}">
+			<thead>
+				<tr>
+					<th>변경전</th>
+					<th>변경후</th>
+					<th>변경자</th>
+					<th>날짜</th>
+				</tr>
+			</thead>
+			<tbody>
+			{@loop}
+				<tr>
+					<td>{=number_format(.b_data)}</td>
+					<td>{=number_format(.a_data)}</td>
+					<td>{.name}</td>
+					<td>{.reg_date}</td>
+				</tr>
+			{/}
+			</tbody>
+		</table>		
+
+	</table>
+
+</form>
+<script>
+document.title="{_page_title}";
+
+
+$(function(){
+
+})
+
+
+</script>
+{#footer}

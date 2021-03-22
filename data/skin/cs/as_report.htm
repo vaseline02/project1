@@ -1,0 +1,157 @@
+{#header}
+{?_print_xls!=1}
+<h1>{_page_title}</h1>
+<style>
+.search_td_width{width:380px;}
+.mallLabel{ display:inline-block; width:200px; line-height:23px;}
+</style>
+<form method="get">
+	<table class="table table-bordered" >
+		<tr>
+			<th>기간</th>
+			<td colspan='3'>
+			<input type="text" name="s_date" id="s_date" class="datepicker_common_month" autocomplete="off" value="{_GET['s_date']}"> ~ 
+            <input type="text" name="e_date" id="e_date" class="datepicker_common_month" autocomplete="off" value="{_GET['e_date']}">
+                <span type="button" class="btn btn-sm btn-warning dayChange_month" data-int='0' data-type='month'>이번달</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange_month" data-int='1' data-type='month'>1개월</span>
+                <span type="button" class="btn btn-sm btn-warning dayChange_month" data-int='3' data-type='month'>3개월</span>
+                <span type="button" class="btn btn-sm btn-warning dayChange_month" data-int='5' data-type='month'>5개월</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange_month" data-int='1' data-type='year'>1년</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange_month" data-int='3' data-type='year'>3년</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange_month" data-int='5' data-type='year'>5년</span>
+			</td>			
+		</tr>		
+	</table>
+	<center>
+		<button class="btn btn-sm btn-primary" id="">검 색</button>
+		<button type="button" class="btn btn-sm btn-success" id="print_xls">엑셀 다운로드</button>
+	</center>
+</form>
+{/}
+<form id="sendForm" name="sendForm" method="POST">
+<input type="hidden"name="print_xls" value="">
+<!--as접수,비용-->
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+        <tr>
+			<th style="height:25px;" colspan='14'>AS접수</th>
+			<th style="height:25px;" colspan='4'>공가</th>
+			<th style="height:25px;" colspan='4'>소가</th>
+		</tr>
+		<tr>			
+			<th style="height:25px;"></th>			
+			<th style="height:25px;">고객접수건</th>
+			<th style="height:25px;">고객출고건</th>
+			<th style="height:25px;">상품접수건</th>
+			<th style="height:25px;">상품출고건</th>
+			<th style="height:25px;">자체접수건</th>
+			<th style="height:25px;">조합접수건</th>
+			<th style="height:25px;">본사접수건</th>
+			<th style="height:25px;">총접수건</th>
+			<th style="height:25px;">무한</th>
+			<th style="height:25px;">은하사(쥬얼리수리)</th>
+			<th style="height:25px;">도우덱</th>
+			<th style="height:25px;">크리스챤</th>
+			<th style="height:25px;">그외본사</th>
+			<th style="height:25px;">조합</th>
+			<th style="height:25px;">자체</th>
+			<th style="height:25px;">본사</th>
+			<th style="height:25px;">AS팀총공가금액</th>
+			<th style="height:25px;">조합</th>
+			<th style="height:25px;">자체</th>
+			<th style="height:25px;">본사</th>
+			<th style="height:25px;">AS팀총소가금액</th>
+		</tr>
+		
+	</thead>	
+	<tbody>
+		{@loop}
+		<tr>									
+            <td class="text_type">{.month_date}</td>
+            
+			<td>{.cnt1}</td>
+            <td>{.cnt2}</td>
+            
+			<td>{.cnt3}</td>
+            <td>{.cnt4}</td>
+            
+			<td>{.cnt5}</td>
+			<td>0</td>
+            <td>{.cnt6}</td>
+            
+            <td>{.t_cnt}</td>
+            
+			<td>{.cnt7}</td>
+			<td>{.cnt8}</td>
+			<td>{.cnt9}</td>
+			<td>{.cnt10}</td>
+            <td>{.cnt11}</td>
+            
+			<td>0</td>
+			<td>{=number_format(.cnt13)}</td>
+			<td>{=number_format(.cnt15)}</td>
+            <td>{=number_format((.cnt13)+(.cnt15))}</td>
+            
+			<td>0</td>
+			<td>{=number_format(.cnt12)}</td>
+			<td>{=number_format(.cnt14)}</td>
+			<td>{=number_format((.cnt12)+(.cnt14))} </td>
+		</tr>
+		{/}
+		
+	</tbody>		
+</table>
+<br>
+<!--브랜드별 수리비-->
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>       
+		<tr>			
+			<th></th>			
+			<th>날짜(출고일기준)</th>
+			<th>품목(수리종류)</th>
+			<th>브랜드</th>
+			<th>모델명</th>
+			<th>수리처</th>
+			<th>유무상</th>
+			<th>소가</th>
+			<th>공가</th>
+			<th>마진</th>
+		</tr>
+		
+	</thead>	
+	<tbody>
+		{@bloop}
+		<tr>									
+			<td>{.type}-{=str_pad(.no, 7, "0", STR_PAD_LEFT)}</td>
+            <td class="text_type">{.month_date}</td>            
+            <td>{.repair_memo}</td>            
+            <td>{.brandnm}</td>            
+			<td>{.goodsnm}</td>
+            <td>{.company_name}</td>            
+			<td>{.claim_type}</td>
+			<td>{?.report_yn=='n'}0{:}{.customer_cost}{/}</td>
+            <td>{?.report_yn=='n'}0{:}{.real_cost}{/}</td>            
+            <td>{?.report_yn=='n'}0{:}{(.customer_cost)-(.real_cost)}{/}</td>            
+		</tr>
+		{/}
+		
+	</tbody>		
+</table>
+
+</form>
+
+<script>
+
+document.title="{_page_title}";
+
+$(function(){
+
+$("#print_xls").click(function(){
+    $("input[name='print_xls']").val("1");
+    $("#sendForm").submit();
+    $("input[name='print_xls']").val("0");
+});
+})
+
+</script>
+{#footer}

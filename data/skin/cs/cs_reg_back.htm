@@ -1,0 +1,191 @@
+{#header}
+<h1 class="page_title">{_page_title}</h1>
+
+<hr>
+
+<form method="post" onsubmit="return checkForm();">
+<input type="hidden" name="mode" value="{_mode}">
+<input type="hidden" name="order_list_no" value="{_no}">
+<input type="hidden" name="order_no" value="{ordno}">
+<input type="hidden" name="goods_no" value="{goodsno}">
+<input type="hidden" name="claim_no" value="">
+<input type="hidden" name="exchange_goods_no" value="">
+
+<h1 class="page_title">기본주문정보</h1>
+<style>
+    .search_td_width{width:400px;}
+</style>
+<table class="table table-bordered" >
+	<tbody>
+		<tr>
+			<th>주문번호</th>
+            <td class="search_td_width">{ordno}</td>            
+            <th>송장번호</th>
+            <td class="search_td_width">{invoice}</td>      
+        </tr>
+        <tr>
+			<th>상품명</th>
+            <td>{mall_goodsnm}</td>   
+            <th>옵션명</th>
+            <td>{goodsnm}</td>   
+        </tr>
+        <tr>
+			<th>가격</th>
+            <td>{=number_format(settle_price)}원</td>   
+            <th>연락처</th>
+            <td>{mobile}</td>   
+        </tr>
+        <tr>
+			<th>주소</th>
+            <td>{zipcode} {address}</td>   
+            <th>구매자</th>
+            <td>{buyer}</td>
+            
+        </tr>        
+	</tbody>
+</table>
+
+<hr>
+
+<h1 class="page_title">접수내용</h1>
+
+<table class="table table-bordered" >
+	<tbody>		
+		<tr>
+			<td>
+                <div class="csDiv">
+                    { @ loop }
+                        <div class="csLoop">
+                            <div class="info">
+                                <p>
+                                    진행상태 : <span class="{.ingColorType}">{_cfg_ing_type[.ing_type]}</span> / 문의형태 : {_cfg_retrun_type[.return_type]} / 작성자 : {.admin_name}({.id}) / 등록일 : {.reg_date}
+                                    
+                                </p>
+                                <p>수령자명 : {.receiver} / 주소 : {.zipcode} {.address} / 연락처 : {.mobile}</p>
+                                { ?.exchange_goods_no }
+                                <p>모델명 : {.exchange_goods_nm} / 차액 : {.diff_price}</p>
+                                { / }
+                                <div style="text-align: right; padding-right:10px"><button type="button" class="btn btn-sm btn-warning claimModify" data-no={.no}>수정</button></div>
+                            </div>
+                            <p class="csContents">{=nl2br(.contents)}</p>
+                        </div>
+                    { / }
+                </div>
+            </td>
+		</tr>
+	</tbody>
+</table>
+
+<hr>
+
+<h1 class="page_title">접수</h1>
+
+<table class="table table-bordered" >
+	<tbody>		
+		<tr>
+            <th style="text-align: left;">
+                <div>
+                    수령자명    : <input type="text" value="{receiver}" name="receiver" style="width: 70px;"> 
+                    주소        : <input type="text" value="{zipcode}" name="zipcode" style="width: 70px;" class="zipcode"> <input type="text" value="{address}" name="address" style="width: 500px;" class="address"> 
+                    <button type="button" class="btn btn-sm btn-primary searchAddress">우편번호찾기</button>
+                </div>
+                <div style="padding-top: 10px;">
+                    구매상품    : <input type="text" value="{mall_goodsnm}" name="mall_goodsnm" style="width: 500px;"> 
+                    연락처      : <input type="text" value="{mobile}" name="mobile" style="width: 130px;">
+                </div>
+                <div style="padding-top: 10px;">
+                    모델명     : <input type="text" value="{exchange_goods_nm}" name="exchange_goods_nm" style="width: 500px;"> 
+                    차액       :  <input type="text" value="{diff_price}" name="diff_price" style="width: 130px;"> 
+                    <button type="button" class="btn btn-sm btn-warning" onclick="popup('goods_search.php','goods_search','1000','900')">교환상품선택</button>
+                </div>
+            </th>
+        </tr>
+        <tr>
+            <td>
+                <div style="margin-bottom: 10px;">
+                    <button type="button" class="btn btn-sm btn-warning" onclick="textPick('강성')">강성</button>
+                    <button type="button" class="btn btn-sm btn-warning" onclick="textPick('반품접수')">반품접수</button>
+                    <button type="button" class="btn btn-sm btn-warning" onclick="textPick('하자')">하자</button>
+                </div>
+                <div>
+                    <textarea style="overflow:auto; width:100%; height:70px;" name="contents" class="textPick"></textarea>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <select name="return_type">                   
+                    { @ _cfg_retrun_type }
+                        <option value={_cfg_retrun_type.key_}>{_cfg_retrun_type.value_}</option>
+                    { / }
+                </select>
+                <span style="margin-left: 50px;">
+                    <input type="radio" name="ing_type" value='0' checked>진행중
+                    <input type="radio" name="ing_type" value='1'>완료
+                </span>
+            </td>            
+        </tr>
+	</tbody>
+</table>
+
+<center>
+	<button class="btn btn btn-primary">등록/수정</button>
+</center>
+</form>
+
+<script>
+document.title="{_page_title}";
+var textareaContents;
+var textSum;
+function textPick(text){
+    textareaContents=$(".textPick").val();        
+    if(textareaContents) textSum=textareaContents+' '+text;
+    else textSum=text;
+    
+    $(".textPick").val(textSum);
+}
+function checkForm(){
+    textareaContents=$(".textPick").val();
+    insMode=$("input[name='mode']").val();
+    
+    if(!textareaContents){
+        alert('내용을 입력해주세요.');
+        return false;
+    }
+    if(insMode=='mod'){
+        if(!confirm("수정하시겠습니까?")) return false;
+    }
+}
+
+$(".claimModify").click(function (){
+    $.ajax({
+        url: "./cs_ajax.php",
+        type: "POST",
+        cache: false,
+        dataType: "json",
+        data: "no="+$(this).data('no'),
+        success: function(data){
+            $("input[name='mode']").val("mod");
+            $("input[name='claim_no']").val(data['no']);            
+            $("textarea[name='contents']").val(data['contents']);
+            $("input[name='receiver']").val(data['receiver']);
+            $("input[name='zipcode']").val(data['zipcode']);
+            $("input[name='address']").val(data['address']);
+            $("input[name='mall_goodsnm']").val(data['mall_goodsnm']);
+            $("input[name='mobile']").val(data['mobile']);
+            $("select[name='return_type']").val(data['return_type']).prop("selected",true);
+            $("input:radio[name='ing_type']:radio[value="+data['ing_type']+"]").prop('checked', 'true');
+            $("input[name='exchange_goods_no']").val(data['exchange_goods_no']);
+            $("input[name='exchange_goods_nm']").val(data['exchange_goods_nm']);
+            $("input[name='diff_price']").val(data['diff_price']);
+        },
+        error: function (request, status, error){        
+            console.log(error);
+        }
+
+    });
+
+});
+</script>
+
+{#footer}

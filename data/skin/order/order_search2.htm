@@ -1,0 +1,53 @@
+{?_print_xls!=1}
+<?
+$mall_list=get_mall_info();
+
+$selected['order_search_mall'][$_POST['order_search_mall']]='selected';
+?>
+
+<form method="post" id="order_search_form">
+	<center class="table-btn-group" style="margin-bottom:0px">
+		<div class="bottom_btn_box">
+			<div class="box_left">
+				
+			</div>
+			<div  class="box_right">
+				<input type="text" name="i_memo" style="width:250px;">	
+				<button type="button" class="btn btn-primary memoSubmit">관리자메모 등록</button>
+			</div>
+		</div>
+		
+	</center>
+	
+</form>
+<form method="post" enctype="multipart/form-data">
+	<input type="hidden" name="mode" value="memoupdate">
+	<div class="bottom_btn_box" style="margin-top:0px">
+		<div class="box_left">
+			
+		</div>
+		<div  class="box_right">
+			<div style="padding-top:5px;"><input type="file" name="excelFile[]" required/><button class="btn btn-primary">관리자메모 엑셀업데이트</button></div>
+		</div>
+	</div>
+</form>
+<script>
+$(function(){
+	
+	$(".memoSubmit").click(function (){
+		var chk_len=$(".chk_no:checked").length;
+		var memo=$("input[name='i_memo']").val();
+		if( chk_len<=0 ){
+			alert('메모를 등록할 주문건을 선택해주세요.');
+			return false;
+		}else{
+			$("input[name='mode']", document.main_form).val("memoIns");
+
+			var html='<input type="hidden" name="i_memo" value="'+memo+'" >';
+			$("#main_form").append(html);
+			$("#main_form").submit();
+		}
+	});
+})
+</script>
+{/}

@@ -1,0 +1,27 @@
+<table border="1">
+	<tr>
+		<td>품목코드<br>(필수)</td>
+		<td>수량<br>(필수)</td>
+		<td>REMARK</td>
+		<td>업체명</td>
+		<td>가격</td>
+		<td>수취인</td>
+		<td></td>
+		<td></td>
+		<td>업체코드</td>		
+	</tr>
+
+{@loop}
+<tr>
+	<td style='mso-number-format:"\@";'>{.g_goodsnm}</td>
+	<td>{.order_num}</td>
+	<td>{.ordno}/{.company_name} {.return_type_nm}</td>
+	<td>{.company_name}</td>
+	<td style='mso-number-format:"\@";'>{.settle_price}</td>
+	<td>{.receiver}</td>
+	<td style='mso-number-format:"\@";'></td>
+	<td style='mso-number-format:"\@";'></td>
+	<td style='mso-number-format:"\@";'>{.ent_code}</td>	
+</tr>
+{/}
+</table>

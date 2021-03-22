@@ -1,0 +1,74 @@
+{#header}
+<div class="row">
+	<div class="col-lg-12 statusbox-header"><h3>{_page_title}</h3></div>
+</div>
+
+<form method="post" name="goodsInfoForm2">
+<input type="hidden" name="mode" value="cate_update">
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="common-table-wrapper">
+			<table class="table common-table">
+				<caption>
+					<div class="input-group col-lg-12 common-table-search2">
+						<span class="common-table-result">총 <b>{=number_format(count(loop))}</b>건</span>
+						<div class="input-group common-table-search">                           
+						</div>
+					</div>
+				</caption>
+                <colgroup>
+                    <col width="5%" />
+					<col width="7%"/>
+					<col width="10%"/>
+					<col width="15%"/>
+					<col width="15%"/>
+					<col/>
+					<col width="5%"/>
+					<col width="7%"/>
+					<col width="6%"/>
+					<col width="6%"/>
+					<col width="8%"/>
+					
+				</colgroup>
+				<thead>
+					<tr>
+						<th>No</th>
+                        <th>상태</th>
+                        <th>쇼핑몰</th>
+                        <th>날짜</th>
+                        <th>주문번호</th>
+                        <th>모델명</th>
+                        <th>수량</th>
+                        <th>금액</th>
+                        <th>수수료</th>
+                        <th>이익율</th>
+                        <th>관리자메모</th>                        
+					</tr>
+				</thead>
+				<tbody>
+				{@loop}
+					<tr>                       
+						<td>{=(.index_+1)}</td>                        
+						<td>{_cfg_order_step2[.step2]}</td>                        
+						<td>{.mall_name}</td>                        
+						<td>{.mod_date}</td>                        
+						<td>{.ordno}</td>                        
+						<td>{.goodsnm}</td>                        
+						<td>{.order_num}</td>                        
+						<td>{=number_format(.settle_price)}</td>                        
+						<td></td>                        
+						<td></td>                        
+						<td></td>                        
+					</tr>
+				{/}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+</form>
+<script>
+document.title="{_page_title}";
+</script>
+{#footer}

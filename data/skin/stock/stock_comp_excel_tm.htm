@@ -1,0 +1,19 @@
+<table border="1">
+	<tr>
+		<td>품목코드</td>
+		<td>수량</td>
+		<td>로케이션</td>
+		<td>제조일자</td>
+		<td>비고</td>
+	</tr>
+
+{@loop}
+<tr>
+	<td style='mso-number-format:"\@";'>{.g_goodsnm}</td>
+	<td>{.chk_num}</td>
+	<td></td>
+	<td></td>
+	<td style='mso-number-format:"\@";'>{.invoice}_재고 이동</td>	
+</tr>
+{/}
+</table>

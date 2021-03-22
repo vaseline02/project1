@@ -1,0 +1,437 @@
+{#header}
+<h1 class="page_title">{_page_title}</h1>
+
+<form method="post" id="asForm" name="asForm">
+{ ?_as_no }    
+<input type="hidden" name="mode" value="mod">
+{ : }
+<input type="hidden" name="mode" value="ins">
+{ / }
+<input type="hidden" name="return_url" value="{_SERVER['QUERY_STRING']}">      
+<input type="hidden" name="befor_as_status" value="{asData[0]['as_status']}">      
+<input type="hidden" name="detail_no" value="{asData[0]['detail_no']}">      
+<input type="hidden" name="order_list_no" value="{asData[0]['order_list_no']}">
+    
+
+{ ?_order_list_no || (_as_no && asData[0]['order_list_no']) }
+<table id="" style="width:100%" class="listTable">
+	<thead>
+		<tr>			
+			<th width='100'>상품명</th>
+			<th width='100'>모델명</th>
+			<th width='100'>이미지</th>
+			<th width='100'>송장번호</th>
+			<th width='100'>주문상태</th>			
+		</tr>
+	</thead>	
+	<tbody>
+        { @ asData }
+        <input type="hidden" name="goods_no[{.goods_no}]" value="{.goods_no}">
+        <input type="hidden" name="mall_no[{.goods_no}]" value="{.mall_no}">
+        <input type="hidden" name="mall_name[{.goods_no}]" value="{.mall_name}">
+		<tr>			
+			<td>{.order_mall_goodsnm}</td>
+			<td>{.g_goodsnm}</td>
+			<td class="td_img">{.img_url}</td>
+			<td>{?.order_invoice!=0}{delivery_list[.order_courier_code]['name']}<div>({.order_invoice})</div>{/}</td>			
+			<td>{_cfg_order_step[.step]}{?.step2}<div style="color: red;">({_cfg_order_step2[.step2]})</div>{/}</td>			
+		</tr>
+    	{ / }
+	</tbody>
+</table>
+{ / }
+
+<hr>
+<h1 class="page_title">접수내용</h1>
+<hr>
+    <table id="" style="width:100%" class="listTable">
+        <tr>
+            <th>카테고리</th>
+            <td >
+                <select name="as_cate" class="as_cate">
+                    <option value="">= 카테고리 =</option>
+                    { @_cfg_as_cate }
+                    <option value="{.key_}" {? asData[0]['as_cate'] }{?.key_==asData[0]['as_cate']}selected{/}{/}>{.value_}</option>
+                    { / }
+                </select>
+                <span class="cateSelect">
+                    {? asData[0]['as_sub_cate'] }
+                    <select name="as_sub_cate" class="as_sub_cate">
+                        { @_cfg_as_sub_cate[asData[0]['as_cate']] }
+                        <option value="{.key_}" {? asData[0]['as_sub_cate'] }{?.key_==asData[0]['as_sub_cate']}selected{/}{/}>{.value_}</option>
+                        { / }
+                    </select>
+                    { / }
+                </span>
+            </td>
+            <th>
+                진행단계
+            </th>
+            <td>
+                <select name="as_status" class="as_status">
+                    { @_cfg_as_status }
+                    <option value="{_cfg_as_status.key_}" {? asData[0]['as_status'] }{?_cfg_as_status.key_==asData[0]['as_status']}selected{/}{/}>{_cfg_as_status.key_}.{_cfg_as_status.value_}</option>
+                    { / }
+                </select>
+            </td>
+            <th>
+                재수리유무
+            </th>
+            <td>
+                <label style="font-weight: normal;"><input type="checkbox" name="re_receipt" value="y" {_checked['re_receipt']['y']}> 재수리</label>
+            </td>
+        </tr>
+        
+        <tr>
+            <th>접수자성함</th>
+            <td><input type="text" name="receipt_name" value="{asData[0]['receipt_name']}"></td>
+            <th>연락처</th>
+            <td><input type="text" name="mobile" value="{asData[0]['mobile']}"></td>
+            <th>구매자성함</th>
+            <td><input type="text" name="receiver" value="{asData[0]['receiver']}"></td>
+        </tr>
+        <tr>
+            <th>주소</th>
+            <td colspan="6">
+                <div>
+					<input type="text" value="{asData[0]['zipcode']}" style="width:80px" name="zipcode" class="zipcode"> <button type="button" class="btn btn-sm btn-primary searchAddress">우편번호찾기</button>
+					<label style="font-weight: normal;"><input type="checkbox" name="address_check" value="1" {_checked['address_check']['1']}> 주소확인필요</label>
+				</div>
+                <div style="padding-top: 5px;"><input type="text" value="{asData[0]['address']}" style="width:100%" name="address" class="address"></div>
+            </td>
+        </tr>
+        <tr>
+            <th>구매처</th>
+            <td>
+				{ ?asData[0]['order_list_no'] }
+				<input type="hidden" name="order_buy" value="{asData[0]['order_buy']}">
+				{asData[0]['order_buy']}                
+                { : }
+                <input type="text" name="order_buy" value="{asData[0]['order_buy']}">
+                { / }
+            </td>
+            <th>주문번호</th>
+            <td>
+                <input type="hidden" name="order_no" value="{asData[0]['order_no']}">
+                {asData[0]['order_no']}
+                {?!asData[0]['order_no']}
+                <button type="button" class="btn btn-sm btn-warning" onclick="popup('as_order_search.php','as_order_search','1100','900')">주문번호등록</button>
+				<div id="order_no_div"></div>
+                {/}
+            </td>
+            <th>구매일</th>
+            <td><input type="text" name="order_reg" class="datepicker_common" value="{asData[0]['order_reg']}"></td>
+        </tr>
+        <tr>
+            <th>케이스유무</th>
+            <td>
+                <label style="font-weight: normal;"><input type="radio" name="case_yn" value="y"  {_checked['case_yn']['y']}>있음</label>
+                <label style="font-weight: normal;"><input type="radio" name="case_yn" value="n"  {_checked['case_yn']['n']}>없음</label>
+            </td>
+            <th>택배정보</th>
+            <td>
+                <div>
+                    <select name="delivery_code">
+                        { @ delivery_list } 
+                        <option value={.code} {? asData[0]['delivery_code'] } {?.code==asData[0]['delivery_code']}selected{/}{:}{?.code=='CJGLS'}selected{/}{/}>{.name}</option>
+                        { / }
+                    </select>
+                </div>
+                <div style="padding-top:5px"><input type="text" name="invoice" value="{asData[0]['invoice']}"></div>
+            </td>
+            <th>동작유무</th>
+            <td>
+                <label style="font-weight: normal;"><input type="radio" name="action_yn" value="y"  {_checked['action_yn']['y']}>동작함</label>
+                <label style="font-weight: normal;"><input type="radio" name="action_yn" value="n"  {_checked['action_yn']['n']}>동작안함</label>
+            </td>
+        </tr>
+        <tr>
+            <th>택배비</th>
+            <td><input type="text" name="delivery_price" value="{?asData[0]['delivery_price']}{asData[0]['delivery_price']}{:}0{/}"></td>
+            <th>반송택배비</th>
+            <td><input type="text" name="return_delivery_price" value="{?asData[0]['return_delivery_price']}{asData[0]['return_delivery_price']}{:}0{/}"></td>        
+            <th>과거주문번호</th>    
+            <td><input type="text" name="past_order_no" value="{asData[0]['past_order_no']}"></td>
+        </tr>
+        <tr>
+            <th>브랜드명</th>
+            <td>
+				{ ?asData[0]['order_list_no'] }
+				<input type="hidden" name="brandnm" value="{asData[0]['brandnm']}">
+				{asData[0]['brandnm']}                
+                { : }
+                <input type="text" name="brandnm" value="{asData[0]['brandnm']}">
+                { / }
+            </td>
+            <th>모델명</th>
+            <td>
+                { ?asData[0]['order_list_no'] }    
+                <input type="hidden" name="goodsnm" value="{asData[0]['goodsnm']}">
+                {asData[0]['goodsnm']}
+                { : }
+                <input type="text" name="goodsnm" value="{asData[0]['goodsnm']}">
+                { / }
+            </td>
+            <th>시리얼번호</th>
+            <td><input type="text" name="serial_number" value="{asData[0]['serial_number']}"></td>
+        </tr>
+        <tr>
+            <th>제품특징(디테일)</th>
+            <td colspan="6">
+                <textarea name="product_point" style="width:100%; height: 60px;">{asData[0]['product_point']}</textarea>
+            </td>
+        </tr>
+    
+    </table>
+
+    <hr>
+    <h1 class="page_title">수리내용</h1>
+    <hr>
+    <table id="" style="width:100%" class="listTable">
+        <tr>
+            <th>수리내용</th>
+            <td class="as_contents" colspan=3>
+                {? asData[0]['as_cate'] }
+                <table id="" style="width:100%" class="listTable">
+                    <tr>
+                        <th style="width:10px"></th>
+                        <th style="width:95%">수리내용</th>
+                        <th>수량</th>
+                        <th>가격</th>
+                        <th>실비용</th>
+                    </tr>
+                    { @_cfg_as_contents[asData[0]['as_cate']] }
+                    <tr>
+                        <td><label style='font-weight: normal;'><input type='checkbox' name='as_code[]' value='{.key_}' {_checked['as_code'][.key_]}></label></td>
+                        <td>
+                            {.value_}
+                            { ?.key_=='98' || .key_=='99' }
+                            <input type="text" name="as_memo[{.key_}]" value="{asData[0]['repair'][.key_]['as_memo']}" style="width:90%">
+                            { / }
+                        </td>
+                        <td><input type="text" name="as_quantity[{.key_}]" value="{asData[0]['repair'][.key_]['as_quantity']}" style="width:50px" value='1'></td>
+                        <td><input type="text" name="as_price[{.key_}]" value="{asData[0]['repair'][.key_]['as_price']}" style="width:100px" onkeyup="sum_price('price')" class='sumPrice' data-type='price'></td>
+                        <td><input type="text" name="as_real_price[{.key_}]" value="{asData[0]['repair'][.key_]['as_real_price']}" style="width:100px" onkeyup="sum_price('realprice')" class='sumPrice' data-type='realprice'></td>
+                    </tr>
+                    { / }
+                </table>
+                { / }
+            </td>
+        </tr>
+        
+        <tr>
+            <td colspan="8">
+                <!-- <div style="margin-bottom: 10px;">
+                    <button type="button" class="btn btn-sm btn-warning" onclick="textPick('강성')">강성</button>
+                    <button type="button" class="btn btn-sm btn-warning" onclick="textPick('반품접수')">반품접수</button>
+                    <button type="button" class="btn btn-sm btn-warning" onclick="textPick('하자')">하자</button>
+                </div> -->
+                <div>
+                    <textarea style="overflow:auto; width:100%; height:120px;" name="memo" class="textPick">{asData[0]['memo']}</textarea>
+                </div>
+            </td>
+        </tr>
+        
+        <tr>
+            <th>고객비용</th>
+            <td><input type="text" name="customer_cost" value="{?asData[0]['customer_cost']}{asData[0]['customer_cost']}{:}0{/}"></td>
+            <th>실비용</th>
+            <td><input type="text" name="real_cost" value="{?asData[0]['real_cost']}{asData[0]['real_cost']}{:}0{/}"></td>
+        </tr>
+        <tr>
+            <th>진행업체명</th>
+            <td>
+			<input type="text" name="progress_company" value="{asData[0]['progress_company']}" readonly>
+			<select class='company_in'>
+				<option value="0">==선택==</option>
+				<option>자체</option>
+				<option>무한</option>
+				<option>은하사</option>
+				<option>도우덱</option>
+				<option>크리스챤</option>
+				<option>시계연구소</option>
+				<option>기타</option>
+			</select>
+			</td>
+            <th>출고택배정보</th>
+            <td>            
+                <div>
+                    <select name="send_delivery_code" class="send_delivery_code">
+                        { @ delivery_list } 
+                        <option value={.code}  {? asData[0]['send_delivery_code'] } {?.code==asData[0]['send_delivery_code']}selected{/}{:}{?.code=='CJGLS'}selected{/}{/}>{.name}</option>
+                        { / }
+                    </select>
+                </div>
+                <div style="padding-top:5px"><input type="text" name="send_invoice" value="{asData[0]['send_invoice']}"></div>
+            </td>
+        </tr>
+        <tr>
+            <th>입고일</th>
+            <td><input type="text" name="in_regdate" class="datepicker_common" value="{?asData[0]['in_regdate'] }{asData[0]['in_regdate']}{ : }{_now_date}{ / }"></td>
+            <th>출고일</th>
+            <td><input type="text" name="out_regdate" class="datepicker_common" value="{asData[0]['out_regdate']}"></td>        
+        </tr>
+        <tr>
+            <th>완료예상일</th>
+            <td><input type="text" name="schedule_date" class="datepicker_common" value="{asData[0]['schedule_date']}"> [D-Day : {asData[0]['leftDate']}{?asData[0]['leftDate']!='미등록'}일{/}]</td>       
+			<th>기타</th>
+            <td><label style='font-weight: normal;'><input type='checkbox' name='report_yn' value='n' {_checked['report_yn']['n']}>결산자료제외</label></td>    
+        </tr>
+
+    </table>
+    <hr>
+    <div class="bottom_btn_box" style="margin-top: 0px;">
+        <div class="box_left">
+            {?_as_no}
+            <div class="btn btn-sm btn-warning" onclick="popup('send_sms.php?etc_code=as&etc_no={_as_no}','','1100','900')">문자발송</div>
+            { : }
+            <div class="btn btn-sm btn-warning" onclick="popup('send_sms.php?etc_code=receipt&etc_no={_receipt_no}','','1100','900')">문자발송</div>
+            { / }
+        </div>
+        <div class="box_right">
+            {?_as_no}
+            <div class="btn btn-sm btn-warning buttonChange checkForm">수정</div>
+            { : }
+            <div class="btn btn-sm btn-primary buttonChange checkForm">등록</div>
+            { / }
+            
+        </div>
+    </div>
+</form>
+{?_order_list_no}
+{=include_file("cs/receipt_view.htm")}
+{ / }
+
+<script>
+
+document.title="{_page_title}";
+
+$(".company_in").change(function(){
+	$("input[name='progress_company']").prop('readonly', true);
+	if($(this).val()!=0){
+		if($(this).val()=='기타'){
+			$("input[name='progress_company']").prop('readonly', false);
+		}else{
+			$("input[name='progress_company']").val($(this).val());
+		}
+	}	
+});
+
+$(".as_cate").change(function(){
+    
+    $.ajax({
+        url: "./as_ajax.php",
+        type: "POST",
+        cache: false,
+        dataType: "json",
+        data: "cateNo="+$(this).val(),
+        success: function(data){            
+            $('.as_contents *').remove();
+            $('.cateSelect *').remove();
+            if(data['as_contents']){
+                
+                var addCate2="";
+
+                addCate2+="<table id='' style='width:100%' class='listTable'>";
+                addCate2+="    <tr>";
+                addCate2+="        <th style='width:10px'></th>";
+                addCate2+="        <th style='width:95%'>수리내용</th>";
+                addCate2+="        <th>수량</th>";
+                addCate2+="        <th>가격</th>";
+                addCate2+="        <th>실비용</th>";
+                addCate2+="    </tr>";
+                    
+                $.each(data['as_contents'],function(index, item){
+                    var selected='';                    
+                    addCate2+="<tr>";
+                    addCate2+="    <td><label style='font-weight: normal;'><input type='checkbox' name='as_code[]' value='"+index+"'></label></td>";
+                    addCate2+="    <td>";
+                    addCate2+=         item;
+                    if(index=='98' || index=='99'){
+                    addCate2+="        <input type='text' name='as_memo["+index+"]' style='width:90%'>";
+                    }
+                    addCate2+="    </td>";
+                    addCate2+="    <td><input type='text' name='as_quantity["+index+"]' style='width:50px' value='1'></td>";
+                    addCate2+="    <td><input type='text' name='as_price["+index+"]' style='width:100px' onkeyup='sum_price(\"price\")' class='sumPrice' data-type='price'></td>";
+                    addCate2+="    <td><input type='text' name='as_real_price["+index+"]' style='width:100px' onkeyup='sum_price(\"realprice\")' class='sumPrice' data-type='realprice'></td>";
+                    addCate2+="</tr>";
+               });
+               addCate2+="</table>";
+               $('.as_contents').append(addCate2);
+            }
+            if(data['sub_cate']){
+                
+                var addSubcate="<select name='as_sub_cate'>";
+                $.each(data['sub_cate'],function(index, item){          
+                    if(!index) return;
+                    addSubcate+="<option value='"+index+"'>"+item+"</option>";
+                });
+                addSubcate+="</select>";
+                $('.cateSelect').append(addSubcate);
+                
+            }
+        }
+    });
+
+});
+
+$(".checkForm").click(function(){
+    if(!$(".as_cate").val()){
+        alert("카테고리를 선택해주세요.");return false;
+    }
+    textareaContents=$(".textPick").val();
+    if(!textareaContents){
+        alert('내용을 입력해주세요.');
+        return false;
+    }
+
+	if($("input[name='address_check']").is(":checked")==true && $("select[name='as_status']").val()=='6'){
+		alert('주소확인이 필요합니다.');
+        return false;
+	}	
+
+    if(($(".as_status").val()=='6' && !$("input[name='send_invoice']").val()) && $(".send_delivery_code").val()!='DIRECT'){
+        alert("출고택배정보를 입력해주세요.");
+        return false;
+    }
+
+    $("#asForm").submit();
+});
+/*
+$(".sumPrice").keyup(function (){
+    var subject = $(".sumPrice");
+    var sumprice=0;
+    var sumrealprice=0;
+    $(subject).each(function(index, item){
+        if($(this).data("type")=="price"){
+            sumprice+=Number($(this).val());
+        }else if($(this).data("type")=="realprice"){
+            sumrealprice+=Number($(this).val());
+        }
+    });
+
+    
+    $("input[name='customer_cost']").val(sumprice);
+    $("input[name='real_cost']").val(sumrealprice);
+});
+*/
+function sum_price(type){
+	var subject = $(".sumPrice");
+    var sumprice=0;
+    var sumrealprice=0;
+
+    $(subject).each(function(index, item){
+        if($(this).data("type")=="price"){
+            sumprice+=Number($(this).val());
+        }else if($(this).data("type")=="realprice"){
+            sumrealprice+=Number($(this).val());
+        }
+    });
+
+    
+    $("input[name='customer_cost']").val(sumprice);
+    $("input[name='real_cost']").val(sumrealprice);
+}
+</script>
+
+{#footer}

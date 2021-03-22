@@ -1,0 +1,70 @@
+{#header}
+<h1 class="page_title">{_page_title}</h1>
+
+<hr>
+<form method="post" onsubmit="return checkForm('2');">
+<input type="hidden" name="mode" value="{_mode}">
+<input type="hidden" name="no" value="{_no}">
+
+<table class="table table-bordered" >
+	<tbody>		
+        <tr>
+			<th>몰코드</th>
+			<td>
+                { ?_mode=='ins' }
+                <input type='text' name='mall_code' value="{mall_code}">
+                { : }
+                {mall_code}
+                { / }
+			</td>
+		</tr>
+		<tr>
+			<th>몰명</th>
+			<td>
+				<input type='text' name='mall_name' value="{mall_name}">
+			</td>
+		</tr>
+		<tr>
+			<th>파일구분</th>
+			<td>
+				<input type='text' name='upload_form_type' value="{upload_form_type}">
+			</td>
+		</tr>
+		
+		<tr>
+			<th>정렬번호</th>
+			<td>
+				<input type='text' name='sort' value="{sort}">
+			</td>
+		</tr>
+		<tr>
+			<th>사용유무</th>
+			<td>
+				<input type='radio' name='state' value='y' {_checked['state']['y']}>사용
+				<input type='radio' name='state' value='n' {_checked['state']['n']}>사용안함
+			</td>
+		</tr>
+	</tbody>
+</table>
+{ ?_mode=='mod' }
+<span style="color:red;">* 몰코드 변경이 필요할경우 개발팀에 문의해주세요.</span>
+{ / }
+<center>
+	<button class="btn btn btn-primary">등록/수정</button>
+</center>
+</form>
+<script>
+document.title="{_page_title}";
+
+	function checkForm($addType){
+        if(!$("input[name=mall_code]").val() && $("input[name=mode]").val()=='ins'){
+            alert('몰코드를 입력해주세요.');
+            return false;
+        }
+        if(!$("input[name=mall_name]").val()){
+            alert('몰명을 입력해주세요.');
+            return false;
+        }        
+    }
+</script>
+{#footer}

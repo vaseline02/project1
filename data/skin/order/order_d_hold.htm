@@ -1,0 +1,140 @@
+{#header}
+<h1>{_page_title}</h1>
+<hr>
+{?_nav_view}
+{=include_file("order/order_nav2.htm")}
+{:}
+{=include_file("order/order_nav.htm")}
+{/}
+
+{?_chk_stand_stock}
+<table class="table table-bordered" >
+	<tr>
+		<th>수량초과</th>
+		<td>
+		{@_chk_stand_stock}
+			<div style="width:20%;margin:10px;display:inline-block;">
+			{.key_}( 주문수량:{.cnt}/재고수량:{.s_cnt} )
+			</div>
+		{/}
+		</td>
+	</tr>
+</table>
+{/}
+
+<form method="post" id="main_form">
+<input type="hidden" name="mode" id="mode">
+<!--<table id="" class="display display_dt" data-height="740" style="width:100%" border="{_xls_border}">-->
+<table id="" class="display display_dt" data-height="740" style="width:100%" border="{_xls_border}">
+
+	{=include_file("outline/table_width_order.htm")}
+	<thead>
+		<tr>
+			{?_print_xls!=1}<th class="sorting_disabled"><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>{/}
+			{=include_file("order/_order_cols.htm")}
+			<th>총재고</th>
+			<th>입고예정</th>
+			<th>사무실</th>
+			<th>3자물류</th>
+			<th>영인터</th>
+			<th>원마케팅</th>
+			<th>방송</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+	{@loop}
+		<tr class="{.line_color}">
+			{?_print_xls!=1}<td><input type="checkbox" class="chk_no" name="chk_no[]" value="{.no}"></td>{/}
+			<td>{.mall_name}<br/>{.upload_form_type}</td>
+			<td>{.ordno} {.order_type}</td>
+			<td>{.mall_goodsnm}</td>
+			<td>
+				{.goodsnm}
+				<input type="hidden" name="hid_ordno[{.no}]" value="{.ordno}">	
+				<input type="hidden" name="hid_goodsno[{.no}]" value="{.goodsno}">
+				
+			</td>
+			<td>{.order_num}</td>
+			<td>{=number_format(.settle_price)}</td>
+			<td>{.buyer}<br/>{.receiver}</td>
+			<td>{.phone}<br/>{.mobile}</td>
+			<td>{.zipcode} {.address}</td>
+			<td>{.memo}</td>
+			<td style="color:{.bundle_color}">{.bundle}</td>
+			<td>{.reg_date}</td>
+			<td>{.cur_cnt}</td>
+			<td>{.codeno_3}</td>
+			<td>{.codeno_1}</td>
+			<td>{.codeno_51}</td>
+			<td>{.codeno_91}</td>
+			<td>{.codeno_125}</td>
+			<td>{.codeno_87}</td>
+			<td>
+			<button type="button" class="btn btn-sm btn-warning mod" onclick="popup('order_mod_pop.php?no={.no}','order_mod_pop','1000','700')">수정</button>
+
+			<button type="button" class="btn btn-sm btn-warning" onclick="popup('../cs/cs_reg.php?ordno={.ordno}&mall_no={.mall_no}&order_seq={.no}&order_memo_add=1','','1100','900')">CS등록</button>
+			</td>
+		</tr>
+	{/}
+	</tbody>
+</table>
+
+<div class="bottom_btn_box">
+	<div class="box_left">
+		
+		<button type="button" class="btn btn-danger submit" id="cancel">취소처리</button>
+		<button type="button" class="btn btn-danger submit" id="soldout">발송대기</button>
+		
+	</div>
+	{?!_nav_view}
+	<div  class="box_right">
+		
+		<button type="button" class="btn btn-warning submit" id="outside_deli">외부업체 발송</button>
+		<button type="button" class="btn btn-success submit" id="go_soldout">재고부족/입고예정으로 이동</button>
+		<button type="button" class="btn btn-primary submit" id="goback">단일/묶음발송 확인으로 이동</button>
+	</div>
+	{ / }
+</div>
+
+</form>
+<script>
+document.title="{_page_title}";
+$("#nav_div5-1").addClass('active');
+
+$(function(){
+	
+	$(".submit").click(function(){
+
+		var chk_len=$(".chk_no:checked").length;
+			
+		if( chk_len<=0 ){
+			alert('변경할 주문을 선택해주세요.');
+			return;
+		}
+		
+		var btype=$(this).attr("id");
+		var msg=msg2='';
+
+		if( btype=='cancel' ){
+			msg='주문취소 하시겠습니까? 묶음주문 취소시 관련 주문 모두가 취소처리됩니다.';
+		}else if( btype=='goback' ){
+			msg='단일/묶음발송 확인으로 이동하시겠습니까?';
+		}else if( btype=='go_soldout' ){
+			msg='재고부족/입고예정으로 이동?';
+		}else if( btype=='outside_deli' ){
+			msg='외부발송주문으로 이동하시겠습니까?';
+		}else if( btype=='soldout' ){
+			msg='발송대기로 이동하시겠습니까?';
+		}		
+
+		if(confirm(msg)){
+			$("#mode").val(btype);
+			$("#main_form").submit();
+		}
+	});
+});
+
+
+</script>
+{#footer}

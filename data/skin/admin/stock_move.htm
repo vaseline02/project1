@@ -1,0 +1,224 @@
+{#header}
+
+<h1>{_page_title}</h1>
+
+<hr>
+
+{?_print_xls!=1}
+<form enctype="multipart/form-data" method="post">
+<table class="table table-bordered" >
+    <tr>
+        <th>파일</th>
+        <td><input type="file" name="excelFile[]" required/><button class="btn btn-primary">업로드</button></td>
+    </tr>
+</table>
+</form>
+{/}
+
+
+{?_print_xls!=1}
+<style>
+    .mallLabel{ display:inline-block; width:180px; line-height:30px;}
+</style>
+<form method="get" id="glb_search_form">
+<input type="hidden"name="print_xls" value="">
+
+<table class="table table-bordered " >
+	<tbody>
+		<tr>
+			<th>브랜드</th>
+			<td><input name="s_brand" type="text" value="{_REQUEST['s_brand']}"></td>
+			<th>모델명 다중검색</th>
+			<td><textarea name="s_paste" id="" cols="30" rows="3">{_REQUEST['s_paste']}</textarea></td>
+        </tr>
+        <tr>
+            <th>코드명</th>
+            <td colspan='3'>
+                {@mall_name}
+                <label class="mallLabel" style="font-weight: normal;"><input type="checkbox" name="codeNo[]" value="{.no}" {_checked['codeNo'][.no]}>{.cd}</label>
+                {/}
+            </td>
+        </tr>
+	</tbody>
+</table>
+
+<center style="margin-bottom:20px;">
+<button class="btn btn-primary">검 색</button> 
+<button type="button" class="btn btn-success" id="print_xls">엑셀 다운로드</button>
+</center>
+</form>
+
+{/}
+
+{?_print_xls!=1}
+
+<form method="post" id="main_form">
+    <input type="hidden" name="mode" id="mode" value="move">
+    <input type="hidden" name="s_brand" value="{_REQUEST['s_brand']}">
+    <input type="hidden" name="s_paste" value="{_REQUEST['s_paste']}">
+    <input type="hidden" name="codeNo" value="{=urlencode(serialize(codeNo))}">
+    <input type="hidden" name="returnUrl" value="{_SERVER['REQUEST_URI']}">
+    <input type="hidden" name="no" value="">
+    <div style="width:100%; overflow-x:auto;  white-space: nowrap;">
+    <table id="" class="table table-bordered" style="width:100%" border="{_xls_border}">
+        
+            <colgroup>
+            <!-- <col width="50px"/>체크박스 -->
+            <col width="150px"/><!-- 브랜드 -->
+            {?_print_xls!=1}
+            <col width="90px"/><!-- 이미지 -->
+            {/}
+            <col width="150px"/><!-- 모델명 -->
+            <col width="150px">
+            {@code_title}
+            <col width="90px"/><!-- 재고 -->
+            {/}
+            
+        </colgroup>
+        
+            <tr>
+                <!-- <th class="sorting_disabled"><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th> -->
+                <th>브랜드</th>
+                {?_print_xls!=1}
+                <th>이미지</th>
+                {/}
+                <th>모델명</th>
+                
+                <th>재고이동</th>
+                
+                {@code_title}
+                <th>{.cd}</th>
+                {/}
+                
+            </tr>
+        
+        {@loop}
+            
+            <tr>
+                <input type="hidden" name="goodsnm[{.no}]" value="{.goodsnm}">
+                <!-- <td><input type="checkbox" class="chk_no" name="chk_no[]" value="{.no}"></td> -->
+                <td>{.brandnm}</td>
+                {?_print_xls!=1}
+                <td class="td_img">{.img_url}</td>
+                {/}
+                <td>{.goodsnm}</td>
+                
+                <td>
+                    <div>
+                    <select name="s_cnt[{.no}]">
+                        <option value="">== 차감 ==</option>
+                        {@code_value[.no]}
+                        <option value={..no}>{..cd}</option>
+                        {/}
+                    </select>
+                    </div>
+                    <div></div>
+                    <div>
+                        <select name="e_cnt[{.no}]">
+                            <option value="">== 증가 ==</option>
+                            {@code_value[.no]}
+                            <option value={..no}>{..cd}</option>
+                            {/}
+                        </select>
+                    </div>
+                    <div style="padding-top: 5px;">
+                        <input type="text" name="moveCnt[{.no}]" style="width:70px;" placeholder="수량">
+                        <div class="btn btn-primary checkForm" data-no={.no}>이동</div> 
+                    </div>
+                </td>
+                
+                {@code_value[.no]}
+                <td>{..cnt}</td>
+                {/}
+                
+            </tr>
+        {/}
+       
+    </table>
+    </div>
+   
+<div>{pg->page['navi']} 총 데이터 :{=number_format(pg->recode['total'])}</div>
+</form>
+
+{:}
+
+<div style="color: red; font-weight: bold;">*빨간 표시된 타이틀은 변경하시면 안됩니다.</div>
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<colgroup>
+        <col width="50px"/><!-- 브랜드 -->
+        <col width="100px"/><!-- 브랜드 -->
+        <col width="150px"/><!-- 모델명 -->
+        <col width="50px">
+        <col width="50px">
+        <col width="50px">
+        {@code_title}
+        <col width="90px"/><!-- 재고 -->
+        {/}
+        
+	</colgroup>
+	<thead>
+		<tr>
+            <th><div style="color: red;">상품고유코드</div></th>
+            <th><div style="color: red;">브랜드</div></th>
+            <th><div style="color: red;">모델명</div></th>
+            <th><div>재고이동(차감)</div></th>
+            <th><div>재고이동(증가)</div></th>
+            <th><div>재고이동(수량)</div></th>
+            {@code_title}
+            <th><div style="color: red;">{.cd}</div></th>
+            {/}
+		</tr>
+	</thead>
+	<tbody>
+    {@loop}
+        
+		<tr>
+            <td>{.no}</td>            
+            <td>{.brandnm}</td>            
+            <td>{.goodsnm}</td>
+            <td></td>
+            <td></td>
+            <td></td>           
+            {@code_value[.no]}
+            <td>{..cnt}</td>
+            {/}
+            
+		</tr>
+	{/}
+	</tbody>
+</table>
+{/}
+
+<script>
+document.title="{_page_title}";
+
+$(function(){
+    $(".checkForm").click(function(){
+        var scnt=$("select[name='s_cnt["+$(this).data('no')+"]']").val();
+        var ecnt=$("select[name='e_cnt["+$(this).data('no')+"]']").val();
+        var movecnt=$("input[name='moveCnt["+$(this).data('no')+"]']").val();
+        
+        if(!scnt){
+            alert('차감위치를 선택해주세요.');
+            return false;
+        }else if(!ecnt){
+            alert('증가위치를 선택해주세요.');
+            return false;
+        }else if(!movecnt){
+            alert('수량을 등록해주세요.');
+            return false;
+        }else{
+            $("input[name=no]").val($(this).data('no'));
+            $("form[id='main_form']").submit();
+        }
+    });
+	$("#print_xls").click(function(){
+		$("input[name='print_xls']").val("1");
+		$("#glb_search_form").submit();
+		$("input[name='print_xls']").val("0");
+	});
+
+})
+
+</script>
+{#footer}

@@ -1,0 +1,363 @@
+
+<div class="bottom_btn_box" style="margin-bottom: 5px;">
+    <div class="box_left">
+        <h1 class="page_title">접수내용({_ordno})</h1>
+    </div>
+    <div class="box_right">
+        <select class="viewChange">
+            <!-- { @_cfg_retrun_type }
+            <option value={.key_}>{.value_}</option>
+            { / } -->
+            <option value="">전체</option>
+            <option value="cs">CS접수</option>
+            <option value="as">AS수리접수</option>
+            <option value="sms">SMS발송건</option>
+        </select>
+    </div>
+</div>
+
+<table class="table table-bordered">
+	<tbody>		
+		<tr>
+			<td>
+                <div class="csDiv">
+                    { @ tloop }
+                    <div class="{.type}_div view_type">
+                        { ?.type=='cs' }
+                        <div class="csLoop">
+                        <div class="info" style="height:100px;{.ins_color}">
+                                <ul style="position: relative;">
+                                    <div class="claimType">
+                                        {.reg_date} - {.admin_name}({.id})
+                                        <span style="right:0px; padding-right:10px; position: absolute; text-align: right;">
+                                        {?!_view_type && .return_type!='80' && _receipt_view_type=='mod'}
+                                            { ?!.send_count && (.return_type=='60' || .return_type=='70' || .return_type=='90') && .add_type=='1' }
+                                            <button type="button" class="btn btn-sm btn-danger cancelOrder" data-no={.no}>철회요청</button>
+                                            { / }
+											{?(.return_type=='60' || .return_type=='70' || .return_type=='90') && (.add_type=='0' || .add_type=='2')}
+											<button type="button" class="btn btn-sm btn-warning claimModify {?content_info['no']==.no && _receipt_no}loadCopy{/}" data-modtype='copy' data-no={.no}>복사</button>
+											{/}
+                                            <button type="button" class="btn btn-sm btn-warning claimModify" data-modtype='mod' data-no={.no}>수정</button>
+                                        {/}
+                                            <div style="padding-top:5px;">
+                                                { @(_cfg_call_type) }
+                                                <label style="font-weight: normal;"><input type="checkbox" {?.call_type==..key_}checked{/} onclick="return false;">{..value_}</label>
+                                                { / }
+                                            </div>
+                                        </span>
+                                    </div>                                   
+                                    <div>
+                                        접수구분 : {?.route_type}{_cfg_route_type[.route_type]}-{/}{_cfg_retrun_type[.return_type]}{?.return_type_sub}-{_cfg_retrun_type_sub[.return_type][.return_type_sub]}{/}
+                                        { ?.refund_yn=='y' } / 환불완료 { / }
+                                        { ?.receipt=='1' } / <font style="color: red; font-weight: bold;">선접수</font> { / }
+										{ ?.add_type=='0' } / <font style="color: red; font-weight: bold;">(접수)</font> { :.add_type=='2' } / <font style="color: red; font-weight: bold;">(처리중)</font> { / }
+										
+										{ ?count(.cs_detail) }
+											{ @.cs_detail }
+												[{..g_goodsnm}]
+											{ / }
+										{ / }
+										
+									</div>
+                                    { ? count(.cs_detail)}
+                                    <div style="padding-top:5px;"></div>
+                                    <div class="csDetail btn btn-sm btn-primary" data-no={.no} style="width:75px; ">상세보기</div>
+                                    {/}
+                                </ul>
+                            </div>
+
+                            { ? count(.cs_detail) }
+                            <div class="csLayer_{.no} csLayer notice-box" style="display: block; overflow:auto;padding-top:10px; display:none; font-size: 6px;">
+                                <!-- <span id='close' onclick="this.parentNode.style.display = 'none';">&times;</span> -->
+                                { ?.return_type=='80'}
+                                <table class="table table-bordered" style="font-size: 12px;">
+                                    <tbody>
+                                        <tr>
+                                            <th>수령자명</th>
+                                            <td>{.receiver}</td>      
+                                            <th>연락처</th>
+                                            <td>{.mobile}</td>       
+                                            
+                                        </tr>
+                                        <tr>
+                                            <th>주소</th>
+                                            <td colspan=3>우편번호 : {.zipcode}<br>{.address}</td>                                                
+                                        </tr>
+                                    </tbody>
+                                </table>              
+                                {:.return_type=='60'}
+                                <table class="table table-bordered" style="font-size: 12px;">
+                                    <tbody>
+                                        <tr>
+                                            <th>배송정보</th>
+                                            <td>
+                                                {?.delivery_type}{_cfg_return_delivery_type[.delivery_type]}({=number_format(.delivery_price)}원){/} 
+                                                {?.delivery_type2}/ {_cfg_return_delivery_type2[.delivery_type2]}({=number_format(.delivery_price2)}원){/}
+                                                {?.return_delivery_code}<div>{delivery_list[.return_delivery_code]['name']}-{.return_invoice}</div>{/}
+                                            </td>   
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                {:.return_type=='40' || .return_type=='70' || .return_type=='90'}
+                                <table class="table table-bordered" style="font-size: 12px;">
+                                    <tbody>
+                                        <tr>
+                                            <th>수령자명</th>
+                                            <td>{.receiver}</td>       
+                                            <th>연락처</th>
+                                            <td>{.mobile}</td>        
+                                        </tr>
+                                        <tr>
+                                            <th>주소</th>
+                                            <td>우편번호 : {.zipcode}<br>{.address}</td>   
+                                            <th>배송정보</th>
+                                            <td>
+                                                {?.delivery_type}{_cfg_return_delivery_type[.delivery_type]}({=number_format(.delivery_price)}원){/} 
+                                                {?.delivery_type2}/ {_cfg_return_delivery_type2[.delivery_type2]}({=number_format(.delivery_price2)}원){/}
+                                                {?.return_delivery_code}<div>{delivery_list[.return_delivery_code]['name']}-{.return_invoice}</div>{/}
+                                            </td>   
+                                        </tr>
+                                    </tbody>
+                                </table>                                
+                                { / }
+                                {?.return_type=='40' || .return_type=='60' || .return_type=='70' || .return_type=='90'}
+                                <table class="table table-bordered" style="font-size: 12px;">
+                                    <tbody>
+                                        <tr>
+                                            <th>환불정보</th>
+                                            <td>
+                                                {?.account_code && .account_number}{_cfg_account_code[.account_code]} / {.account_number}{/} 
+                                                {?.account_name}<div>입금자명 : {.account_name} / 금액 : {=number_format(.account_price)}원</div>{/}
+                                                {?.account_etc}<div>비고 : {.account_etc}</div>{/}
+                                            </td>   
+                                        </tr>
+										<tr>
+                                            <th>상품이상유무</th>
+                                            <td>
+                                                {?.goods_bad_yn=='y'} 이상있음 {:} 이상없음 {/} 
+                                                {?.goods_bad_memo}({.goods_bad_memo}){/}
+                                            </td>   
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                { / }
+                                <table class="table table-bordered" style="font-size: 12px;">
+                                    <tbody>
+                                        <tr>	
+                                            <th>상품명</th>
+                                            <th>교환모델명</th>
+                                            <th>수량</th>
+                                            <th>발생비용</th>
+                                            <th>상태</th>
+                                        </tr>
+                                        { @.cs_detail }
+                                        <tr>
+                                            <td>{..g_goodsnm}</td>
+                                            <td>{?..exchange_goods_nm}{..exchange_goods_nm}{:}-{/}</td>
+                                            <td>{..exchange_goods_num}</td>
+                                            <td>{=number_format(..diff_price)}원</td>
+                                            <td>{_cfg_send_type[..send_type]}</td>
+                                        </tr>
+                                        { / }
+                                    </tbody>
+                                </table>                    
+                                { ?.receipt_memo }
+                                <table class="table table-bordered" style="font-size: 12px;">
+                                    <tbody>
+                                        <tr>
+                                            <th>택배접수내용</th>
+                                            <td>{=nl2br(.receipt_memo)}</td>   
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                { / }
+                            </div>
+                            { / } 
+							{?.return_type=='40' || .return_type=='60' || .return_type=='70' || .return_type=='90'}
+								<p class="csContents">
+									{?.return_delivery_code}{delivery_list[.return_delivery_code]['name']}({.return_invoice}){/}
+									{?.return_type_sub} / {_cfg_retrun_type_sub[.return_type][.return_type_sub]}{/}
+									{?.goods_bad_yn=='y'} / 이상있음 {:} / 이상없음 {/} {?.goods_bad_memo}({.goods_bad_memo}){/}
+									/ {.contents}
+									{?.delivery_type} / {_cfg_return_delivery_type[.delivery_type]}({=number_format(.delivery_price)}원){/} 
+                                    {?.delivery_type2} / {_cfg_return_delivery_type2[.delivery_type2]}({=number_format(.delivery_price2)}원){/}
+									{?.account_code && .account_number} / {_cfg_account_code[.account_code]}({.account_number}){/} 
+									{?.account_name} / 입금자명({.account_name}) / 금액({=number_format(.account_price)}원){/}									
+							{:}
+	                            <p class="csContents">{=nl2br(.contents)}</p>
+							{/}
+                        </div>
+                        { :.type=='as' }
+                        <div class="csLoop">
+                            <div class="info">
+                                <ul style="position: relative;">
+                                    <div class="claimType">
+                                        {.reg_date} - {.admin_name}({.id})                                        
+                                    </div>                                   
+                                    <div>
+                                        접수상품 : {.goodsnm}
+                                        
+                                    </div>
+
+                                    <div style="padding-top:5px;"></div>
+                                    <div class="asDetail btn btn-sm btn-primary" data-no={.no} style="width:75px; ">상세보기</div>
+                                </ul>
+                            </div>
+
+                            <div class="asLayer_{.no} asLayer notice-box" style="display: block; overflow:auto;padding-top:10px; display:none; font-size: 6px;">
+                                <table class="table table-bordered" style="font-size: 12px;">
+                                    <tbody>
+                                        <tr>
+                                            <th>접수자명</th>
+                                            <td>{.receipt_name}</td>      
+                                            <th>연락처</th>
+                                            <td>{.mobile}</td>     
+                                        </tr>
+                                        <tr>
+                                            <th>주소</th>
+                                            <td>우편번호 : {.zipcode}<br>{.address}</td>              
+                                            <th>구매처</th>
+                                            <td>{.order_buy}</td>                                    
+                                        </tr>
+                                        <tr>
+                                            <th>고객비용</th>
+                                            <td>{.customer_cost}</td>      
+                                            <th>실비용</th>
+                                            <td>{.real_cost}</td>      
+                                        </tr>
+                                        
+                                        <tr>
+                                            <th>제품특징</th>
+                                            <td>{.product_point}</td>           
+                                            <th>수리내용</th>
+                                            <td>
+                                                { @.ex_as }
+                                                    [{_cfg_as_contents[.as_cate][..value_]}]
+                                                { / }
+                                            </td>                                 
+                                        </tr>
+                                        <tr>
+                                            <th>반송장</th>
+                                            <td>
+                                                <div>{delivery_list[.delivery_code]['name']}</div>
+                                                <div>{.invoice}</div>
+                                            </td>           
+                                            <th>출고송장</th>
+                                            <td>
+                                                <div>{delivery_list[.send_delivery_code]['name']}</div>
+                                                <div>{.send_invoice}</div>
+                                            </td>                                     
+                                        </tr>
+                                        <tr>
+                                            <th>진행업체명</th>
+                                            <td>{.progress_company}</td>           
+                                            <th>기타</th>
+                                            <td>재수리유무 : {.re_receipt}, 케이스유무 : {.case_yn}, 동작유무 : {.action_yn}</td>                                 
+                                        </tr>
+                                        <tr>
+                                            <th>입고일</th>
+                                            <td>{.in_regdate}</td>           
+                                            <th>출고일</th>
+                                            <td>{.out_regdate}</td>                                 
+                                        </tr>
+                                        <tr>
+                                            <th>진행단계</th>
+                                            <td colspan="3">{.as_status}</td>           
+                                        </tr>
+                                    </tbody>
+                                </table>                    
+                            </div>
+
+                            <p class="csContents">{=nl2br(.memo)}</p>
+                           
+                        </div>
+                        
+                        { :.type=='sms' }
+                        <div class="csLoop">
+                            <div class="info">
+                                <ul style="position: relative;">
+                                    <div class="claimType">
+                                        {.reg_date} - {.admin_name}({.id})                                        
+                                    </div>                                   
+                                    <div>
+                                        [문자발송] - {.title}
+                                    </div>
+
+                                    <div style="padding-top:5px;"></div>
+                                    <div class="smsDetail btn btn-sm btn-primary" data-no={.no} style="width:75px; ">상세보기</div>
+                                </ul>
+                            </div>
+
+                            <div class="smsLayer_{.no} smsLayer notice-box" style="display: block; overflow:auto;padding-top:10px; display:none; font-size: 6px;">
+                                <table class="table table-bordered" style="font-size: 12px;">
+                                    <tbody>
+                                        <tr>
+                                            <th>제목</th>
+                                            <td>{.title}</td>      
+                                        </tr>
+                                        <tr>
+                                            <th>연락처</th>
+                                            <td>{.mobile}</td>      
+                                        </tr>
+                                        <tr>
+                                            <th>내용</th>
+                                            <td>{=nl2br(.contents)}</td>     
+                                        </tr>
+                                    </tbody>
+                                </table>                    
+                            </div>
+                        </div>
+                        
+                        { / }
+                    </div>
+                    { / }
+                    
+                </div>
+                
+            </td>
+		</tr>
+	</tbody>
+</table>
+
+<script>    
+    $(document).on("click",".csDetail",function(e){
+        
+        //var img_top = event.pageY-400;
+        //var img_left = event.pageX; 
+        var detailNo=$(this).data('no');
+    
+        //$(".csLayer").css("display","none");
+        $(".csLayer_"+detailNo).toggle();
+    
+    });
+    $(document).on("click",".asDetail",function(e){
+        
+        //var img_top = event.pageY-400;
+        //var img_left = event.pageX; 
+        var detailNo=$(this).data('no');
+    
+        //$(".csLayer").css("display","none");
+        $(".asLayer_"+detailNo).toggle();
+    
+    });
+    $(document).on("click",".smsDetail",function(e){
+        
+        //var img_top = event.pageY-400;
+        //var img_left = event.pageX; 
+        var detailNo=$(this).data('no');
+    
+        //$(".csLayer").css("display","none");
+        $(".smsLayer_"+detailNo).toggle();
+    
+    });
+    
+    
+    $(".viewChange").change(function (){
+        $(".view_type").hide();
+        if($(this).val()){
+            $("."+$(this).val()+"_div").show();
+        }else{
+            $(".view_type").show();
+        }
+    });
+</script>

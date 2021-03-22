@@ -1,0 +1,355 @@
+{#header}
+<h1>{_page_title}</h1>
+<hr>
+<style>
+.search_td_width{width:800px;}
+#nav_div1_1 a:after{width:90%}
+</style>
+{ ?!receipt_no || uloop[0]['receipt_type']=='1' }
+<form id="searchForm" method="POST" >
+
+<table id="" style="width:100%" border="{_xls_border}">
+    <tr>
+        <td style="width:25%; vertical-align: top;">
+            <table class="table table-bordered" >
+                <tr>
+                    <th>원송장/반송장번호</th>
+                    <td><input type="text" name="s_invoice" class="s_invoice" id="enter_input" style="width:300px;" ></td>           
+                    <th>주문번호</th>
+                    <td><input type="text" name="s_order_no" ></td>           
+                </tr>
+                <tr>
+                    <th>이름</th>
+                    <td><input type="text" name="s_receiver" ></td>                    
+                    <th>전화번호</th>
+                    <td><input type="text" name="s_mobile" ></td>                    
+                </tr>
+            </table>
+        </td>
+    </tr>	
+</table>
+<center style="padding-top:10px;">
+    <button class="btn btn-primary" id="subm">검 색</button>
+</center>
+</form>
+<hr>
+{ / }
+<form id="sendForm" method="POST">
+    <input type="hidden" name="return_url" value="{_SERVER['QUERY_STRING']}">      
+    { ?!receipt_no }
+        <input type="hidden" name="mode" value="ins">
+
+        <div style="padding-bottom: 10px;">
+            <label style="font-weight: normal;"><input type="checkbox" name="receipt_type" class="receiptCheck" value="1"> 수기등록</label>
+            <!-- <div type="button" class="btn btn-sm btn-warning" id="">수기등록</div> -->
+        </div>
+        <div class="receiptDiv" style="display: none;">
+        <table id="" class="table table-bordered">
+            <tr>
+                <th>모델명</th>
+                <td><input type="text" name="goodsnm" style="width:250px;"></td>
+                
+            </tr>
+            <tr>            
+                <th>전화번호</th>
+                <td><input type="text" name="mobile" style="width:250px;" class="number_only"></td>
+            </tr>
+            <tr>            
+                <th>이름</th>
+                <td><input type="text" name="customer_name" style="width:250px;"></td>
+            </tr>       
+        </table>
+        </div>
+        <div class="receiptDiv2">
+        <table id="" class="table table-bordered">
+            <tr>			
+                <th style="width:20px;"></th>
+                <th>몰명</th>
+                <th>주문번호</th>
+                <th style="width:100px;">이미지</th>
+                <th>옵션명</th>
+                <th style="width:70px;">구매자<br>수령자</th>
+                <th>연락처<br>모바일</th>
+                <th style="width:120px;">주문일자</th>
+            </tr>
+            { @loop }
+            <tr class="radioCheck" data-no={.no} data-return_courier_code='{.return_courier_code}' data-return_invoice='{.return_invoice}'>			
+                <td><input type="radio" class="radioNo_{.no}" name="no" value='{.no}'></td>
+                <td>{.mall_name}</td>
+                <td>{.ordno} {?.copy_seq>0}복사본{/}</td>
+                <td>{.img_url}</td>
+                <td>{.goodsnm}</td>
+                <td>{.buyer}<br/>{.receiver}</td>
+                <td>{.buyer_mobile}<br/>{.mobile}</td>
+                <td>{.reg_date}</td>
+            </tr>
+            { / }
+        </table>
+        </div>
+    { : }
+        <input type="hidden" name="mode" value="mod">
+        
+        { ? uloop[0]['receipt_type']=='1' && _open_route!='as_reg' }
+        <div style="padding-bottom: 10px;">
+            <label style="font-weight: normal;"><input type="checkbox" name="receipt_type" class="receiptCheck" value="1" { ? !count(loop) }checked{ / }> 수기등록</label>
+            <!-- <div type="button" class="btn btn-sm btn-warning" id="">수기등록</div> -->
+        </div>
+        { : _open_route=='as_reg' }
+        <input type="hidden" name="receipt_type" value="0">
+        { : }
+        <input type="hidden" name="receipt_type" value="{uloop[0]['receipt_type']}">
+        { / }
+        <input type="hidden" name="loopCount" value="{=count(loop)}">
+        <div class="receiptDiv" { ? (uloop[0]['receipt_type']!='1' || count(loop)) || _open_route=='as_reg' }style="display: none;"{ / }>
+            <table id="" class="table table-bordered">
+                <tr>
+                    <th>모델명</th>
+                    <td><input type="text" name="goodsnm" value="{uloop[0]['receipt_goodsnm']}"></td>
+                </tr>
+                <tr>            
+                    <th>전화번호</th>
+                    <td><input type="text" name="mobile" value="{uloop[0]['receipt_mobile']}" style="width:250px;" class="number_only"></td>
+                </tr>
+                <tr>            
+                    <th>이름</th>
+                    <td><input type="text" name="customer_name" value="{uloop[0]['customer_name']}" style="width:250px;"></td>
+                </tr>       
+            </table>
+        </div>
+        <div class="receiptDiv2" { ? (uloop[0]['receipt_type']=='1' && !count(loop)) && _open_route!='as_reg' }style="display: none;"{ / }>
+            <table id="" class="table table-bordered">
+                <tr>			
+                    { ? count(loop) }
+                    <th style="width:20px;"></th>
+                    { / }
+                    <th>몰명</th>
+                    <th>주문번호</th>
+                    <th style="width:100px;">이미지</th>
+                    <th>옵션명</th>
+                    <th style="width:70px;">구매자<br>수령자</th>
+                    <th>연락처<br>모바일</th>
+                    <th style="width:120px;">주문일자</th>
+                </tr>
+                { ? count(loop) }
+                    { @loop }
+                    <tr class="radioCheck" data-no={.no} data-return_courier_code='{.return_courier_code}' data-return_invoice='{.return_invoice}'>			
+                        <td><input type="radio" class="radioNo_{.no}" name="no" value='{.no}'></td>
+                        <td>{.mall_name}</td>
+                        <td>{.ordno} {?.copy_seq>0}복사본{/}</td>
+                        <td>{.img_url}</td>
+                        <td>{.goodsnm}</td>
+                        <td>{.buyer}<br/>{.receiver}</td>
+                        <td>{.buyer_mobile}<br/>{.mobile}</td>
+                        <td>{.reg_date}</td>
+                    </tr>
+                    { / }
+                { : }
+                    { @uloop }
+                    <tr>			
+                        <td>{.mall_name}</td>
+                        <td>{.ordno} {?.copy_seq>0}복사본{/}</td>
+                        <td>{.img_url}</td>
+                        <td>{.goodsnm}</td>
+                        <td>{.buyer}<br/>{.receiver}</td>
+                        <td>{.buyer_mobile}<br/>{.mobile}</td>
+                        <td>{.reg_date}</td>
+                    </tr>
+                    { / }
+                { / }
+            </table>
+        </div>
+    { / }
+    <hr>
+    <table id="" class="table table-bordered" { ? _open_route=='as_reg' }style="display: none;"{ / }>
+        <tr>
+            <th>접수유형</th>
+            <td style="width:50px;">
+                
+                { ?!receipt_no || uloop[0]['receipt_return_type']=='3'}
+                <select name="return_type" class="return_type receiptType">
+                    <!--<option value="">=== 접수유형선택 ===</option>-->
+                    { @_cfg_receipt_type}
+						{?.key_=='3'}
+						<option value={_cfg_receipt_type.key_} {_selected['return_type'][_cfg_receipt_type.key_]}>{_cfg_receipt_type.value_}</option>
+						{ / }
+                    { / }
+                </select>
+                { : }
+                    <input type="hidden" name="return_type" class="return_type" value={uloop[0]['receipt_return_type']}>
+                    <input type="hidden" name="return_type_sub" value={uloop[0]['receipt_return_type_sub']}>
+                    {_cfg_receipt_type[uloop[0]['receipt_return_type']]}
+                    { ?uloop[0]['receipt_return_type_sub'] }({_cfg_receipt_type_sub[uloop[0]['receipt_return_type']][uloop[0]['receipt_return_type_sub']]}){ / }
+                { / }
+                <span id="return_sub_span"></span>
+            </td>
+            <th rowspan="4">내용</th>
+            <td rowspan="4"><textarea style="width:100%; height: 150px;" name="memo">{uloop[0]['receipt_memo']}</textarea></td>
+            
+        </tr>
+        <tr>
+            
+            <th>계좌번호</th>
+            <td>
+                <div>
+                <select name="account_code">
+                    <option value="">=== 은행선택 ===</option>
+                    { @_cfg_account_code }
+                    <option value="{_cfg_account_code.key_}" {_selected['account_code'][_cfg_account_code.key_]}>{_cfg_account_code.value_}</option>
+                    { / }
+                </select>
+                </div>
+                <div style="padding-top:5px;"><input type="text" name="account_number" value="{uloop[0]['receipt_account_number']}" style="width:250px;"></div>
+            </td>
+        </tr>
+        <tr>
+            <th>반송장번호</th>
+            <td>
+                <div>
+                    <select name="delivery_code">
+                        <option value="">=== 택배사선택 ===</option>
+                        { @delivery_list }
+                        <option value="{.code}" {_selected['delivery_code'][.code]}>{.name}</option>
+                        { / }
+                    </select>
+                </div>
+                <div style="padding-top:5px;"><input type="text" name="invoice"  value="{ ?!receipt_no }{loop[0]['return_invoice']}{ : }{uloop[0]['receipt_invoice']}{ / }" style="width:250px;"></div>
+            </td>
+        </tr>
+        
+    </table>
+
+    <div class="bottom_btn_box">
+        <div  class="box_left"></div>
+        <div  class="box_right">           
+            { ?!receipt_no }
+            <div type="button" class="btn btn-sm btn-primary checkForm" id="" data-mode='ins'>등록</div>
+            { : }
+            <div type="button" class="btn btn-sm btn-warning checkForm" id="" data-mode='mod'>수정</div>
+            { / }
+           
+        </div>
+    </div>
+
+</form>
+
+<script>
+
+document.title="{_page_title}";
+
+
+
+
+
+
+$(document).ready(function() {
+
+	$("#enter_input").keydown(function(key) {
+		if (key.keyCode == 13) {
+			$("#subm").trigger("click");
+		}
+	});
+
+    $(".radioCheck").click(function(){
+        // alert($(this).data('return_courier_code'));
+        // alert($(this).data('return_invoice'));
+        $(".radioNo_"+$(this).data('no')).prop('checked', true);
+        $("input[name='invoice']").val($(this).data('return_invoice'));
+        if($(this).data('return_courier_code'))$("select[name='delivery_code']").val($(this).data('return_courier_code')).prop("selected",true);
+        
+    });
+    $(".s_invoice").keypress(function (e) {
+        if (e.which == 13){
+            $("form[name='searchForm']").submit();
+        }       
+    });
+    $('.s_invoice').focus();
+
+    $(".receiptCheck").click(function (){
+        if($("input[name='receipt_type']").is(":checked")){
+            $(".receiptDiv").show();
+            $(".receiptDiv2").hide();
+            
+        }else{
+            $(".receiptDiv").hide();
+            $(".receiptDiv2").show();
+        }
+    });
+
+    $(".checkForm").click(function(){
+        var mode=$(this).data('mode');
+        if(mode=='ins'){
+            if($("input[name='receipt_type']").is(":checked")){
+                if(!$("input[name='goodsnm']").val()){
+                    alert("모델명을 입력해주세요.");
+                    return false;
+                //}else if(!$("textarea[name='memo']").val()){
+                    //alert("내용을 입력해주세요.");
+                    //return false;
+                }else if(!$(".return_type").val()){
+                    alert("접수유형을 선택해주세요.");
+                    return false;
+                }else{
+                    $("#sendForm").submit();
+                }
+            }else{
+                if(!$("input[name='no']:checked").val()){
+                    alert("등록할 주문건을 선택해주세요.");
+                    return false;
+                }else if(!$(".return_type").val()){
+                    alert("접수유형을 선택해주세요.");
+                    return false;
+                }else{
+                    $("#sendForm").submit();
+                }
+            }
+        }else if(mode=='mod'){
+            var loopCount=$("input[name='loopCount']").val();
+            if(loopCount>0){
+                if(!$("input[name='no']:checked").val()){
+                    alert("수정할 주문건을 선택해주세요.");
+                    return false;
+                }
+            }else if(!$(".return_type").val()){
+                alert("접수유형을 선택해주세요.");
+                return false;
+            }
+            $("#sendForm").submit();
+        }
+    });
+
+    //발송선택후 일반문의로 변경시 체크해제
+    $(".receiptType").change(function(){    
+        returnSubappend($(this).val());
+    });
+        
+    function returnSubappend(returnNo,subNo,type){
+        
+        $.ajax({
+            url: "./cs_ajax.php",
+            type: "POST",
+            cache: false,
+            dataType: "json",
+            data: "no="+returnNo+"&mode=receiptType",
+            success: function(data){
+                $('#return_sub_span *').remove();
+                if(data){
+                addHtml="<select name='return_type_sub'>";
+            
+                    $.each(data,function(index, item){
+                        var selected='';
+                        if(index==subNo) selected='selected';                
+                        addHtml+="<option value='"+index+"' "+selected+">"+item+"</option>";
+                    });
+                
+                    addHtml+="</select>";
+                    $('#return_sub_span').append(addHtml);
+                }
+
+            }
+        });
+    }
+    
+});
+
+</script>
+{#footer}

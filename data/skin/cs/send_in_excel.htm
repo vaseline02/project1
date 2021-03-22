@@ -1,0 +1,41 @@
+<table border="1">
+    <tr>
+        <td>주문번호</td>
+        <td>쇼핑몰명</td>
+        <td>구분</td>
+        <td>받는분성명</td>
+        <td>받는분우편번호</td>
+        <td>받는분주소(전체,분할)</td>
+        <td>받는분전화번호</td>
+        <td>받는분기타연락처</td>
+        <td>기본운임</td>
+        <td>품목명</td>
+        <td>수량</td>
+        <td>배송메세지1</td>
+        <td>수집상품명</td>
+        <td>주문금액</td>
+        <td>쇼핑몰코드</td>
+        <td>123</td>
+    </tr>
+    
+    {@loop}
+    <tr>
+        <td style='mso-number-format:"\@";'>{.ordno}</td>
+        <td>{.company_name}</td>
+        <td></td>
+        <td>{.receiver}</td>
+        <td style='mso-number-format:"\@";'>{.zipcode}</td>
+        <td>{.address}</td>
+        <td style='mso-number-format:"\@";'>{.buyer_mobile}</td>
+        <td style='mso-number-format:"\@";'>{.mobile}</td>
+        <td>{.deli_type}</td>
+        <td style='mso-number-format:"\@";'>{.goodsnm}</td>
+        <td style='mso-number-format:"\@";'>{.order_num}</td>
+        <td>{.order_memo}</td>
+        <td></td>
+        <td>{.tot_price}</td>
+        <td>{.mall_code}</td>
+        <td></td>
+    </tr>
+    {/}
+    </table>

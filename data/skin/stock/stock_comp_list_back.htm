@@ -1,0 +1,175 @@
+{#header}
+<div class="col-lg-12 statusbox-header"><h3>{_page_title}<span></span></h3></div>
+
+{?_print_xls!=1}
+	<form method="post" id="search_form">
+	<input type="hidden"name="print_xls" value="">
+	<table class="table table-bordered" >
+		<tr>
+			<th>모델명</th>
+			<td>
+				<input type="text" name="search_model" value="{_POST['search_model']}">
+				<button class="btn btn-primary">검색</button>
+			</td>
+			<th>입고목록</th>
+			<td>
+				<select name="search_stock_title" id="search_stock_title">
+					<option value="">== 선택 ==</option>
+					{@_title}
+					<option value="{.key_}" {_selected['search_stock_title'][.key_]}>{.value_}</option>	
+					{/}
+				</select>
+				({_title.size_})
+			</td>
+		</tr>
+	</table>
+	</form>
+
+
+	{?import_data}
+	<div>
+		<div class="col-lg-6">
+			수입면장
+			<textarea name="" id="" rows="10" style="width:100%">
+			{@import_data.import_licence}
+				 {.index_+1}. {.value_.goodsnm} / {.value_.img_name} / {.value_.cnt} / {.value_.list_no} / {.value_.import_no} / {.value_.memo} 
+			{/}
+			</textarea>
+		</div>
+		<div class="col-lg-6">
+			인보이스
+			<textarea name="" id="" rows="10" style="width:100%">
+			{@import_data.invoice}
+				 {.index_+1}. {.value_.goodsnm} / {.value_.img_name} / {.value_.cnt} / {.value_.list_no} / {.value_.import_no} / {.value_.memo} 
+			{/}
+			</textarea>
+		</div>
+	</div>
+	{/}
+
+{/}
+
+
+<form method="post" id="main_form">
+<input type="hidden" name="mode" id="mode">
+<input type="hidden" name="cost_modify" id="cost_modify" >
+<input type="hidden" name="excel_group_id" value="{_POST['search_stock_title']}">
+{@loop}
+<div class="" style="clear:both">
+<div class="table_title">{_title[.key_]} ( {.key_} )</div>
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+		<tr>
+			<th>
+				{?_print_xls!=1}
+				<!--<input type="checkbox" onclick="chk_all_box(this,'chk_no')">-->
+				{/}
+			</th>
+			<th>브랜드</th>
+			<th>분류</th>
+			{?_print_xls!=1}<th>이미지</th>{/}
+			<th>모델명1</th>
+			<th>모델명2</th>
+			<th>원산지</th>
+			<th>원가</th>
+			<th>예정수량</th>
+			<th>입고된수량</th>
+			
+			<th>메모</th>
+			<th>등록일</th>
+			<th>예정일</th>
+			<th></th>
+			
+			
+		</tr>
+	</thead>
+	<tbody>	
+	{@.value_}
+		<tr>
+			<td>
+				{?_print_xls!=1}
+				<!--<input type="checkbox" class="chk_no chk_no{.key_}" name="chk_no[]" value="{..no}">-->
+				{:}{..no}{/}
+			</td>
+			<td>{..brandnm}</td>
+			<td>{..catenm}</td>
+			{?_print_xls!=1}<td class="td_img">{..img_url}</td>{/}
+			<td>{..goodsnm}</td>
+			<td>{..goodsnm_sub}</td>
+			<td>{..origin}</td>
+			<td>{=number_format(..cost)} ( *{=number_format(..cost_mod,3)} )</td>
+			<td>
+				{?_print_xls!=1}
+					<span class="stock_num_reg">{=number_format(..stock_num_reg)}</span>
+					<span style="color:red">{?_import_model_cnt[..goodsno]>_ins_model_cnt[..goodsno]}▲{:_import_model_cnt[..goodsno]<_ins_model_cnt[..goodsno]}▼{/}</span>
+				{:}
+					{=number_format(..stock_num_reg)}
+				{/}
+			</td>
+			<td class="stock_num">{=number_format(..stock_num)}</td>
+			
+			<td>{..memo}</td>
+			<td>{..reg_date}</td>
+			<td>{?..index_==0}{..cal_date}{/}</td>
+			<td>
+			<!--
+				<button type="button" class="btn btn-warning mod" onclick="popup('stock_mod.php?no={..no}&mode=comp','stock_mod','600','600')">수정</button>
+			-->
+			</td>
+		</tr>
+	{/}
+	</tbody>
+</table>
+</div>
+{/}
+
+
+
+{?_print_xls!=1}
+
+<div>{pg->page['navi']} 총 데이터 :{=number_format(pg->recode['total'])}</div>
+<div class="bottom_btn_box"> 
+	<div class="box_left">
+	
+	</div>
+	<div  class="box_right">
+	
+	</div>
+</div>
+
+<fieldset class="page_field_info">
+  <legend>참 고</legend>
+  <ul>
+	
+  </ul>
+</fieldset>
+
+{/}
+
+</form>
+<script>
+document.title="{_page_title}";
+
+$(function(){
+
+	$("#search_stock_title").change(function(){
+		$("#search_form").submit();
+	});
+});
+
+
+
+
+
+function chkform2(){
+	if($("#search_stock_title").val()==''){
+		alert('목록을 선택해주세요.');
+		$("#search_stock_title").focus();
+		return false;
+	}else{
+		return true;
+	}
+
+}
+</script>
+{#footer}

@@ -1,0 +1,172 @@
+{#header}
+
+<div class="sr_up hidden-xs" style="display:none; position:fixed; top:0px; width:100%;
+ align-text:center; z-index:50;">
+	<div style="width:24%; margin:auto;  ">
+		<img src="../data/skin/img/scroll-up.png"  onclick="scroll_e('up');">
+	</div>
+</div>
+
+<div class="product_wrap">
+{@loop}
+	<div class="product_layer col-xs-12 col-sm-12 col-md-6 col-lg-6">
+		<div class="product_layer_inner">
+			<div><a href="../goods/goods_view.php?goodsno={.no}"><img src="{.img_url}" alt="" style="width:70%"></a></div>
+			<div class="list_model_info">
+				<div style="text-align:{? is_mobile}center{:}left{/};margin:auto;width:{? is_mobile}95%{:}70%{/}">
+					<p><strong>INDUSTRIAL </strong></p>
+					<p><strong>{.title_option2}&nbsp;&nbsp;&nbsp;{.modelstock_}</strong></p>
+					<p><strong>KRW{=number_format(.wd_marketprice)}</strong></p>
+					<p>FRAME WIDTH : {.wd_fullsiz}mm&nbsp;&nbsp;&nbsp;SIDE : {.wd_bridgesiz}mm</p>
+					<p>LENS WIDTH : {.wd_widthsiz}mm&nbsp;&nbsp;&nbsp;LENS HEIGHT : {.wd_heightsiz}mm</p>
+					<p>MATERIAL : {.quality}</p>
+					<p>{.cnt_color} COLOR</p>
+				</div>	
+			</div>
+		</div>
+	</div>
+	{? (.index_%2 != 0  || is_mobile ) && .index_< .size_-1 }
+		</div>
+		<div class="product_wrap">
+	{/}
+{/}
+</div>
+
+<div class="sr_down hidden-xs" style="position:fixed; bottom:0px; width:100%;
+margin:auto; align-text:center; z-index:50;">
+	<div style="width:24%; margin:auto;  ">
+		<img src="../data/skin/img/scroll-down.png"  onclick="scroll_e('down');">
+	</div>
+</div>
+
+<script type="text/javascript">
+
+
+var pw_num = 0;
+
+$(function(){
+	$(".product_layer").height($(window).height());
+
+	pw_num = $(".product_wrap").length;
+});
+
+$(window).resize(function(){
+	$(".product_layer").height($(window).height());
+});
+
+
+
+/*
+$(document).ready(function() {
+	
+	var touch_s_y = 0;
+	var touch_e_y = 0;
+
+		$(document).bind('touchstart', function(e) {
+
+			var event = e.originalEvent;
+			touch_s_y = event.touches[0].screenY;
+
+		});
+		
+		$(document).bind('touchmove', function(e) {
+
+			var event = e.originalEvent;
+
+			touch_e_y = event.touches[0].screenY;
+			event.preventDefault();
+			
+			if(touch_e_y - touch_s_y >0){
+				
+				$("body, html").animate({
+					scrollTop:$(window).scrollTop()-document.body.clientHeight
+				},300,function(){
+					e.preventDefault();
+				});				
+				
+			}else{
+				
+				$("body, html").animate({
+					scrollTop:$(window).scrollTop()+document.body.clientHeight
+				},300,function(){
+					e.preventDefault();
+				});				
+				
+			}
+		});
+});
+*/
+
+
+$(window).scroll(function() {
+
+   if($(window).scrollTop() + $(window).height() >= $(document).height()) {
+	$('.sr_down').css('display' , 'none' );
+   }else{
+	$('.sr_down').css('display' , 'block' );
+   }
+
+   if($(window).scrollTop() == 0){
+	$('.sr_up').css('display' , 'none' );	
+   }else{
+	 $('.sr_up').css('display' , 'block' );
+   }
+   
+});
+
+
+(function($){
+	
+	$.aniPage=function(e,type){
+
+		if(e.originalEvent.detail > 0 || e.originalEvent.wheelDelta < 0 ){
+			scroll_e("down");
+		}else{
+			scroll_e("up");
+		}
+	};
+})(jQuery);
+
+
+$(function(){
+	$.aniOk=0;
+	$(window).scrollTop(0);
+});
+
+$(document).on("mousewheel DOMMouseScroll",function(e){
+	e.preventDefault();
+	if($.aniOk == 0){
+		$.aniPage(e,e.type);
+		$.aniOk = 1;
+	}
+});
+
+
+function scroll_e(sr){
+
+	var now_eq = Math.floor($(window).scrollTop()/$(".product_layer").height());
+	var move_eq = 0;
+
+	if( sr =='down'){
+
+				if(now_eq+1 == pw_num){ 
+					var pd_wrap =  $("#footer").offset();
+				}else{ 
+					move_eq = now_eq+1;
+					var pd_wrap =  $(".product_wrap").eq(move_eq).offset();
+				}
+				
+	}else if( sr == 'up'){
+				
+				if(now_eq-1 < 0){ move_eq = 0;}				
+				else { move_eq = now_eq-1; }
+				var pd_wrap =  $(".product_wrap").eq(move_eq).offset();
+	}
+	
+
+	var move_height = pd_wrap.top;
+	$("body, html").animate({scrollTop:move_height},300,function(){ $.aniOk = 0; });
+}
+
+</script>
+{#footer}

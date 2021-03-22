@@ -1,0 +1,55 @@
+{#header}
+<div class="row">
+	<div class="col-lg-12 statusbox-header"><h3>{_page_title}</h3></div>
+</div>
+<form method="post" name="goodsInfoForm2">
+<input type="hidden" name="mode" value="cate_update">
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="common-table-wrapper">
+			<table class="table common-table">
+				<caption>
+					<div class="input-group col-lg-12 common-table-search2">
+						<span class="common-table-result">총 <b>{=number_format(count(loop))}</b>건</span>
+					</div>
+				</caption>
+                <colgroup>
+                    <col width="20%"/>
+                    <col/>
+                    <col width="20%" />                    
+					<col/>
+					
+				</colgroup>
+				<thead>
+					<tr>                       
+						<th>상품명</th>
+                        <th>금액</th>
+                        <th>행사위치</th>
+                        <th>수정자</th>
+						<th>변경일</th>
+						
+					</tr>
+				</thead>
+				<tbody>
+				{@loop}
+					<tr>
+                        
+						<td>{.goodsnm}</td>
+						<td>{=number_format(.price)}</td>
+						<td>{?.price_type=='1'}타임메카행사{:.price_type=='2'}ec행사{/}</td>
+						<td>{.name}({.id})</td>
+						<td>{.reg_date}</td>
+						
+					</tr>
+				{/}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+</form>
+<script>
+document.title="{_page_title}";
+</script>
+{#footer}

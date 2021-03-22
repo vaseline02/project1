@@ -1,0 +1,57 @@
+{#header}
+<h1>{_page_title}</h1>
+
+<hr>
+
+<div>
+    <button type="button" class="btn btn-sm btn-primary" onclick="popup('mall_reg.php','mall_reg','500','500')">몰등록</button>    
+
+	<button type="button" class="btn btn-sm btn-success" onclick="popup('mall_order_seq.php','mall_reg','500','500')">주문 우선발송 등록</button>    
+</div>
+
+<form method="POST" name="mallListForm">
+<input type="hidden" name="mode">
+<input type="hidden" name="no">
+
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+		<tr>
+            <th>몰코드</th>
+			<th>몰명</th>
+			<th>파일구분</th>
+			<th>사용유무</th>
+			<th>등록일</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+	{@loop}
+		<tr>
+            <td>{.mall_code}</td>
+			<td>{.mall_name}</td>
+			<td>{.upload_form_type}</td>
+			<td>{.state}</td>
+			<td>{.reg_date}</td>
+			<td>
+                <button type="button" class="btn btn-sm btn-warning" onclick="popup('mall_reg.php?no={.no}&mode=mod','mall_reg','500','500')">정보수정</button>
+                <button type="button" class="btn btn-sm btn-danger del" data-no={.no}>삭제</button>
+            </td>
+		</tr>
+	{/}
+	</tbody>
+</table>
+</form>
+
+<script>
+
+document.title="{_page_title}";
+
+$(".del").click(function(){    
+    if(confirm('삭제 하시겠습니까?')){
+        $("input[name='mode']").val('del');
+        $("input[name='no']").val($(this).data('no'));
+        $("form[name='mallListForm']").submit();
+    }
+});
+</script>
+{#footer}

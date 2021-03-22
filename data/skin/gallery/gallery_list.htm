@@ -1,0 +1,58 @@
+{#header}
+<?
+$cate_en = array(
+"연예인 착용"=>"ENTERTAINER"
+,"TV방송"=>"TV SHOW"
+,"레이싱모델"=>"RACING MODEL"	
+,"패션모델"=>"FASHION MODEL"	
+,"뉴스기사"=>"ARTICLE"	
+,"SNS"=>"SNS"
+,"고객착용"=>"CUSTOMER"
+);
+$i=1;
+?>
+<div style="margin:0 auto;float:none;height:100%" class="col-xs-11 col-sm-11 col-md-9 col-lg-9 ">
+	<div class="title_top">
+		<div style="float:left">CELEBRITY</div>
+			<div style="display:inline;float:right;padding-right:8px">
+
+				<a href="#1" onclick="submit_list('');">ALL</a> |
+				<?
+					foreach($cate_en as $k => $cv){
+
+					if($_REQUEST['cate'] == $cv) $cv_style = "style='font-size:13px;font-weight:bold'";
+					else $cv_style ="";
+				?>
+					<a href="#1" onclick="submit_list('<?=$k?>');"><span <?=$cv_style?>><?=$cv?></span></a> 
+				<?
+						if( $i != count($cate_en)) echo " | ";
+						$i++;
+					}
+				?>
+			</div>
+	</div> 
+	<div>
+	{@loop}
+		<div class="gal_img_wrap col-xs-12 col-sm-6 col-md-6 col-lg-3 ">
+			<p><a href="../gallery/gallery_view.php?sn={.sn}"><img src="{.img_url}" alt="" style="width:100%;"></a></p>
+			<p>[{.goodsname}]</p>
+			<p>{.cate_name} : {.subject}</p>
+		</div>
+	{/}
+	</div>
+	<div style="clear:both"></div>
+
+	<div style="margin:50px 0px;text-align:center;width:100%">{pg->page['navi']}</div>
+
+	<form >
+	<div style="float:right">
+		<input type="text" name="sword" value="{_GET.sword}"> <button type="submit">search</button>
+	</div>
+	</form>
+</div>
+<script type="text/javascript">
+	function submit_list(cate){
+		location.href='gallery_list.php?cate='+cate;
+	}	
+</script>
+{#footer}

@@ -1,0 +1,73 @@
+{#header}
+<style>
+.open_link{cursor:pointer}
+</style>
+<div class="col-lg-12 statusbox-header"><h3>{_page_title}<!--<span>Customer Service Management</span>--></h3></div>
+<div class="col-lg-12">{=include_file("/order/order_search.htm")}</div>
+<form method="post" onsubmit="return checkForm('2');">
+
+	<div class="col-lg-12">
+		<div class="row">
+		<div class="common-table-wrapper">
+			<table class="table common-table">
+				<caption>
+					<div class="input-group col-lg-12 common-table-search2">
+						<!--<span class="common-table-result">총 <b>{=number_format(pg->recode['total'])}</b>건</span>-->
+						<div class="input-group common-table-search">
+							<!-- <input type="text" class="form-control" placeholder="결과내 검색">
+							<span class="input-group-btn"><button class="btn btn-primary" type="button">검색</button></span> -->
+						</div>
+					</div>
+				</caption>
+				<colgroup>
+					
+				</colgroup>
+				<thead>
+					<tr>
+						<th>몰명</th>
+						<th>주문번호</th>
+						<th>고객명</th>
+						<th>옵션명</th>
+						<th>수량</th>
+						<th>단계</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					{@loop}
+						<tr>			
+							<td>{.mall_name}<br/>{.upload_form_type}</td>
+							<td  data-link="{?_h_control['order']}{.step_lv_link}&ts_ordno={.ordno}{/}" class="open_link">{.ordno}</td>
+							<td>{.buyer}<br/>{.receiver}</td>
+							<td>{.goodsnm}</td>
+							<td>{.order_num}</td>
+							<td>{.step_lv}</td>
+							<td></td>
+						</tr>
+					{/}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+
+</form>
+<script>
+document.title="{_page_title}";
+
+$(function(){
+	
+	$(".open_link").click(function(){
+		var link=$(this).data("link");
+		if(link){
+			opener.location.href=link;
+		}else{
+
+		}
+	});
+});
+
+</script>
+{#footer}

@@ -1,0 +1,2 @@
+<?php /* Template_ 2.2.8 2020/08/04 17:18:53 /www/html/ukk_test/data/skin/order/order_stock.htm 000000250 */ ?>
+<?php echo $this->define('tpl_include_file_1',"order/order_stock_shortage.htm")?> <?php $this->print_("tpl_include_file_1",$TPL_SCP,1);?>

@@ -1,0 +1,21 @@
+{#header}
+
+<h1>{_page_title}</h1>
+
+<hr>
+
+{?_print_xls!=1}
+<form enctype="multipart/form-data" method="post">
+<table class="table table-bordered" >
+    <tr>
+        <th>파일</th>
+        <td><input type="file" name="excelFile[]" required/><button class="btn btn-primary">업로드</button></td>
+    </tr>
+</table>
+</form>
+{/}
+
+<script>
+document.title="{_page_title}";
+</script>
+{#footer}

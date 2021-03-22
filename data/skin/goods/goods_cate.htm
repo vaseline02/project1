@@ -1,0 +1,156 @@
+{#header}
+
+<div class="col-lg-12 statusbox-header"><h3>{_page_title}<span></span></h3></div>
+{?_print_xls!=1}
+<form method="get" id="glb_search_form">
+<input type="hidden"name="print_xls" value="">
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default panel-stock margin20">		
+            <div class="option-searchbox-hide searchbox-default">
+                <table class="table fileload-list-small">
+                    <colgroup>
+                        <col width="12%" />
+                        <col width="35%" />
+                        <col width="12%" />
+                        <col width="35%" />
+                    </colgroup>
+                    <tbody>
+						<tr>
+							<th scope="row">카테고리</th>
+							<td class="receive-title no-gutters">{=include_file("goods/category_search_form.htm")}</td>
+
+							<th scope="row" class="align-left">브랜드</th>
+                            <td class="receive-title no-gutters">
+                                <div class="col-xs-12"><input type="text" class="form-control" name="s_brand" value="{_GET['s_brand']}"/></div>
+                            </td>							
+						</tr>
+                        <tr>
+                            
+                            <th scope="row">모델명</th>
+                            <td class="receive-title no-gutters">
+                                <div class="col-xs-12"><input type="text" class="form-control" name="s_model" value="{_GET['s_model']}"/></div>
+                            </td>
+
+							<th scope="row">모델명 다중검색</th>
+                            <td class="receive-title no-gutters">
+                                <div class="col-xs-12">
+                                    <dl class="multitext-search">
+                                        <dd><textarea class="form-control" name="s_paste" id="" cols="30" rows="3">{_GET['s_paste']}</textarea></dd>
+                                    </dl>
+                                </div>
+                            </td>
+                        </tr>                             
+                    </tbody>
+                </table>
+            </div>
+		</div>
+        <div class="text-center table-btn-group">
+            <button class="btn btn-primary">검 색</button> 
+        </div>	        
+	</div>
+</div>
+</form>
+{/}
+<form method="post" id="cate_form">
+<input type="hidden" name="mode" id="mode" value="ins">
+<input type="hidden" name="no" id="no" value="">
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	{?_print_xls!=1}
+	<colgroup>
+		<col/><!-- 선택 -->
+		<col width="150px"/><!-- 브랜드 -->		
+		<col width="150px"/><!-- 이미지-->
+		<col/><!-- 모델명1-->
+		<col/><!-- 모델명2-->
+		<col width="60px"/><!--수량-->
+        <col/><!-- 분류 -->
+	</colgroup>
+	{/}
+	<thead>
+		<tr>
+			{?_print_xls!=1}<th class="sorting_disabled"><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>{/}
+			<th>브랜드</th>
+			<th>이미지</th>
+			<th>모델명1</th>
+			<th>모델명2</th>
+			<th>수량</th>
+			<th>분류</th>
+		</tr>
+	</thead>
+	<tbody>
+	{@loop}
+		<tr>
+			{?_print_xls!=1}<td><input type="checkbox" class="chk_no" name="chk_no[]" value="{.no}"></td>{/}
+			<td>{.brandnm}</td>
+			<td class="td_img" >{.img_url}</td>
+			<td class="text_type">{.goodsnm}</td>
+			<td class="text_type">{.goodsnm_sub}</td>
+			<td>{=number_format(.cur_cnt)}</td>
+            <td>
+                {@.cate}
+                    {?..cate_1}{..cate_1}{/}
+                    {?..cate_2} >> {..cate_2}{/}
+                    {?..cate_3} >> {..cate_3}{/}
+                    {?..cate_4} >> {..cate_4}{/}                   
+                    <button class="btn btn-danger btn_sumbit" data-no="{..no}" data-mode="del" type="button">삭제</button>
+                    <br>
+                {/}
+
+
+            </td>
+		</tr>
+	{/}
+	</tbody>
+</table>
+
+{?_print_xls!=1}
+<div>{pg->page['navi']} 총 데이터 :{=number_format(pg->recode['total'])}</div>
+<div class="bottom_btn_box">
+	<div class="box_left">
+		
+	</div>
+	<div  class="box_right">
+		<div>{=include_file("goods/category_form.htm")}<button class="btn btn-primary btn_sumbit" data-mode="ins"  type="button">등록</button></div>
+	</div>
+</div>
+
+{/}
+</form>
+<script>
+document.title="{_page_title}";
+$(".searchbox-default").css("display","block");
+	$(".btn_sumbit").click(function(){
+		
+		var mode=$(this).data("mode");
+
+        if(mode=='ins'){
+            if( $(".chk_no:checked").length <=0 ){
+                alert('처리할 주문을 선택해주세요.');
+                return;
+            }
+
+            if(!$("#category_1").val()){
+                alert('카테고리를 선택해주세요.');
+                return;
+            }
+            
+            
+            if(confirm('등록하시겠습니까?')){
+                
+                $("#mode").val(mode);
+                $("#cate_form").submit();
+            }
+        }else if(mode=='del'){
+            var no=$(this).data("no");
+            if(confirm('삭제하시겠습니까?')){
+                $("#no").val(no);
+                $("#mode").val(mode);
+                $("#cate_form").submit();
+            }
+        }
+	});
+
+
+</script>
+{#footer}

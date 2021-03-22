@@ -1,0 +1,193 @@
+{#header} 
+<div class="row">
+	<div class="col-lg-12 statusbox-header"><h3>{_page_title}<!--<span>Customer Service Management</span>--></h3></div>
+</div>
+{=include_file("cs/send_nav.htm")}
+<style>
+.search_td_width{width:800px;}
+#nav_div1 a:after{width:90%}
+</style>
+
+{?_print_xls!=1}
+    {=include_file("outline/table_width_cancel.htm")}
+{/}
+
+<form id="sendForm" method="POST">	
+<input type="hidden" name="mode" value="">
+<input type="hidden" name="no" value="">
+<input type="hidden" name="code" value="">
+
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">	
+	<thead>
+		<tr>
+			<th><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>			
+			<th>몰명</th>
+			<th>주문번호</th>
+			<th>고객명</th>
+			<th>연락처</th>
+			<th>모델명</th>
+			<th>이미지</th>
+			<th>수량</th>
+			<th>모델명<br>(교환)</th>
+			<th>이미지<br>(교환)</th>
+			<th>수량<br>(교환or반품)</th>
+			<th>비용</th>
+			<th>송장번호</th>
+			<th>사유</th>
+			<th>작성자</th>
+			<th>등록일</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		{@loop}
+			<tr>			
+				
+				<td>
+					{ ?.send_type!='2' }
+					<input type="checkbox" class="chk_no" name="chk_no[]" value="{.no}" data-status="{.return_type}" data-status2="{.return_type_sub}">
+					{ / }
+				</td>
+				<td>{.mall_name}<br>{.upload_form_type}</td>
+				<td>{.order_no}</td>
+				<td>{.receiver}</td>
+				<td>{.mobile}</td>
+				<td>{?.return_type!='40'}{.goodsnm}{/}</td>
+				<td class="td_img">{?.return_type!='40'}{.img_url}{/}</td>
+				<td>{.exchange_goods_num}</td>
+				<td>{?.return_type=='40' || .return_type=='70' || .return_type=='90'}{.exchange_goodsnm}{/}</td>
+				<td class="td_img">{?.return_type=='40' || .return_type=='70' || .return_type=='90'}{.exchange_img_url}{/}</td>
+				<td>{.exchange_goods_num}</td>
+				<td>{=number_format(.diff_price)}</td>
+				<td>{?.return_invoice!=0}{delivery_list[.return_delivery_code]['name']}<br>{.return_invoice}{/}</td>
+				<td>{.return_type_nm}{?.receipt=='1'}<div style="color: red;">선접수</div>{/}</td>
+				<td>{.name}<div>({.id})</div></td>
+				<td>{.reg_date}</td>
+				<td>
+					<div><button type="button" class="btn btn-sm btn-warning" onclick="popup('cs_reg.php?ordno={.order_no}&mall_no={.mall_no}&order_list_no={.order_list_no}&view_type=1','','1100','900')">상세</button></div>
+					<div style="padding-top: 5px;"><div type="button" class="btn btn-sm btn-danger cancelCs" data-no={.no}>철회</div></div>
+				</td>
+			</tr>
+		{/}
+	</tbody>
+</table>
+
+{?_print_xls!=1}
+<div>{pg->page['navi']}</div>
+<div class="bottom_btn_box">
+	<div class="box_left">		
+	</div>
+	<div  class="box_right">
+		<select name="place_code" id="">
+		{@_codedata}
+			<option value="{.no}" {_selected['place_code'][.no]} data-name="{.cd}">{.cd}</option>
+		{/}
+			<!--<option value="all" data-name="통합발송">통합발송</option>-->
+		</select>
+		<button class="btn btn-primary changeProcess" type="button" data-mode='out' data-code='2'>교환출고</button>
+		<button class="btn btn-primary changeProcess" type="button" data-mode='in' data-code='3'>반품입고</button>
+		<button class="btn btn-primary changeProcess" type="button" data-mode='return' data-code='2'>상품반송</button>
+		<button class="btn btn-primary changeProcess" type="button" data-mode='send' data-code='2'>출고</button>
+	</div>
+</div>
+
+{/}
+
+</form>
+
+<script>
+$("#nav_div1").addClass('active');
+document.title="{_page_title}";
+
+$(".cancelCs").click(function(){
+	if(confirm("철회하시겠습니까?")){
+		$("input[name='mode']").val('cancel');
+		$("input[name='code']").val('91');
+		$("input[name='no']").val($(this).data("no"));
+		$("#sendForm").submit();
+	}
+});
+$(".cancelRestore").click(function(){
+	if(confirm("회수확인상태의 주문을 접수로 변경하시겠습니까?")){
+		$("input[name='mode']").val('restore');
+		$("input[name='code']").val('1');
+		$("input[name='no']").val($(this).data("no"));
+		$("#sendForm").submit();
+	}
+});
+$(".cancelChange").click(function(){
+	if(!$(".chk_no").is(":checked")){
+		alert("선택된 상품이 없습니다.");
+		return false;
+	}else{
+        if(confirm('회수확인으로 변경하시겠습니까?')){
+            $("input[name='mode']").val('allCancel');
+            $("input[name='code']").val($(this).data('code'));
+            $("#sendForm").submit();
+        }
+    }
+});
+
+$(".changeProcess").click(function(){
+	var place_code=$("select[name='place_code']").val();
+	var place_code_name=$("select[name='place_code']").find("option:selected").data("name");
+	var mode=$(this).data("mode");
+	var code=$(this).data("code");
+	var badCount=0;
+	var mess="";
+
+	if(!$(".chk_no").is(":checked")){
+		alert("선택된 상품이 없습니다.");
+		return false;
+	}else{
+		$(".chk_no").each(function(index, item){
+			if($(item).is(":checked")){            
+				if(mode=="in" &&  $(item).data('status')!="60"){
+					badCount++;
+				}else if(mode=="out" && ($(item).data('status')=="40" || $(item).data('status')=="60" || ($(item).data('status')=="90" && $(item).data('status2')=="2"))){
+					badCount++;
+				}else if(mode=="return" && $(item).data('status')!="90" && $(item).data('status2')!="2"){
+					badCount++;
+				}else if(mode=="send" && $(item).data('status')!="40" && $(item).data('status2')!="2"){
+					badCount++;
+				}				
+			}
+		});
+
+		if(badCount>0){
+			if(mode=='in'){
+				mess="반품건이 아닙니다.";
+			}else if(mode=='out'){
+				mess="교환건이 아닙니다.";
+			}else if(mode=='return'){
+				mess="상품입고(상품반송)건이 아닙니다.";
+			}else if(mode=='send'){
+				mess="출고건이 아닙니다.";
+			} 
+			alert(mess);
+			return false;
+		}else{
+			if(mode=='in'){
+				mess="입고처리 하시겠습니까?";
+				
+			}else if(mode=='out'){
+				mess="["+place_code_name+"] 발송처리 하시겠습니까?";		
+			}else if(mode=='return'){
+				mess="상품반송처리 하시겠습니까?";		
+			}else if(mode=='send'){
+				mess="["+place_code_name+"] 출고처리 하시겠습니까?";		
+			} 
+			if(confirm(mess)){
+				$("input[name='mode']").val(mode);
+				$("input[name='code']").val(code);
+				$("#sendForm").submit();
+			}
+		}
+
+		
+        
+    }
+});
+
+</script>
+{#footer}

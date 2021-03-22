@@ -1,0 +1,112 @@
+{#header}
+<div class="row">
+	<div class="col-lg-12 statusbox-header"><h3>{_page_title}<!--<span>Customer Service Management</span>--></h3></div>
+</div>
+
+<form method="post" name="giftForm">
+<input type="hidden" name="mode">
+<input type="hidden" name="no">
+<div class="row">
+	<div class="col-lg-12">
+		<div class="common-table-wrapper">
+			<table class="table common-table">
+				<caption>
+					<div class="input-group col-lg-12 common-table-search2">
+						<span class="common-table-result">총 <b>{=number_format(pg->recode['total'])}</b>건</span>
+						<div class="input-group common-table-search">
+							<!-- <input type="text" class="form-control" placeholder="결과내 검색"> -->							
+							<span class="input-group-btn">
+								<button class="btn btn-primary" type="button" onclick="popup('goods_info_reg.php','goods_info_reg','1100','900')">상품속성정보</button>
+								<span style="padding-left:10px;"> </span>
+								<button class="btn btn-primary" type="button" onclick="popup('category_reg.php','gift_reg','1100','900')">카테고리등록</button>
+							</span>
+						</div>
+					</div>
+				</caption>
+				<colgroup>
+					<col width="20%"/>
+					<col/>
+					<col width="20%"/>
+					<col width="10%" />
+					<col width="10%" />
+					<col width="5%" />
+					<col width="3%" />
+					
+				</colgroup>
+				<thead>
+					<tr>
+						<th>카테고리코드</th>
+						<th>카테고리명</th>
+						<th>분류코드</th>
+						<th>노출여부</th>
+						<th>등록일</th>
+						<th>상품수</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+				{@loop}
+					<tr>
+						<td>{.catecode}</td>
+						<td class="text-left">
+                            {?.cate_1}{.cate_1}{/}
+                            {?.cate_2} >> {.cate_2}{/}
+                            {?.cate_3} >> {.cate_3}{/}
+                            {?.cate_4} >> {.cate_4}{/}                        
+                        </td>
+						<td>{_cfg_prop_code[.sabang_prop_code]} {.sabang_prop_code}</td>
+						<td>{.view_yn}</td>
+						<td>{.reg_date}</td>
+						<td>{.g_cnt}</td>
+			
+						<td>                           
+                            {?.g_cnt || .c_cnt}
+                                <div class="input-group fileload-list-small-button">
+                                    <span class="input-group-btn"><button class="btn btn-danger" style="opacity: 0.6; cursor: not-allowed;" onclick="alert('등록되있는 상품이나 하위카테고리가 있어서 삭제가 불가능합니다.')" type="button">삭제</button></span>
+                                </div>
+                            {:}
+                                <div class="input-group fileload-list-small-button">
+                                    <span class="input-group-btn"><button class="btn btn-danger del" data-no={.no} data-mode="del" type="button">삭제</button></span>
+                                </div>
+							{/}
+							{?!.cate_2}
+								<div class="input-group fileload-list-small-button" style="padding-top:5px;">
+									<span class="input-group-btn"><button class="btn btn-warning" type="button" onclick="popup('../goods/goods_info_reg.php?cate={.depth_1}','goods_info_reg','1100','900')">속성등록</button></span>
+								</div>
+							{:}
+								<div class="input-group fileload-list-small-button" style="padding-top:5px;">
+									<span class="input-group-btn"><button class="btn btn-success" type="button" onclick="popup('../goods/goods_prop_reg.php?no={.no}&cate_code={.depth_1}','goods_prop_reg','1100','900')">정보고시설정</button></span>
+								</div>
+							{/}
+						</td>
+					</tr>
+				{/}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+</form>
+{?_print_xls!=1}
+<div>{pg->page['navi']}</div>
+{/}
+
+<script>
+
+document.title="{_page_title}";
+
+$(".del").click(function(){
+
+    var no=$(this).data("no");
+    var mode=$(this).data("mode");
+
+    $("input[name=mode]").val(mode);
+    $("input[name=no]").val(no);
+
+    if(confirm("삭제하시겠습니까?")){
+        $("form[name=giftForm]").submit();
+    }
+});
+
+</script>
+{#footer}

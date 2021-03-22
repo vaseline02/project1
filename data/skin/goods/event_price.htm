@@ -1,0 +1,256 @@
+{#header}
+<style>
+</style>
+
+
+<div class="col-lg-12 statusbox-header"><h3>{_page_title}<span></span></h3></div>
+
+{?_print_xls!=1}
+<form enctype="multipart/form-data" method="post">
+<table class="table table-bordered" >
+    <tr>
+        <th>파일</th>
+        <td>
+			<select name="upload_sel" id="">
+				<option value="1">타임메카 행사가</option>
+				<option value="2">EC 행사가</option>
+			</select>
+			<input type="file" name="excelFile[]" required/><button class="btn btn-primary">업로드</button>
+		</td>
+    </tr>
+</table>
+</form>
+{/}
+
+{=include_file("outline/search_box.htm")}
+
+
+
+<table class=" display {?_print_xls!=1}display_s{/} nowrap" data-height="700"  border="{_xls_border}">
+	{?_print_xls!=1}
+
+	{/}
+	<thead>
+		<tr>
+			<th rowspan=2>브랜드</th>
+			<th rowspan=2>분류</th>
+			<th rowspan=2>이미지</th>
+			<th rowspan=2>모델명</th>
+			<th rowspan=2>타임메카 행사가<br/>5%</th>
+			<th rowspan=2>수익률</th>
+			<th rowspan=2>EC 행사가<br/>15%</th>
+			<th rowspan=2>수익률</th>
+			<th rowspan=2>제휴몰<br/>15%</th>
+			<th rowspan=2>수익률</th>
+			<th rowspan=2>수량</th>
+			<th rowspan=2>입고예정</th>
+			<th rowspan=2>소비자가</th>
+			<th rowspan=2>입고이력</th>
+			<th rowspan=2>원가평균</th>
+			
+			<th colspan="3">7일</th>
+			<th colspan="3">15일</th>
+			<th colspan="3">1달</th>
+			<th colspan="3">3달</th>
+			<th colspan="3">6달</th>
+			<th colspan="3">6달비율</th>
+			<th rowspan=2>수정일</th>
+			
+		</tr>
+		<tr>
+			<th class="data_num">타임메카<br/>스토어팜</th>
+			<th class="data_num">EC</th>
+			<th class="data_num">B2B</th>
+			<th class="data_num">타임메카<br/>스토어팜</th>
+			<th class="data_num">EC</th>
+			<th class="data_num">B2B</th>
+			<th class="data_num">타임메카<br/>스토어팜</th>
+			<th class="data_num">EC</th>
+			<th class="data_num">B2B</th>
+			<th class="data_num">타임메카<br/>스토어팜</th>
+			<th class="data_num">EC</th>
+			<th class="data_num">B2B</th>
+			<th class="data_num">타임메카<br/>스토어팜</th>
+			<th class="data_num">EC</th>
+			<th class="data_num">B2B</th>
+			<th class="data_num">타임메카<br/>스토어팜</th>
+			<th class="data_num">EC</th>
+			<th class="data_num">B2B</th>
+
+		</tr>	
+	</thead>
+	<tbody>
+	
+	{@loop}
+		<tr>
+			<td>{.brandnm} {?_print_xls!=1}<input type="hidden" class="chk_no" value="{.goodsno}">{/}</td>
+			<td>{.prod_type}</td>
+			<td class="td_img" >{.img_url}</td>
+			<td class="text_type">
+				{?_print_xls!=1}<a href="#" onclick="popup('event_price_log.php?goodsno={.goodsno}','event_price_log','1100','900')">{/}
+				{.goodsnm}
+				{?_print_xls!=1}</a>{/}
+			</td>
+			<td>
+			{?_print_xls!=1}
+				<!--<input type="text" class="cal auto_save" data-colname="tm_price" name="tm_price[]" value="{.tm_price}">-->
+				{=number_format(.tm_price)}
+			{:}
+				{=number_format(.tm_price)}
+			{/}
+
+			</td>
+			<td>{.tm_per}%</td>
+			<td>
+			{?_print_xls!=1}
+				<!--<input type="text" class="cal auto_save cal_sangsi " data-colname="ec_price" name="ec_price[]"  value="{.ec_price}">-->
+				{=number_format(.ec_price)}
+			{:}
+				{=number_format(.ec_price)}
+			{/}
+			</td>
+
+			<td>{.ec_per}%</td>
+			<td class="sangsi">{=number_format(.sangsi_price)}</td>
+			<td>{.sangsi_per}%</td>
+			<td>{=number_format(.cur_cnt)}</td>
+			<td>{=number_format(.codeno_3)}</td>
+			<td>{=number_format(.c_price)}</td>
+			<td class="text_type">
+				{@.stock_list}
+					{..now_cnt} / {=number_format(..cost)}
+					<br>
+				{/}
+				{?_print_xls!=1}
+				<button type="button" onclick="popup('return_stock_pop.php?no={.no}','return_stock_pop','1100','900')">반품입고({=number_format(.return_order_cnt)})</button>
+				{/}
+			</td>
+			<td class="savg">{=number_format(.stock_average)}</td>
+			
+			<td>{.tm7}</td>
+			<td>{.ec7}</td>
+			<td>{.b2b7}</td>
+			<td>{.tm15}</td>
+			<td>{.ec15}</td>
+			<td>{.b2b15}</td>
+			<td>{.tm1m}</td>
+			<td>{.ec1m}</td>
+			<td>{.b2b1m}</td>
+			<td>{.tm2m}</td>
+			<td>{.ec2m}</td>
+			<td>{.b2b2m}</td>
+			<td>{.tm3m}</td>
+			<td>{.ec3m}</td>
+			<td>{.b2b3m}</td>
+			<td>{.tm_per6m}%</td>
+			<td>{.ec_per6m}%</td>
+			<td>{.b2b_per6m}%</td>
+			<td>{.mod_date}</td>
+			
+	
+		</tr>
+	{/}
+	</tbody>
+</table>
+
+
+{?_print_xls!=1}
+<div>{pg->page['navi']} 총 데이터 :{=number_format(pg->recode['total'])}</div>
+{/}
+<script>
+document.title="{_page_title}";
+$(".searchbox-default").css("display","block");
+
+$('table.display_xscroll').dataTable( {
+	"aoColumnDefs": [{ 'bSortable': false, 'aTargets': ["sorting_disabled"] }],
+	"scrollCollapse": true,
+	"paging":   false,
+	"scrollY": "800px",
+    "scrollX": true,
+	"order": []
+} );
+
+$(".cal").keyup(function(){
+/* -3000원에 타임메카는 100000 이상 제품만 조건 추가해야됨*/
+	if( $(this).val().length>4 ){
+		var clac=0;
+		var clac2=0;
+		var cha=3000;
+		var avg=uncomma($(this).closest("tr").find(".savg").html());
+		
+		if( $(this).data("colname")=="tm_price" && $(this).val()>=100000){
+			cha=0;
+		}
+		
+		
+		clac=( $(this).val()-avg-cha)/$(this).val()*100;
+		
+		$(this).closest("td").next().html(clac.toFixed(2)+'%');
+
+		if($(this).hasClass("cal_sangsi") ){
+			var target=$(this).closest("tr").find(".sangsi");
+			target.html(Math.round($(this).val()*1.07/1000)*1000);
+
+			if( parseInt(target.html)>=300000 ){
+				target.html=target.html-1000;
+			}else{
+				target.html=target.html-100;
+			}
+
+			//
+			target.next().html( ((target.html()-avg-3000 )/target.html()*100).toFixed(2) +'%' );
+		}
+	}
+});
+
+$(".cal").keydown(function(){
+	var key = event.keyCode;
+	//var focused = $(':focus');
+    if(key==37){
+    //왼쪽
+    }else if(key==38){
+    //위     
+		$(this).val( parseInt($(this).val())+1000 );
+    }else if(key==39){
+    //오른쪽    
+    }else if(key==40){
+    //아래    
+		$(this).val( parseInt($(this).val())-1000 );
+    }
+});
+
+
+$(".auto_save").keyup(function(){
+	var tday=getToday();
+	var colname=$(this).data("colname");
+	var this_val=$(this).val();
+	var this_no=$(this).closest("tr").find(".chk_no").val();
+	
+	$.post("../ajax/db_update.php",{dbname:"goods_sale_period",target_colname:"goodsno",target_data:this_no
+	,colname:colname
+	,colname_data:this_val
+	,colname2:'mod_date'
+	,colname_data2:tday
+	},function(data){
+		if(data!='1'){
+			alert(data);
+		}
+	});
+	
+});
+
+
+function getToday(){
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;    //1월이 0으로 되기때문에 +1을 함.
+    var date = now.getDate();
+
+    if((month + "").length < 2){        //2자리가 아니면 0을 붙여줌.
+        month = "0" + month;
+    }
+     // ""을 빼면 year + month (숫자+숫자) 됨.. ex) 2018 + 12 = 2030이 리턴됨.
+    return today = ""+year+'-'+ month +'-'+ date; 
+}
+</script>
+{#footer}

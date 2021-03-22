@@ -1,0 +1,178 @@
+{#header}
+<h1 class="page_title">{_page_title}</h1>
+
+<hr>
+
+<h1 class="page_title">기본주문정보</h1>
+<style>
+    .search_td_width{width:400px;}
+    
+    .notice-box { padding:0px 10px 10px 10px; background-color:rgb(249, 250, 252); text-align:left;  } 
+    .notice-box p { -webkit-margin-before: .3em; -webkit-margin-after: .5em; } 
+    #close { float:right; display:inline-block; padding:2px 5px; font-weight: 700; text-shadow: 0 1px 0 #fff; font-size: 2.0rem; } 
+    #close:hover { border: 0; cursor:pointer; opacity: .75; }
+</style>
+<table class="table table-bordered" >
+	<tbody>
+		<tr>
+			<th>주문번호</th>
+            <td class="search_td_width">{mall_name}({ordno})</td>            
+            <th>구매자</th>
+            <td>{buyer}</td>   
+        </tr>
+        <tr>
+			<th>주소</th>
+            <td>{zipcode} {address}</td>   
+            <th>연락처</th>
+            <td>{mobile}</td>   
+        </tr>
+	</tbody>
+</table>
+
+<hr>
+
+<h1 class="page_title">접수내용</h1>
+<input type="hidden" name="csCount" value="{_csCount}">    
+<table class="table table-bordered" >
+	<tbody>		
+		<tr>
+			<td>
+                <div class="csDiv">
+                    { @ loop }
+                        <div class="csLoop">
+                            <div class="info">
+                                <ul style="position: relative;">
+                                    <div class="claimType">
+                                        {.reg_date} - {.admin_name}({.id})
+                                        
+                                    </div>                                   
+                                    <div>
+                                        <!-- 진행상태 : <span class="{.ingColorType}">{_cfg_ing_type[.ing_type]}</span>  -->
+                                        접수구분 : {_cfg_retrun_type[.return_type]}
+                                        { ?.refund_yn=='y' } / 환불완료 { / }
+                                    </div>
+<!--                                     
+                                    { ?.return_type>='40' && .return_type<'50'}
+                                        <div>수령자명 : {.receiver} / 주소 : {.zipcode} {.address} / 연락처 : {.mobile}</div>                                                
+                                    { / }                                 -->
+                                    { ?  count(.cs_detail)}
+                                    <div style="padding-top:5px;"></div>
+                                    <div class="csDetail btn btn-sm btn-primary" data-no={.no} style="width:75px; ">상세보기</div>
+                                    {/}
+                                </ul>
+                            </div>
+
+                            { ? count(.cs_detail) }
+                            <div class="csLayer_{.no} csLayer notice-box" style="display: block; overflow:auto;padding-top:10px; display:none; font-size: 6px;">
+                                <!-- <span id='close' onclick="this.parentNode.style.display = 'none';">&times;</span> -->
+                                { ?.return_type=='1' || (.return_type>='40' && .return_type<'50')}
+                                <table class="table table-bordered" style="font-size: 12px;">
+                                    <tbody>
+                                        <tr>
+                                            <th>수령자명</th>
+                                            <td>{.receiver}</td>            
+                                            <th>주소</th>
+                                            <td>우편번호 : {.zipcode}<br>{.address}</td>   
+                                        </tr>
+                                        <tr>
+                                            <th>연락처</th>
+                                            <td>{.mobile}</td>   
+                                            <th>배송정보</th>
+                                            <td>
+                                                {?.delivery_type}{_cfg_return_delivery_type[.delivery_type]}({=number_format(.delivery_price)}원){/} 
+                                                {?.delivery_type2}/ {_cfg_return_delivery_type2[.delivery_type2]}({=number_format(.delivery_price2)}원){/}
+                                                {?.return_delivery_code}<div>{delivery_list[.return_delivery_code]['name']}-{.return_invoice}</div>{/}
+                                            </td>   
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                { : }
+                                <table class="table table-bordered" style="font-size: 12px;">
+                                    <tbody>
+                                        <tr>
+                                            <th>배송정보</th>
+                                            <td>
+                                                {?.delivery_type}{_cfg_return_delivery_type[.delivery_type]}({=number_format(.delivery_price)}원){/} 
+                                                {?.delivery_type2}/ {_cfg_return_delivery_type2[.delivery_type2]}({=number_format(.delivery_price2)}원){/}
+                                                {?.return_delivery_code}<div>{delivery_list[.return_delivery_code]['name']}-{.return_invoice}</div>{/}
+                                            </td>   
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                { / }
+                                <table class="table table-bordered" style="font-size: 12px;">
+                                    <tbody>
+                                        <tr>
+                                            <th>환불정보</th>
+                                            <td>
+                                                {?.account_code && .account_number}{_cfg_account_code[.account_code]} / {.account_number}{/} 
+                                                {?.account_name}<div>입금자명 : {.account_name} / 금액 : {=number_format(.account_price)}원</div>{/}
+                                                {?.account_etc}<div>비고 : {.account_etc}</div>{/}
+                                            </td>   
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="table table-bordered" style="font-size: 12px;">
+                                    <tbody>
+                                        <tr>	
+                                            <th>상품명</th>
+                                            <th>교환모델명</th>
+                                            <th>수량</th>
+                                            <th>발생비용</th>
+                                            <th>상태</th>
+                                        </tr>
+                                        { @.cs_detail }
+                                        <tr>
+                                            <td>{..mall_goodsnm}</td>
+                                            <td>{?..exchange_goods_nm}{..exchange_goods_nm}{:}-{/}</td>
+                                            <td>{..exchange_goods_num}</td>
+                                            <td>{=number_format(..diff_price)}원</td>
+                                            <td>{_cfg_send_type[..send_type]}</td>
+                                        </tr>
+                                        { / }
+                                    </tbody>
+                                </table>                    
+                            </div>
+                            { / }
+
+                            <p class="csContents">{=nl2br(.contents)}</p>
+                        </div>
+                    { / }
+                </div>
+            </td>
+		</tr>
+	</tbody>
+</table>
+<hr>
+<center>
+    <div class="btn btn btn-primary buttonChange">확인</div>    
+</center>
+
+
+<script>
+
+document.title="{_page_title}";
+
+$(document).on("click",".csDetail",function(e){
+    
+    //var img_top = event.pageY-400;
+    //var img_left = event.pageX; 
+    var detailNo=$(this).data('no');
+
+    //$(".csLayer").css("display","none");
+    $(".csLayer_"+detailNo).toggle();
+
+});
+
+$(".buttonChange").click(function (){
+    if(confirm("추가 등록하시겠습니까? 확인후 전페이지에서 등록버튼을 다시 눌러주세요.")){
+        
+        $(opener.document).find("input[name='csCount']").val($("input[name='csCount']").val());
+        self.close();
+    }
+
+});
+
+</script>
+
+{#footer}

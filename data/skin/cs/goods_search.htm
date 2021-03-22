@@ -1,0 +1,68 @@
+{#header}
+<h1>{_page_title}</h1>
+
+<hr>
+
+<style>
+.search_td_width{width:800px;}
+</style>
+
+<form method="post">
+	<table class="table table-bordered" >
+
+		<tr>
+			<th>모델명</th>
+            <td class="search_td_width"><textarea name="s_goodsnm" id="" cols="30" rows="3">{_POST['s_goodsnm']}</textarea></td>			            
+		</tr>
+		
+	</table>
+	<center>
+		<button class="btn btn-primary" id="">검 색</button>
+	</center>
+</form>
+
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+		<tr>			
+			<th>모델명</th>
+			<th>이미지</th>
+			<th width='100'>판매가</th>
+			<th width='100'>소비자가</th>
+			<th width='50'>수량</th>
+			<th></th>
+		</tr>
+	</thead>	
+	<tbody>
+		{@loop}
+		<tr class="{.line_color}">			
+			<td>{.goodsnm}</td>
+			<td class="td_img">{.img_url}</td>
+			<td>{=number_format(.s_price)}원</td>
+			<td>{=number_format(.c_price)}원</td>
+			<td>{.totalCnt}</td> 
+			<td>
+				<div><button type="button" class="btn btn-sm btn-warning goodsClick" data-no={.no} data-goodsnm='{.goodsnm}' data-stock_yn='{.stock_yn}'>선택</button></div>
+				<!-- <div style="padding-top: 5px;"><button type='button' class='btn btn-sm btn-warning' onclick="popup('stock_hold.php?goodsno={.no}&order_no={_order_no}&order_list_no={_order_list_no}','stock_hold','1000','900')">재고보류{?.hold_count}({.hold_count}){/}</button></div> -->
+			</td>
+		</tr>
+	    {/}
+	</tbody>
+</table>
+
+
+<script>
+
+document.title="{_page_title}";
+
+$(".goodsClick").click(function(){
+	var goodsno=$(this).data('no');
+	var goodsnm=$(this).data('goodsnm');
+	var stock_yn=$(this).data('stock_yn');
+	$("input[name='exchange_goods_no[{_goodsno}]']",opener.document).val(goodsno);
+	$("input[name='exchange_goods_nm[{_goodsno}]']",opener.document).val(goodsnm);
+	$("input[name='exchange_stock_yn[{_goodsno}]']",opener.document).val(stock_yn);
+	self.close();
+
+});
+</script>
+{#footer}

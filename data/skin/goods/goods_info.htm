@@ -1,0 +1,145 @@
+{#header}
+
+<h1>{_page_title}</h1>
+
+<hr>
+
+{?_print_xls!=1}
+<form enctype="multipart/form-data" method="post">
+<table class="table table-bordered" >
+    <tr>
+        <th>파일</th>
+        <td><input type="file" name="excelFile[]" required/><button class="btn btn-primary">업로드</button></td>
+    </tr>
+</table>
+</form>
+{/}
+{=include_file("outline/search_box.htm")}
+{?_print_xls!=1}
+<style>
+    .mallLabel{ display:inline-block; width:180px; line-height:30px;}
+</style>
+
+{/}
+{?_print_xls!=1}
+
+<table id="" class="display display_dt barcodeTable" border="{_xls_border}">
+	<thead>
+		<tr>
+			<th width="20"><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>
+			<th>브랜드</th>
+			<th>분류</th>
+			<th>모델명</th>
+			<th>모델명2</th>
+			<th>이미지</th>
+			{@ gi}
+			<th>{.value_}</th>
+			{/}
+            <th></th>
+		</tr>
+	</thead>
+	<tbody>
+	{@loop}
+		<tr>
+			<td><input type="checkbox" class="chk_no" name="chk_no[]" value="{.no}"></td>
+			<td>{.brandnm}</td>
+			<td>{.catenm}</td>
+			<td><a style="cursor: pointer;"  class="goods_detail_pop" onclick="popup('goods_info_view.php?cate_code={_category_1}&goodsnm={.goodsnm}','','1100','900')">{.goodsnm}</a></a></td>
+			<td>{.goodsnm_sub}</td>
+			<td class="td_img">{.img_url}</td>
+			{@(gi)}
+			<td>{.spec_data[..key_]}</td>
+			{/}
+			<td><div class="btn btn-sm btn-warning" onclick="popup('goods_change_reg.php?no={.no}&cate_code={_category_1}','','1100','900')">모델명변경</div></td>
+            <!-- <td><div class="btn btn-sm btn-warning" onclick="popup('goods_barcode_reg.php?no={.no}','','1100','900')">등록/수정</div></td> -->
+		</tr>
+	{/}
+	</tbody>
+</table>
+
+<div class="bottom_btn_box">
+	<div class="box_left">		
+	</div>
+	<div  class="box_right">
+		<button type="button" class="btn btn-primary cate_ins">선택모델 카테고리 등록</button> 
+	</div>
+</div>
+
+{:}
+<div style="color: red; font-weight: bold;">* 빨간표시된 타이틀의 내용은 수정하지마세요.</div>
+<table id="" class="display display_dt barcodeTable" border="{_xls_border}">
+	<thead>
+		<tr>
+			<th><div style="color: red;">상품코드</div></th>
+			<th><div style="color: red;">브랜드</div></th>
+			<th><div style="color: red;">모델명</div></th>			
+			{@ gi}
+			<th>{.value_}({_use_filter[.key_]})</th>
+			{/}
+			
+		</tr>
+		<tr>
+			<th></th>
+			<th></th>
+			<th></th>
+			{@ gi}
+			<th>{.key_}</th>
+			{/}
+		</tr>
+	</thead>
+	<tbody>
+	{@loop}
+		<tr>
+			<td>{.no}</td>
+			<td>{.brandnm}</td>
+			<td>{.goodsnm}</td>
+			{@(gi)}
+			<td>{.spec_data[..key_]}</td>
+			{/}
+		</tr>
+	{/}
+	</tbody>
+</table>
+{/}
+<script>
+document.title="{_page_title}";
+$(".searchbox-default").css("display","block");
+$(".searchbox-goods-detail").css("display","block");
+$(".s_no_cate").css("display","block");
+
+
+
+$(function(){
+	$("#print_xls").click(function(){
+		$("input[name='print_xls']").val("1");
+		$("#glb_search_form").submit();
+		$("input[name='print_xls']").val("0");
+	});    
+
+	$(".cate_ins").click(function(){
+
+		if(confirm('[카테고리등록]처리하시겠습니까?')){
+
+			var old_val='';
+
+			if($(".chk_no:checked").length!='0'){
+				
+				old_val=$("#s_paste").val();
+				$("#s_paste").val("");
+				var chk_model='';
+				$(".chk_no:checked").each(function(){
+					chk_model+=$(this).closest("tr").find(".goods_detail_pop").html()+"\n";//상품명 찾기
+				});
+
+				$("#s_paste").val( chk_model);
+				
+			}
+			
+			$("#glb_search_form").append("<input type='hidden' name='mode' value='cate_ins'>");
+			$("#glb_search_form").submit();
+		}
+	});
+})
+
+</script>
+{#footer}

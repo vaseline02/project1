@@ -1,0 +1,87 @@
+{#header}
+<h1>{_page_title}</h1>
+<hr>
+
+{=include_file("outline/search_box.htm")}
+<form method="post" id="main_form">
+<table id="" class="display display_dt" data-height="" data-order="false" style="width:100%" border="{_xls_border}">
+	{=include_file("outline/table_width_def.htm")}
+	<thead>
+		<tr>
+			{?_print_xls!=1}<th class="sorting_disabled"><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>{/}
+			<th>브랜드</th>
+			<th>분류</th>
+			<th>이미지</th>
+			<th>모델명</th>
+			<th width="250">이미지명</th>
+			<th>수량</th>
+			<th>제안수량</th>	
+			<th>면장위치</th>
+			<th>수입신고번호</th>
+			<th width="350">비고</th>
+		</tr>
+	</thead>
+	<tbody>
+	{@loop}
+		{@.value_}
+		<tr style="background-color:{..bgcolor};{?!..no}height:100px;{/}">
+			{?_print_xls!=1}<td>{?..no}<input type="checkbox" class="chk_no" name="chk_no[]" value="{..no}" checked>{/}</td>{/}
+			<td>{..brandnm}</td>
+			<td>{?..brandnm}{.key_}{/}</td>
+			<td class="td_img">{..img_url}</td>
+			<td >{..goodsnm}</td>
+			<td>{..img_name}</td>
+			<td style="background-color:{_model_color[.key_][..goodsnm]}">{..cnt}</td>
+			<td>{..offer_num}</td>
+			<td>{..list_no}</td>
+			<td>{..import_no}</td>
+			<td>{..memo}</td>
+		</tr>
+		{/}
+	{/}
+	</tbody>
+</table>
+
+{?_print_xls!=1}
+<div class="bottom_btn_box">
+	<div class="box_left">
+	</div>
+	<div  class="box_right">
+	<button type="button" class="btn btn-primary" id="file_down">파일 다운로드</button>
+
+	</div>
+</div>
+
+
+
+<fieldset class="page_field_info">
+  <legend>참고</legend>
+  <ul>
+	<li>총 수량이 부족하면 수량이 빨갛게 표시됩니다.</li>
+  </ul>
+</fieldset>
+
+{/}
+</form>
+<script>
+document.title="{_page_title}";
+
+
+$(function(){
+	$(".searchbox-modelNcnt").css("display","block");
+
+	$("#file_down").click(function(){
+		
+		var invoice=0;
+		if($("#chk_invoice").is(":checked"))invoice=1;
+		
+		$("#main_form").attr("action","import_licence_download.php?invoice="+invoice);
+		$("#main_form").submit();	
+		$("#main_form").attr("action","");
+		
+	});
+})
+
+
+</script>
+{#footer}

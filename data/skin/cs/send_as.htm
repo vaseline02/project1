@@ -1,0 +1,207 @@
+{#header}
+<h1>{_page_title}</h1>
+<hr>
+{=include_file("cs/send_nav.htm")}
+
+<style>
+.search_td_width{width:380px;}
+.mallLabel{ display:inline-block; width:200px; line-height:23px;}
+#nav_div3_c a:after{width:90%}
+
+
+</style>
+
+{?_print_xls!=1}
+<form method="get">
+	<table class="table table-bordered" >
+
+		<tr>
+			<th>입고일</th>
+			<td>
+			<input type="text" name="s_date" id="s_date" class="datepicker_common" autocomplete="off" value="{_s_date_value}"> ~ 
+			<input type="text" name="e_date" id="e_date" class="datepicker_common" autocomplete="off" value="{_e_date_value}">
+			<div style='padding-top:5px'>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='0' data-type='day'>오늘</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='7' data-type='day'>7일</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='15' data-type='day'>15일</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='1' data-type='month'>1개월</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='3' data-type='month'>3개월</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='1' data-type='year'>1년</span>
+			</div>
+			</td>
+			<th>주문번호</th>
+			<td><input type="text" name="s_ordno" value="{_GET['s_ordno']}"></td>
+			
+			
+		</tr>
+		<tr>			
+			<th>모델명</th>
+			<td><input type="text" name="s_goodsnm" value="{_GET['s_goodsnm']}"></td>
+			<th>송장번호</th>
+			<td><input type="text" name="s_invoice" value="{_GET['s_invoice']}"></td>
+		</tr>
+		<tr>
+			
+			<th>고객명</th>
+			<td class="search_td_width"><input type="text" name="s_receiver" value="{_GET['s_receiver']}"></td>
+			<th>연락처</th>
+			<td class="search_td_width"><input type="text" name="s_mobile" value="{_GET['s_mobile']}"></td>
+		</tr>
+		</tr>
+			<th>작성자</th>
+			<td><input type="text" name="s_admin" value="{_GET['s_admin']}"></td>
+			<th></th>
+			<td></td>
+
+			<!-- <th>진행상태</th>
+			<td>
+				<select name="s_ing_type">
+					<option value="">선택</option>
+				{ @_cfg_ing_type }
+					<option value={_cfg_ing_type.key_} {_selected['ing_type'][_cfg_ing_type.key_]}>{_cfg_ing_type.value_}</option>
+				{ / }
+				</select>
+			</td>
+			 -->
+		</tr>
+	</table>
+	<center>
+		<button class="btn btn-primary" id="">검 색</button>
+	</center>
+</form>
+
+{/}
+<div class="table_title">일반접수</div>
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+		<tr>			
+			<th>접수번호</th>
+			<th>접수자</th>
+			<th data-orderable="false">구매자</th>
+			<th data-orderable="false">연락처</th>
+			<th data-orderable="false">주소</th>
+			<th>진행단계</th>
+			<th data-orderable="false">주문번호</th>
+			<th>브랜드</th>
+			<th>모델명</th>
+			<th>비용</th>
+			<th>실비</th>
+			<th>진행업체명</th>
+			<th>입고일</th>
+			<th>출고일</th>
+			<th>최초작성자</th>
+			<th>마지막수정자</th>
+			<th>수정시간</th>
+			<th data-orderable="false"></th>
+		</tr>
+	</thead>	
+	<tbody>
+		{@loop['order']}
+		<tr>			
+			<td>{.no}</td>
+			<td>{.receipt_name}</td>
+			<td>{.receiver}</td>
+			<td>{.mobile}</td>
+			<td>[{.zipcode}] {.address}</td>
+			<td>{_cfg_as_status[.as_status]}</td>			
+			<td>{.order_no}</td>
+			<td>{.brandnm}</td>
+			<td>{.goodsnm}</td>
+			<td>{=number_format(.customer_cost)}원</td>
+			<td>{=number_format(.real_cost)}원</td>
+			<td>{.progress_company}</td>
+			<td>{.in_regdate}</td>
+			<td>{.out_regdate}</td>
+			<td>{?.admin_no}{.name}<br>({.id}){/}</td>
+			<td>{?.mod_admin_no}{.mod_name}<br>({.mod_id}){/}</td>
+			<td>{?.mod_admin_no}{.mod_reg_date}{/}</td>
+			<td>
+				<div><button type="button" class="btn btn-sm btn-warning" onclick="popup('as_view.php?as_no={.no}','','1100','900')">상세</button></div>
+				{ ?.as_status=='5' }
+				<div style="padding-top: 5px;"><button type="button" class="btn btn-sm btn-warning" onclick="popup('as_document.php?as_no={.no}','','1100','900')">문서출력</button></div>
+				{ / }
+            </td>
+		</tr>
+	{/}
+	</tbody>
+</table>
+<hr>
+<div class="table_title">수기접수</div>
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+		<tr>			
+			<th>접수번호</th>
+			<th>접수자</th>
+			<th data-orderable="false">구매자</th>
+			<th data-orderable="false">연락처</th>
+			<th data-orderable="false">주소</th>
+			<th>진행단계</th>
+			<th data-orderable="false">주문번호</th>
+			<th>브랜드</th>
+			<th>모델명</th>
+			<th>비용</th>
+			<th>실비</th>
+			<th>진행업체명</th>
+			<th>입고일</th>
+			<th>출고일</th>
+			<th>최초작성자</th>
+			<th>마지막수정자</th>
+			<th>수정시간</th>
+			<th data-orderable="false"></th>
+		</tr>
+	</thead>	
+	<tbody>
+		{@loop['hand']}
+		<tr>			
+			<td>{.no}</td>
+			<td>{.receipt_name}</td>
+			<td>{.receiver}</td>
+			<td>{.mobile}</td>
+			<td>[{.zipcode}] {.address}</td>
+			<td>{_cfg_as_status[.as_status]}</td>			
+			<td>{.order_no}</td>
+			<td>{.brandnm}</td>
+			<td>{.goodsnm}</td>
+			<td>{=number_format(.customer_cost)}원</td>
+			<td>{=number_format(.real_cost)}원</td>
+			<td>{.progress_company}</td>
+			<td>{.in_regdate}</td>
+			<td>{.out_regdate}</td>
+			<td>{?.admin_no}{.name}<br>({.id}){/}</td>
+			<td>{?.mod_admin_no}{.mod_name}<br>({.mod_id}){/}</td>
+			<td>{?.mod_admin_no}{.mod_reg_date}{/}</td>
+			<td>
+                <div><button type="button" class="btn btn-sm btn-warning" onclick="popup('as_view.php?as_no={.no}','','1100','900')">상세</button></div>
+				{ ?.as_status=='5' }
+				<div style="padding-top: 5px;"><button type="button" class="btn btn-sm btn-warning" onclick="popup('as_document.php?as_no={.no}','','1100','900')">문서출력</button></div>
+				{ / }
+            </td>
+		</tr>
+	{/}
+	</tbody>
+</table>
+{?_print_xls!=1}
+<div>{pg->page['navi']} 총 데이터 :{=number_format(pg->recode['total'])}</div>
+{/}
+
+
+<form method="POST" name="indbForm">
+	<input type="hidden" name="mode" value="del">
+	<input type="hidden" name="no">
+	<input type="hidden" name="returnUrl" value={_SERVER['REQUEST_URI']}>
+</form>
+
+<script>
+$("#nav_div3_c").addClass('active');
+document.title="{_page_title}";
+
+
+$(".receiptDel").click(function(){
+	if(confirm("삭제하시겠습니까?")){
+		$("input[name='no']").val($(this).data('no'));
+		$("form[name='indbForm']").submit();	
+	}
+
+});
+</script>
+{#footer}

@@ -1,0 +1,152 @@
+{#header}
+<h1>{_page_title}</h1>
+
+<hr>
+
+<style>
+.search_td_width{width:380px;}
+.mallLabel{ display:inline-block; width:200px; line-height:23px;}
+
+
+
+</style>
+
+{?_print_xls!=1}
+<form method="get">
+	<table class="table table-bordered" >
+
+		<tr>
+			<th>주문일자</th>
+			<td>
+			<input type="text" name="s_date" id="s_date" class="datepicker_common" autocomplete="off" value="{_s_date_value}"> ~ 
+			<input type="text" name="e_date" id="e_date" class="datepicker_common" autocomplete="off" value="{_e_date_value}">
+			<div style='padding-top:5px'>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='0' data-type='day'>오늘</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='7' data-type='day'>7일</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='15' data-type='day'>15일</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='1' data-type='month'>1개월</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='3' data-type='month'>3개월</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='1' data-type='year'>1년</span>
+			</div>
+			</td>
+			<th>주문번호</th>
+			<td><input type="text" name="s_ordno" value="{_GET['s_ordno']}"></td>
+			<th rowspan="4">몰명</th>
+			<td rowspan="4">
+				<div style="overflow: auto; height:210px; font-size: 11px;">
+					
+				{ @ mall_list }
+				
+					<label class="mallLabel"><input type="checkbox" name="s_mall_no[]" value={.no} {_checked['mall_no'][.no]}>{?.upload_form_type!='사방넷'}({.upload_form_type}){/}{.mall_name}</label>
+				
+				{/}
+					
+			
+				</div>
+				<!-- <select name="s_mall_no">
+					<option value="">선택</option>
+					{ @ mall_list }
+						<option value={.no} {_selected['mall_no'][.no]}>{.mall_name}({.mall_code})</option>
+					{ / }
+				</select> -->
+				
+			</td>
+			
+		</tr>
+		<tr>			
+			<th>모델명</th>
+			<td><input type="text" name="s_mall_goodsnm" value="{_GET['s_mall_goodsnm']}"></td>
+			<th>송장번호</th>
+			<td><input type="text" name="s_invoice" value="{_GET['s_invoice']}"></td>
+		</tr>
+		<tr>
+			
+			<th>고객명</th>
+			<td class="search_td_width"><input type="text" name="s_receiver" value="{_GET['s_receiver']}"></td>
+			<th>연락처</th>
+			<td class="search_td_width"><input type="text" name="s_mobile" value="{_GET['s_mobile']}"></td>
+		</tr>
+		</tr>
+			<th>작성자</th>
+			<td><input type="text" name="s_admin" value="{_GET['s_admin']}"></td>
+			<th></th>
+			<td></td>
+
+			<!-- <th>진행상태</th>
+			<td>
+				<select name="s_ing_type">
+					<option value="">선택</option>
+				{ @_cfg_ing_type }
+					<option value={_cfg_ing_type.key_} {_selected['ing_type'][_cfg_ing_type.key_]}>{_cfg_ing_type.value_}</option>
+				{ / }
+				</select>
+			</td>
+			 -->
+		</tr>
+	</table>
+	<center>
+		<button class="btn btn-primary" id="">검 색</button>
+	</center>
+</form>
+
+{/}
+
+<table id="" class="display display_dt" style="width:100%;" border="{_xls_border}">
+	<thead>
+		<tr>			
+			<th width='50'>몰명</th>
+			<th width='100' data-orderable="false">주문번호</th>
+			<th data-orderable="false">이미지</th>
+			<th width='100'>옵션명</th>
+			<th width='50'>수량</th>
+			<th width='50'>가격</th>
+			<th width='50' data-orderable="false">구매자<br>수령자</th>
+			<th width='100' data-orderable="false">연락처<br>모바일</th>
+			<th data-orderable="false">주소</th>
+			<th width='100' data-orderable="false">송장번호</th>
+			<th width='100'>주문일자</th>
+			<th width='100'>주문상태</th>
+			<!-- <th width='150'>cs접수상태</th> -->
+			<th width='100'>작성자</th>
+			<!-- <th width='70'>진행상태</th> -->
+			<th data-orderable="false"></th>
+		</tr>
+	</thead>	
+	<tbody>
+		{@loop}
+		<tr class="{.line_color}">			
+			<td>{.mall_name}</td>
+			<td>{.ordno} {?.copy_seq>0}복사본{/}</td>
+			<td class="td_img">{.img_url}</td>
+			<td>{.goodsnm}</td>
+			<td>{.order_num}</td>
+			<td>{=number_format(.order_price)}</td>
+			<td>{.buyer}<br/>{.receiver}</td>
+			<td>{.buyer_mobile}<br/>{.mobile}</td>
+			<td>{.address}</td>
+			<td>{?.invoice!=0}{.delivery_name} ({.invoice}){/}</td>
+			<td>{.reg_date}</td>
+			<td>{_cfg_order_step[.step]}{?.step2}<div style="color: red;">({_cfg_order_step2[.step2]})</div>{/}</td>
+			<!-- <td>
+				{_cfg_retrun_type[.return_type]}{?.return_type_sub}({_cfg_retrun_type_sub[.return_type][.return_type_sub]}){/}<br>
+				{@.cs_detail}
+					{_cfg_send_type[..send_type]}
+				{/}
+			</td> -->
+			<td>{?.admin_no}{.name}<br>({.id}){/}</td>
+			<!-- <td>{.ing_type}</td> -->
+			<td><button type="button" class="btn btn-sm btn-warning" onclick="popup('cs_reg.php?ordno={.ordno}&mall_no={.mall_no}','','1100','900')">CS등록</button></td>
+		</tr>
+	{/}
+	</tbody>
+</table>
+
+{?_print_xls!=1}
+<div>{pg->page['navi']} 총 데이터 :{=number_format(pg->recode['total'])}</div>
+{/}
+<script>
+
+document.title="{_page_title}";
+
+</script>
+{#footer}

@@ -1,0 +1,42 @@
+{#header}
+
+<style type="text/css">
+
+</style>
+
+<div style="margin:0 auto;float:none;height:100%" class="col-xs-11 col-sm-11 col-md-9 col-lg-9 ">
+
+	<div class="title_top">SEARCH</div> 
+	<form action="goods_search.php" method="get">
+	<div class="search_wrap">
+		<div class="col-xs-4 col-sm-3 col-md-3 col-lg-2">Model Name</div>
+		<div class="col-xs-7 col-sm-6 col-md-6 col-lg-7"><input type="text" name="sword" style="width:98%" value="{_GET.sword}"></div>
+		<div class="col-xs-11 col-sm-3 col-md-2 col-lg-2"><button type="submit" style="width:100%">SEARCH</button></div>
+	</div>
+	</form>
+	<div>
+	{@loop}
+		<div class="product_layer col-xs-12 col-sm-12 col-md-4 col-lg-4">
+			<div class="product_layer_inner">
+				<div><a href="../goods/goods_view.php?goodsno={.no}"><img src="{.img_url}" alt="" style="width:70%"></a></div>
+				<div class="list_model_info">
+					<div style="text-align:{? is_mobile}center{:}center{/};margin:auto;width:{? is_mobile}95%{:}70%{/}">
+						<p>{.modelstock_}</p>
+						<p>{?.balance<=0}<div class="discontinue">Discontinue</div>{:}KRW {=number_format(.wd_marketprice)}{/}</p>
+						<!--
+						<p><strong>{.title_option2}&nbsp;&nbsp;&nbsp;{.modelstock_}</strong></p>
+						<p><strong>KRW{=number_format(.wd_marketprice)}</strong> {?.balance<=0}<span class="soldout">SOLD OUT</span>{/}</p>
+						<p>FRAME WIDTH : {.wd_fullsiz}mm&nbsp;&nbsp;&nbsp;SIDE : {.wd_bridgesiz}mm</p>
+						<p>LENS WIDTH : {.wd_widthsiz}mm&nbsp;&nbsp;&nbsp;LENS HEIGHT : {.wd_heightsiz}mm</p>
+						<p>MATERIAL : {.quality}</p>
+						<p>{.cnt_color} COLOR</p>
+						-->
+					</div>	
+				</div>
+			</div>
+		</div>
+	{/}		
+	</div>
+</div>
+
+{#footer}

@@ -1,0 +1,115 @@
+<table border="1">
+
+{?_sel_invo_mall=='셀피아'}
+
+	<tr>
+		<td>주문번호</td>
+		<td>판매처</td>
+		<td>임의필드</td>
+		<td>수취인명</td>
+		<td>우편번호</td>
+		<td>주소</td>
+		<td>수취인연락처</td>
+		<td>수취인핸드폰</td>
+		<td>운임구분</td>
+		<td>자사코드</td>
+		<td>주문수량</td>
+		<td>주문메모</td>
+		<td>판매처상품명</td>
+		<td>판매처옵션명</td>
+		<td>주문총금액</td>
+		<td>발송인(상호)</td>
+		<td>주문품목No</td>
+		<td>송장번호</td>
+	</tr>
+
+	{@loop}
+	<tr>
+		<td style='mso-number-format:"\@";'>{.ordno}</td>
+		<td>{.mall_name}</td>
+		<td></td>
+		<td>{.receiver}</td>
+		<td style='mso-number-format:"\@";'>{.zipcode}</td>
+		<td>{.address}</td>
+		<td style='mso-number-format:"\@";'>{.buyer_mobile}</td>
+		<td style='mso-number-format:"\@";'>{.mobile}</td>
+		<td>{.deli_type}</td>
+		<td>{.code1}</td>
+		<td style='mso-number-format:"\@";'>{.order_num}</td>
+		<td>{.order_memo}</td>
+		<td>{.mall_goodsnm}</td>
+		<td>{.goodsnm}</td>
+		<td>{.settle_price}</td>
+		<td>(주)트랜드메카</td>
+		<td>{.mall_key}</td>
+		<td style='mso-number-format:"\@";'>{.invoice}</td>
+	</tr>
+	{/}
+{:?_sel_invo_mall=='스토어팜'}
+	<tr>
+		<td>상품주문번호</td>
+		<td>배송방법</td>
+		<td>택배사</td>
+		<td>송장번호</td>
+	</tr>
+	{@loop}
+	<tr>
+		<td style='mso-number-format:"\@";'>{.dupl_key}</td>
+		<td>택배,등기,소포</td>
+		<td>CJ대한통운</td>
+		<td style='mso-number-format:"\@";'>{.invoice}</td>
+	</tr>
+	{/}
+{:?_sel_invo_mall=='오피셜'}
+	<tr>
+		<td>상품주문번호</td>
+		<td>품목번호</td>
+		<td>품목별 주문번호</td>
+		<td>운송장번호</td>
+		<td>브랜드</td>
+	</tr>
+	{@loop}
+	<tr>
+		<td style='mso-number-format:"\@";'>{.ordno}</td>
+		<td>{.mall_key2}</td>
+		<td>{.mall_key}</td>
+		<td style='mso-number-format:"\@";'>{.invoice}</td>
+		<td>{.mall_name}</td>
+	</tr>
+	{/}
+{:?_sel_invo_mall=='타임메카'}
+	<tr>
+		<td>상품주문번호</td>
+		<td>품목번호</td>
+		<td>품목별 주문번호</td>
+		<td>운송장번호</td>
+	</tr>
+	{@loop}
+	<tr>
+		<td style='mso-number-format:"\@";'>{.ordno}</td>
+		<td>{.mall_key2}</td>
+		<td>{.mall_key}</td>
+		<td style='mso-number-format:"\@";'>{.invoice}</td>
+	</tr>
+	{/}
+
+{:?_sel_invo_mall=='사방넷'}
+	<tr>
+		<td>사방넷 주문번호</td>
+		<td>운송장번호</td>
+		<td></td>
+		<td></td>
+		<td>코드</td>
+	</tr>
+	{@loop}
+	<tr>
+		<td style='mso-number-format:"\@";'>{.code1}</td>
+		<td style='mso-number-format:"\@";'>{.invoice}</td>
+		<td></td>
+		<td></td>
+		<td>{_deli_to_code['courier_code']}</td>
+	</tr>
+	{/}
+
+{/}
+</table>

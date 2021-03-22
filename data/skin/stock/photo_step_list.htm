@@ -1,0 +1,124 @@
+{#header}
+
+<h1>{_page_title}</h1>
+
+<hr>
+{=include_file("outline/search_box.htm")}
+<form method="post" id="main_form">
+<input type="hidden" name="mode" id="mode">
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<colgroup>
+		<col width="50px"/><!-- 체크박스 -->
+		<col width="150px"/><!-- 브랜드 -->
+		<col width="90px"/><!-- 이미지 -->
+		<col width="150px"/><!-- 모델명 -->
+	</colgroup>
+	<thead>
+		<tr>
+			<th class="sorting_disabled"><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>
+			<th>브랜드</th>
+			<th>이미지</th>
+			<th>모델명1</th>
+			<th>모델명2</th>
+			<th>촬영단계</th>
+			
+			<th>이미지폴더</th>
+		    <th>이미지명</th>
+			<th style="width:250px">메모</th>
+			{@_loc_info['data']}
+			<th>{.key_}</th>
+			{/}
+		</tr>
+	</thead>
+	<tbody>
+	{@loop}
+		<tr>
+			<td><input type="checkbox" class="chk_no" name="chk_no[]" value="{.no}"></td>
+			<td>{.brandnm}</td>
+			<td class="td_img">{.img_url}</td>
+			<td>{.goodsnm} <input type="hidden" class="img_goodsnm" value="{.goodsnm}"></td>
+			<td></td>
+			<td>{.img_step}</td>
+			
+			<td>{.brand_img_folder}</td>
+			<td><input type="text" class="img_name" name="img_name[{.no}]" value="{.img_name}">.jpg</td>
+			<td>{.memo}</td>
+			{@.loc_cnt}
+			<td>{=number_format(..value_)}</td>
+			{/}
+		</tr>
+	{/}
+	</tbody>
+</table>
+
+{?_print_xls!=1}
+<div>{pg->page['navi']} 총 데이터 :{=number_format(pg->recode['total'])}</div>
+
+<div class="bottom_btn_box">
+	<div class="box_left">
+	
+	</div>
+	<div  class="box_right">
+	 
+	<select name="img_step" class="img_step">
+		<option value="1">1단계</option>
+		<option value="2">2단계</option>
+		<option value="3">3단계</option>
+		<option value="4">4단계</option>
+		<option value="5">5단계</option>
+	</select>
+	<button type="button" class="btn btn-primary" id="chg_img_step">촬영단계 변경</button>
+
+	</div>
+</div>
+{/}
+</form>
+<script>
+document.title="{_page_title}";
+$(".searchbox-default").css("display","block");
+$(".searchbox-img-step").css("display","block");
+
+$(function(){
+
+	$(".img_name").blur(function(){
+
+		if($(this).val()==''){
+			var make_imgnm = $(this).closest("tr").find(".img_goodsnm").val();
+			$(this).val(make_imgnm);
+		}
+	});
+	
+
+	$("#chg_img_step").click(function(){
+
+		if( $(".chk_no:checked").length <=0 ){
+			alert('변경할 제품을 선택해주세요.');
+			return;
+		}
+		
+		if(confirm('변경하시겠습니까?')){
+			$("#mode").val('chg_img_step');
+			var formData = new FormData($("#main_form")[0]);
+			
+			$.ajax({
+				type : "POST",
+				url : "_indb.php",
+				data : formData,
+				processData: false,
+				contentType: false,
+				err : function(err) {
+					alert(err.status);
+				}
+			}).done(function(data){
+				alert('처리되었습니다.');
+				location.reload();
+			}).fail(function(jqXHR, textStatus){
+				alert( "Request failed: " + textStatus );
+			});
+		}
+	});
+
+})
+
+</script>
+{#footer}

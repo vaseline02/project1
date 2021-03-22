@@ -1,0 +1,140 @@
+{#header}
+{?_print_xls!=1}
+<h1>{_page_title}</h1>
+<hr>
+{=include_file("order/order_nav.htm")}
+<style>
+#nav_div9 a:after{width:90%}
+</style>
+
+{/}
+<form method="post" id="main_form">
+{?_print_xls!=1}
+<input type="hidden" name="mode" id="mode">
+<input type="hidden"name="print_xls" value="">
+{/}
+<!--<table id="" class="display display_dt" data-height="740" style="width:100%" border="{_xls_border}">-->
+<table class="table table-bordered" style="margin-top:50px;">
+	{=include_file("outline/table_width_order.htm")}
+	<thead>
+		<tr>
+			{?_print_xls!=1}<th class="sorting_disabled"><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>{/}
+			{=include_file("order/_order_cols.htm")}
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+	{@loop}
+		<tr class="{.line_color}">
+			{?_print_xls!=1}
+			<td>
+				<input type="checkbox" class="chk_no" name="chk_no[]" value="{.no}" data-wno={.wno}>
+				<input type="hidden" name="hid_invoice[{.no}]" value="{.invoice}">
+				<input type="hidden" name="hid_ordno[{.no}]" value="{.ordno}">
+				{.list_num}
+			</td>
+			{/}
+			<td>{.mall_name}<br/>{.upload_form_type}</td>
+			<td>{.ordno} {.order_type}</td>
+			<td>{.mall_goodsnm}</td>
+			<td>{.goodsnm}</td>
+			<td>{.order_num}</td>
+			<td>{=number_format(.settle_price)}</td>
+			<td>{.buyer}<br/>{.receiver}</td>
+
+			<td>{.phone}<br/>{.mobile}</td>
+			<td>{.zipcode} {.address}</td>
+			<td>{.memo}</td>
+			<td style="color:{.bundle_color}">{.bundle}</td>
+			<td>{.reg_date}</td>
+			<td>
+			<button type="button" class="btn btn-warning mod" onclick="popup('order_mod_pop.php?no={.no}','order_mod_pop','1000','700')">수정</button>
+			</td>
+			
+		</tr>
+	{/}
+	</tbody>
+</table>
+
+<div class="bottom_btn_box">
+	<div class="box_left">
+		<button type="button" class="btn btn-danger submit" id="hold_order">보류이동</button>
+		<button type="button" class="btn btn-danger submit" id="recovery">취소복원</button>
+	</div>	
+</div>
+</form>
+{?_print_xls!=1}
+
+<div class="bottom_btn_box">
+	<div class="box_left">
+	
+	</div>
+	<div  class="box_right">
+	
+	</div>
+</div>
+
+<fieldset class="page_field_info">
+  <legend>참 고</legend>
+  <ul>
+	<li>취소완료되지않은 건만 취소복원됩니다.</li>
+  </ul>
+</fieldset>
+{/}
+
+
+<script>
+document.title="{_page_title}";
+
+$("#nav_div8").addClass('active');
+
+$(function(){
+
+	$(".submit").click(function(){
+		
+		var chk_len=$(".chk_no:checked").length;
+		var wnoChk=0;
+			
+		if( chk_len<=0 ){
+			alert('변경할 주문을 선택해주세요.');
+			return;
+		}
+		
+		var msg;
+		var btype=$(this).attr("id");
+		$(".chk_no").each(function(index, item){
+			if($(item).is(":checked")){            
+				if($(item).data('wno')){						
+					wnoChk++;
+				}			
+			}
+		});
+		if(wnoChk) {
+			alert("도매주문건은 처리하실수없습니다.");
+			return false;
+		}
+
+		if( btype=='recovery' ){			
+			msg='묶음주문의경우 복원시 같은주문 전부가 복원됩니다. 복원하시겠습니까?';
+		}else if(btype=='hold_order'){
+			msg='보류이동 하시겠습니까?';
+		}
+
+		if(confirm(msg)){
+			$("#mode").val(btype);
+			$("#main_form").submit();
+		}
+	});
+
+	$("#print_xls").click(function(){
+
+		$("input[name='print_xls']").val("1");
+		$("#main_form").submit();
+		$("input[name='print_xls']").val("0");
+	});
+
+});
+
+
+</script>
+{#footer}

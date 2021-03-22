@@ -1,0 +1,157 @@
+{#header}
+<h1>{_page_title}</h1>
+<hr>
+{=include_file("order/order_nav.htm")}
+
+
+<form method="post" id="main_form">
+<input type="hidden" name="mode" id="mode">
+<input type="hidden" name="order_search_mall" value="{_POST['order_search_mall']}">
+<!--<table id="" class="display display_dt" data-height="740" style="width:100%" border="{_xls_border}">-->
+<table id="" class="display display_dt" data-height="740" style="width:100%" border="{_xls_border}">
+
+	{=include_file("outline/table_width_order.htm")}
+	<thead>
+		<tr>
+			{?_print_xls!=1}<th class="sorting_disabled"><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>{/}
+			{=include_file("order/_order_cols.htm")}
+			<th>총재고</th>
+			<th>입고예정</th>
+			<th>사무실</th>
+			<th>3자물류</th>
+			<th>영인터</th>
+			<th>원마케팅</th>
+			<th>방송</th>
+			<th>마케팅매입</th>
+			<th>재고이동중</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+	{@loop}
+		<tr>
+			{?_print_xls!=1}<td><input type="checkbox" class="chk_no" name="chk_no[]" value="{.no}"></td>{/}
+			<td>{.mall_name}<br/>{.upload_form_type}</td>
+			<td>{.ordno} {.order_type}</td>
+			<td>{.mall_goodsnm}</td>
+			<td>
+				{.goodsnm}
+				<input type="hidden" name="hid_ordno[{.no}]" value="{.ordno}">	
+				<input type="hidden" name="hid_ord_num[{.no}]" value="{.order_num}">	
+				<input type="hidden" name="hid_goodsnm[{.no}]" value="{.goodsnm}">
+				
+			</td>
+			<td>{.order_num}</td>
+			<td>{=number_format(.settle_price)}</td>
+			<td>{.buyer}<br/>{.receiver}</td>
+			<td>{.phone}<br/>{.mobile}</td>
+			<td>{.zipcode} {.address}</td>
+			<td>{.memo}</td>
+			<td style="color:{.bundle_color}">{.bundle}</td>
+			<td>{.reg_date}</td>
+			<td>{.cur_cnt}</td>
+			<td>{.codeno_3}</td>
+			<td>{.codeno_1}</td>
+			<td>{.codeno_51}</td>
+			<td>{.codeno_91}</td>
+			<td>{.codeno_125}</td>
+			<td>{.codeno_87}</td>
+			<td>{.codeno_55}</td>
+			<td>{.codeno_130}</td>
+			<td>
+			<button type="button" class="btn btn-warning mod" onclick="popup('order_mod_pop.php?no={.no}','order_mod_pop','1000','700')">수정</button>
+			</td>
+		</tr>
+	{/}
+	</tbody>
+</table>
+
+{?_print_xls!=1}
+
+<div class="bottom_btn_box">
+	<div class="box_left">
+		<button type="button" class="btn btn-danger btn_sumbit" id="hold_order">보류이동</button>
+		선택주문 <input type="text" class="number_only" name="cp_num" id="cp_num" style="text-align:right"> 개
+		<button type="button" class="btn btn-success btn_sumbit" id="cp_order">주문 분리복제</button>
+		
+		 | <button type="button" class="btn btn-warning btn_sumbit" id="goback">재고부족주문 선택발송으로 이동</button>
+	</div>
+	<div  class="box_right">
+		선택한 주문을
+		<select name="place_code" id="">
+		{@_codedata}
+			<option value="{.no}" {_selected['place_code'][.no]}>{.cd}</option>
+		{/}
+		<!--
+		<option value="85">프리스로우(원주)</option>
+		<option value="86">인비트리(프라다 위탁)</option>
+		<option value="100">연예인협찬</option>
+		<option value="101">마케팅 샘플(협찬)</option>
+		<option value="110">한성INC</option>
+		<option value="115">현대홈쇼핑</option>
+		<option value="117">저스트원더</option>
+		<option value="131">11번가</option>
+		<option value="132">평택</option>
+		-->
+		</select>
+		<button type="button" class="btn btn-primary btn_sumbit" id="order_settle">발송확정</button>
+	</div>
+</div>
+
+<fieldset class="page_field_info">
+  <legend>참 고</legend>
+  <ul>
+	<li>
+	1.전체 선택후 우측 하단에서 배송위치 선택후 발송확정.<br/>
+	2.남은 주문들 배송위치 다시 선택후 발송확정.<br/>
+	3.주문수량때문에 한곳에서 발송 못하는 주문은 좌측하단 주문분리복제 기능으로 분리후 각각 발송확정
+	</li>
+	<li><button type="button" class="btn btn-success" >주문 분리복제</button>-수량을 입력하고 버튼을 누르면 선택한 주문이 정해진 수량만큼 분리되어 복사됨( 2개이상 주문을 다른 배송지에서 각각 배송해야 할 시 주문을 분리하여 발송지별로 발송확정 한다.)</li>
+  </ul>
+</fieldset>
+
+{/}
+</form>
+<script>
+document.title="{_page_title}";
+$("#nav_div3").addClass('active');
+$(function(){
+	
+	$(".btn_sumbit").click(function(){
+		
+		var btype=$(this).attr("id");
+
+		if( $(".chk_no:checked").length <=0 ){
+			alert('처리할 주문을 선택해주세요.');
+			return;
+		}
+		
+		if(btype=='cp_order' && $("#cp_num").val()=='' ){
+			
+			alert('수량을 입력해주세요');
+			$("#cp_num").focus();
+			return;
+		}
+		
+		if( btype=='order_settle' ){
+			msg='발송확정하시겠습니까?';
+		}else if( btype=='cp_order' ){
+			msg='주문 분리복제 하시겠습니까?';
+		}else if( btype=='goback' ){
+			msg='재고부족주문 선택발송으로 이동하시겠습니까?';
+		}else if(btype=='hold_order'){
+			msg='보류이동 하시겠습니까?';
+		}
+		
+
+		if(confirm(msg)){
+			
+			$("#mode").val(btype);
+			$("#main_form").submit();
+		}
+	});
+});
+
+
+</script>
+{#footer}

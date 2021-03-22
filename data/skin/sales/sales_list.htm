@@ -1,0 +1,188 @@
+{#header}
+{?_print_xls!=1}
+<div class="row"><div class="col-lg-12 statusbox-header"><h3>{_page_title}<!--<span>Customer Service Management</span>--></h3></div></div>
+{/}
+
+
+{?_print_xls!=1}
+<!-- Main Contents -->
+<div class="row">
+
+	<div class="col-lg-12">
+		<form method="get">
+		<div class="panel panel-default panel-stock margin20">
+			<table class="table fileload-list-small">
+				<colgroup>
+					<col width="15%" />
+					<col width="35%" />
+					<col width="15%" />
+					<col width="35%" />
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">주문일자</th>
+						<td colspan="3" class="receive-title no-gutters">
+							
+							<div class="col-lg-4 btn-group-sm" role="group" aria-label="Small button group">
+								<button type="button" class="btn btn-default dayChange" data-int='0' data-type='day'>오늘</button>
+								<button type="button" class="btn btn-default dayChange" data-int='1' data-type='day'>어제</button>
+								<button type="button" class="btn btn-default dayChange" data-int='7' data-type='day'>7일</button>
+								<button type="button" class="btn btn-default dayChange" data-int='0' data-type='month_unit'>당월</button>
+								<button type="button" class="btn btn-default dayChange" data-int='1' data-type='month_unit'>전월</button>
+								<button type="button" class="btn btn-default dayChange" data-int='1' data-type='month'>1개월</button>
+								<button type="button" class="btn btn-default dayChange" data-int='3' data-type='month'>3개월</button>
+								<button type="button" class="btn btn-default dayChange" data-int='1' data-type='year'>1년</button>
+								<!-- <button type="button" class="btn btn-primary">전체</button> -->
+							</div>
+							<div class="col-md-2 date-wrap">
+								<div class="input-group">
+									<input type="text" class="form-control datepicker_common" placeholder="시작 날짜" aria-describedby="basic-addon2" name="s_date" id="s_date" value="{_s_date_value}" readonly />
+									<span class="input-group-btn">
+										<button class="btn btn-default datepicker_click" type="button" autocomplete="off" target="s_date"><span class="glyphicon glyphicon-list-alt"></span></button>
+									</span>
+								</div>
+							</div>
+							
+							<p class="date-tilde">~</p>
+							<div class="col-md-2 date-wrap">
+								<div class="input-group">
+									<input type="text" class="form-control datepicker_common" placeholder="종료 날짜" aria-describedby="basic-addon2" name="e_date" id="e_date" value="{_e_date_value}" readonly />
+									<span class="input-group-btn">
+										<button class="btn btn-default datepicker_click" type="button" autocomplete="off" target="e_date"><span class="glyphicon glyphicon-list-alt"></span></button>
+									</span>
+								</div>										
+							</div>
+							<script>
+								
+							</script>
+						</td>
+					</tr>			
+					<tr>
+						<th scope="row">몰검색</th>
+						<td class="receive-title no-gutters">
+							{@upload_form_type_loop}
+								<label style="font-weight: normal; padding-right: 10px;"><input type="checkbox" name="upload_form_type[]" value="{.value_}" {_checked['upload_form_type'][.value_]}>{.value_}</label>
+							{/}
+						</td>
+					</tr>			
+				</tbody>
+			</table>
+		</div>
+		<div class="text-center table-btn-group">
+			<button class="btn btn-primary">검색</button>
+			<button class="btn btn-default" onclick="location.href ='sales_list.php'; return false;">초기화</button>
+		</div>
+		</form>
+	</div>			
+</div>
+
+
+{/}
+
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="common-table-wrapper">
+			<table class="table common-table">
+				<caption>
+					<div class="input-group col-lg-12 common-table-search2">
+						<span class="common-table-result"><!--총 <b>{=number_format(pg->recode['total'])}</b>건--></span>
+						<div class="input-group common-table-search">
+							<!-- <input type="text" class="form-control" placeholder="결과내 검색">
+							<span class="input-group-btn"><button class="btn btn-primary" type="button">검색</button></span> -->
+						</div>
+					</div>
+				</caption>
+				<colgroup>
+					<col />
+					<col width="3%" />
+					<col />
+					<col width="6%" />
+					<col width="6%" />
+					<col width="6%" />
+					<col width="6%" />
+					<col width="6%" />
+					<col width="6%" />
+					<col width="6%" />
+					<col width="6%" />
+					<col width="6%" />
+					<col width="6%" />
+					<col width="6%" />
+					<col width="6%" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th rowspan="2">몰명</th>
+						<th rowspan="2">No</th>
+						<th rowspan="2">쇼핑몰</th>
+						<th colspan="2">주문</th>
+						<th colspan="2">취소</th>
+						<th colspan="2">반품</th>
+						<th colspan="2">순매출</th>
+						<th colspan="2">총이익</th>
+						<th colspan="2">판매수수료</th>			
+					</tr>
+					<tr>
+						<th>수량</th>
+						<th>금액</th>
+						<th>수량</th>
+						<th>금액</th>
+						<th>수량</th>
+						<th>금액</th>
+						<th>수량</th>
+						<th>금액</th>
+						<th>이익액</th>
+						<th>이익율(%)</th>
+						<th>수수료</th>
+						<th>(%)</th>
+					</tr>
+				</thead>
+				<tbody>
+					{@loop}					
+						{@.value_}
+						<tr>							
+							{?..index_=='0'}<td rowspan="{=count(.value_)}">{.key_}</td>{/}
+							<td>{..no}</td>
+							<td>{..key_}</td>
+							<td>{=number_format(..order_quantity)}</td>
+							<td>{=number_format(..order_price)}</td>
+							<td><a style="cursor: pointer;" onclick="popup('sales_cancel_pop.php?mall_no={..mall_no}&s_date={_s_date_value}&e_date={_e_date_value}','','1100','900')">{=number_format(..cancel_quantity)}</a></td>
+							<td>{=number_format(..cancel_price)}</td>
+							<td>{=number_format(..return_quantity)}</td>
+							<td>{=number_format(..return_price)}</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>								
+						</tr>
+						{/}
+					{/}
+					<tr>
+						<td colspan="3">합계</td>
+						<td>{=number_format(_sumOrderQuantity)}</td>
+						<td>{=number_format(_sumOrderPrice)}</td>
+						<td>{=number_format(_sumCancelQuantity)}</td>
+						<td>{=number_format(_sumCancelPrice)}</td>
+						<td>{=number_format(_sumReturnQuantity)}</td>
+						<td>{=number_format(_sumReturnPrice)}</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<script>
+
+document.title="{_page_title}";
+
+</script>
+{#footer}

@@ -1,0 +1,43 @@
+<table border="1">
+	<tr>
+		<td>주문번호</td>
+		<td>쇼핑몰</td>
+		<td>운송장번호</td>
+		<td>수령인</td>
+		<td>수령인 우편번호</td>
+		<td>수령인 주소</td>
+		<td>수령인 전화번호</td>
+		<td>수령인 핸드폰</td>
+		<td>매입상품명</td>
+		<td>수량</td>
+		<td>배송메세지</td>
+		<td>총 결제금액</td>
+		<td>주문자명</td>
+		<td>품목번호</td>
+		<td>품목별 주문번호</td>
+		<td>판매처코드</td>
+		<td>선착불구분자</td>
+	</tr>
+
+{@loop}
+<tr>
+	<td style='mso-number-format:"\@";'>{.ordno}</td>
+	<td>{.company_name}</td>
+	<td></td>
+	<td>{.receiver}</td>
+	<td style='mso-number-format:"\@";'>{.zipcode}</td>
+	<td>{.address}</td>
+	<td style='mso-number-format:"\@";'>{.buyer_mobile}</td>
+	<td style='mso-number-format:"\@";'>{.mobile}</td>
+	<td style='mso-number-format:"\@";'>{.goodsnm}</td>
+	<td>{.order_num}</td>
+	<td>{.order_memo}</td>
+	<td style='mso-number-format:"\@";'>{.settle_price}</td>
+	<td>{.buyer}</td>
+	<td></td>
+	<td></td>
+	<td>{.mall_code}</td>
+	<td>3</td>
+</tr>
+{/}
+</table>

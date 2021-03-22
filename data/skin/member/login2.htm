@@ -1,0 +1,14 @@
+{#header}
+<div id="mem_wrap">
+<form name="frm" action="login_ok.php" method="post" >
+	<input type="hidden" name="mode" value="mail_chk">
+	<input type="hidden" name="mno" value="{_SESSION['login_no']}">
+
+	<div class="mem_div1">
+		<div>2차인증(Email)<br>* 가입시 등록된 이메일로 인증번호가 발송되었습니다.</div>
+		<div><input type="text" name="code" value="" size="120" maxlength="120" style="width:100%" placeholder="인증번호" tabindex="1" required></div>
+		<div class="text_right"><button class="btn btn-sm btn-lg btn-primary">인증하기</button></div>
+	</div>
+</div>
+</form>
+{#footer}

@@ -1,0 +1,57 @@
+{#header}
+<style type="text/css">
+
+
+</style>
+<div class="goods_wrap" >
+	<div style="margin:0 auto;float:none;" class="col-xs-11 col-sm-11 col-md-8 col-lg-8 ">
+		
+		<div class="line_model hidden-xs hidden-sm" >
+			{@ model_line}
+			<div style="text-align:center;">
+				<div><a href="../goods/goods_view.php?goodsno={.no}"><img src="{.img_url}" alt="" style="width:150px"></a></div>
+				<div>{.modelstock_}</div>
+				<div>￦{=number_format(.wd_marketprice)}</div>
+			</div>
+			{/}
+		</div>
+
+		<p><img src="{img_url}" alt="" style="width:100%;max-width:500px"></p>
+		<p style="border-bottom:1px solid #ccc;margin-top:30px;text-align:right;padding-bottom:10px;">{modelstock_}&nbsp;&nbsp;&nbsp;&nbsp;￦{=number_format(wd_marketprice)}</p>
+		<p><img src="{img_detail_url}" alt=""  style="width:100%;max-width:700px"></p>
+	</div>
+</div>
+
+<div class="line_model_bottom visible-xs pull-left">
+	<div class="lm_arrow" style="background:url('../data/skin/img/m_under_bg.png') repeat-x"><img src="../data/skin/img/m_under_up_02.png" alt=""></div>
+	<div class="lm_open">RELATED ITEM</div>
+	<div class="lm_goods">
+		{@ model_line}
+		<div class="lm_goods_wrap"><a href="../goods/goods_view.php?goodsno={.no}"><img src="{.img_url}" alt="" style="width:100%"></a></div>
+		{/}
+	</div>
+</div>
+
+
+<script type="text/javascript">
+
+$(function(){
+	$(".lm_arrow ,.lm_open").click(function(){
+
+		$(".lm_goods").slideToggle("slow");
+	});
+	
+})
+
+$(window).scroll(function(){
+
+	if( $(document).height() - ($(window).scrollTop() +$(window).height() ) <= 100){
+		$(".line_model_bottom").removeClass("visible-xs").css("display","none");
+	}else{
+		$(".line_model_bottom").addClass("visible-xs").css("display","block");
+	}
+
+})
+
+</script>
+{#footer}

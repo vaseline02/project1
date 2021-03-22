@@ -1,0 +1,49 @@
+{#header}
+<h1 class="page_title">멤버관리</h1>
+
+<hr>
+
+<div><button type="button" class="btn btn-sm btn-primary" onclick="popup('member_reg.php','member_reg','1100','900')">멤버등록</button></div>
+
+
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+		<tr>
+			<th>아이디</th>
+			<th>이름</th>
+			<th>이메일</th>
+			<th>모바일</th>
+			<th>직급</th>
+			<th>부서</th>
+			<th>등록일</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+	{@loop}
+		<tr>
+			<td>{.id}</td>
+			<td>{.name}</td>
+			<td>{.email}</td>
+			<td>{.mobile}</td>
+			<td>{.position}</td>
+			<td>{.team}-{.team_detail}</td>
+			<td>{.join_time}</td>
+			<td><button type="button" class="btn btn-sm btn-warning" onclick="popup('member_reg.php?m_no={.no}','member_reg','1100','900')">정보수정</button></td>
+		</tr>
+	{/}
+	</tbody>
+</table>
+
+
+<script>
+document.title="멤버관리";
+
+
+function popup1(src,name,width,height)
+{
+	window.open(src,name,'width=300,height=300,scrollbars=1,resizable=1');
+}
+
+</script>
+{#footer}

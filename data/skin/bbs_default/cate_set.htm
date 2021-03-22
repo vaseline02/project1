@@ -1,0 +1,60 @@
+{#header}
+
+<form method="post" name="cateform">
+
+<input type="hidden" name="board_id" value="{_board_id}">
+<input type="hidden" name="mode" id="mode" value="ins">
+<input type="hidden" name="sn" id="sn" >
+<table class="table table-bordered" >
+	<tr>
+		<th>분류명</th>
+		<th><button type="button" id="cate_add">+</button></th>
+	</tr>
+	{@loop}
+	<tr>
+		<td><input type="text" name="cate[{.sn}]" value="{.cate_name}"></td>
+		<td style="text-align:center">
+		{?.state=='none'}
+		<button type="button" class="btn btn-danger" onclick="del_cate('{.sn}')">삭제</button>
+		{:}
+		삭제되었습니다.
+		{/}
+		</td>
+	</tr>
+	{/}
+</table>
+
+<div style="text-align:center;margin:30px">
+<button class="btn btn-primary">등록</button>
+<button type="button" class="btn btn-primary" onclick="pop_close();">닫기</button>
+</div>
+
+</form>
+
+
+<script>
+
+function pop_close(){
+	opener.location.reload();
+	self.close();
+}
+
+function del_cate(sn){
+	if(confirm('삭제하시겠습니까')){
+		$("#mode").val('del');
+		$("#sn").val(sn);
+		$("form[name='cateform']").submit();
+	}
+}
+
+
+$(function(){
+	$("#cate_add").click(function(){
+		$(".table-bordered").append("<tr><td><input type='text' name='add_cate[]' value=''></td><td></td></tr>");
+	});
+
+});
+</script>
+
+
+{#footer}

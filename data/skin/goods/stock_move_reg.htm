@@ -1,0 +1,94 @@
+{#header}
+<div class="row">
+	<div class="col-lg-12 statusbox-header"><h3>{_page_title}<!--<span>Customer Service Management</span>--></h3></div>
+</div>
+
+<form method="post" id="main_form">
+<input type="hidden" name="mode" value="move">
+<input type="hidden" name="no" value="{data['no']}">
+<input type="hidden" name="goodsnm" value="{data['goodsnm']}">
+<input type="hidden" name="chk_cnt" value="0">
+	<div class="row">
+		<div class="col-lg-12">			
+			<div class="panel panel-default panel-stock margin20">
+				<table class="table fileload-list-small">
+					<caption>
+						<div class="input-group col-lg-12 fileload-list-small-title">
+							<span class="fileload-list-small-result"><b></b></span>					
+							<div class="input-group fileload-list-small-button">
+								<span class="input-group-btn"><div class="btn btn-primary checkForm">이동</div></span>
+							</div>
+							
+						</div>
+					</caption>
+					<colgroup>
+						<col width="15%" />
+						<col width="30%" />
+						<col width="15%" />
+						<col width="30%" />						
+					</colgroup>
+					<tbody>
+						
+						<tr>
+							<th scope="row">재고이동</th>
+							<td class="receive-title no-gutters">
+								<select name="s_cnt" class="s_change">
+									<option value="">== 차감 ==</option>
+									{@_codedata}
+									<option value={.no} data-cnt={.cnt} {?!.cnt}disabled{/}>{.cd}({.cnt})</option>
+									{/}
+								</select>
+								<select name="e_cnt">
+									<option value="">== 증가 ==</option>
+									{@_codedata}
+									<option value={.no}>{.cd}({.cnt})</option>
+									{/}
+								</select>
+								<input type="text" name="moveCnt" style="width:70px;" placeholder="수량">
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">메모</th>
+							<td class="receive-title no-gutters">
+								<textarea name="memo" style="width:100%; height:100px;"></textarea>
+							</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</form>
+
+<script>
+document.title="{_page_title}";
+$(".checkForm").click(function(){
+	var scnt=$("select[name='s_cnt']").val();
+	var ecnt=$("select[name='e_cnt").val();
+	var movecnt=$("input[name='moveCnt']").val();
+	
+	if(!scnt){
+		alert('차감위치를 선택해주세요.');
+		return false;
+	}else if(!ecnt){
+		alert('증가위치를 선택해주세요.');
+		return false;
+	}else if(!movecnt){
+		alert('수량을 등록해주세요.');
+		return false;
+	}else if($("input[name='chk_cnt']").val()<movecnt){
+		alert('차감될 위치의 재고가 부족합니다.');
+		return false;
+	}else{
+		if(confirm('재고이동을 하시겠습니까?')){
+			$("form[id='main_form']").submit();
+		}
+	}
+});
+$(".s_change").change(function(){
+	$("input[name='chk_cnt']").val($(this).find("option:selected").data('cnt'));
+});
+
+</script>
+{#footer}

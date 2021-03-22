@@ -1,0 +1,75 @@
+/* NanumBarunGothic */
+@font-face{
+    font-family:'NanumBarunGothic';
+    font-style:normal;
+    font-weight:normal;
+    src:url('./nanumbarungothic/NanumBarunGothic.eot');
+    src:local('☺'), url('./nanumbarungothic/NanumBarunGothic.woff') format('woff'), 
+    	url('./nanumbarungothic/NanumBarunGothic.ttf') format('truetype')
+}
+@font-face{
+    font-family:'NanumBarunGothicBold';
+    font-style:normal;
+    font-weight:normal;
+    src:url('./nanumbarungothic/NanumBarunGothicWebBold.eot');
+    src:local('☺'), url('./nanumbarungothic/NanumBarunGothicWebBold.woff') format('woff'), 
+    	url('./nanumbarungothic/NanumBarunGothicWebBold.ttf') format('truetype')
+}
+/* Roboto */
+@font-face {
+    font-family:'Roboto-Medium';
+    font-style:normal;
+    font-weight:normal;
+    src:url('./roboto/Roboto-Medium.eot');
+    src:local('☺'), url('./roboto/Roboto-Medium.woff') format('woff'), 
+    	url('./roboto/Roboto-Medium.ttf') format('truetype')
+}
+@font-face {
+    font-family:'Roboto-Regular';
+    font-style:normal;
+    font-weight:normal;
+    src:url('./roboto/Roboto-Regular.eot');
+    src:local('☺'), url('./roboto/Roboto-Regular.woff') format('woff'), 
+    	url('./roboto/Roboto-Regular.ttf') format('truetype')
+}
+/* Notokr */
+@font-face {
+	font-family: 'Notokr-light';
+	font-style: normal;
+	font-weight: 100;
+	src: url('./notokr/notokr-light.eot');
+	src: local('☺'), url('./notokr/notokr-light.eot?#iefix') format('embedded-opentype'), 
+		url('./notokr/notokr-light.woff2') format('woff2'), url('./notokr/notokr-light.woff') format('woff'), 
+		url('./notokr/notokr-light.ttf') format('truetype'), url('./notokr/notokr-light.svg#notokr-light') format('svg')
+}
+ 
+@font-face {
+	font-family: 'Notokr-regular';
+	font-style: normal;
+	font-weight: 300;
+	src: url('./notokr/notokr-regular.eot');
+	src: local('☺'), url('./notokr/notokr-regular.eot?#iefix') format('embedded-opentype'),
+		url('./notokr/notokr-regular.woff2') format('woff2'), url('./notokr/notokr-regular.woff') format('woff'),
+		url('./notokr/notokr-regular.ttf') format('truetype'), url('./notokr/notokr-regular.svg#notokr-regular') format('svg')
+}
+ 
+@font-face {
+	font-family: 'Notokr-medium';
+	font-style: normal;
+	font-weight: 500;
+	src: url('./notokr/notokr-medium.eot');
+	src: local('☺'), url('./notokr/notokr-medium.eot?#iefix') format('embedded-opentype'),
+		url('./notokr/notokr-medium.woff2') format('woff2'), url('./notokr/notokr-medium.woff') format('woff'),
+		url('./notokr/notokr-medium.ttf') format('truetype'), url('./notokr/notokr-medium.svg#notokr-medium') format('svg')
+}
+ 
+@font-face {
+	font-family: 'Notokr-bold';
+	font-style: normal;
+	font-weight: 700;
+	src: url('./notokr/notokr-bold.eot');
+	src: local('☺'),
+		url('./notokr/notokr-bold.eot?#iefix') format('embedded-opentype'),
+		url('./notokr/notokr-bold.woff2') format('woff2'), url('./notokr/notokr-bold.woff') format('woff'),
+		url('./notokr/notokr-bold.ttf') format('truetype'), url('./notokr/notokr-bold.svg#notokr-bold') format('svg')
+}

@@ -1,0 +1,87 @@
+{#header}
+<div class="col-lg-12 statusbox-header"><h3>{_page_title}<span></span></h3></div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="common-table-wrapper">
+            <table class="table common-table" border="{_xls_border}">
+                {?_print_xls!=1}
+                <caption>
+                    <div class="input-group col-lg-12 common-table-search2">
+                        <span class="common-table-result">총 <b>{=number_format(count(loop))}</b>건</span>
+                        <div class="input-group common-table-search">
+                        </div>
+                    </div>
+                </caption>                
+                <colgroup>
+                    <col />
+                    <col />
+                    <col/>
+                </colgroup>
+                {/}
+                <thead>
+                    <tr>
+						<th>수량</th>
+                        <th>금액</th>
+						<th>입예수량</th>
+                        <th>입예금액</th>
+                        <th>총수량</th>
+                        <th>총금액</th>
+                    </tr>
+                </thead>
+                <tbody>
+					<tr>
+						<td>{=number_format(_topc_totcnt)}</td>
+						<td>{=number_format(_topc_totprice)}</td>
+						<td>{=number_format(_tops_totcnt)}</td>
+						<td>{=number_format(_tops_totprice)}</td>
+						
+						<td>{=number_format(_top_totcnt)}</td>
+						<td>{=number_format(_top_totprice)}</td>
+					</tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div>&nbsp;</div>
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	{?_print_xls!=1}
+	<colgroup>	
+		<col/><!-- 브랜드 -->
+		<col/><!-- 분류 -->
+		<col/><!-- 이미지-->	
+	</colgroup>
+	{/}
+	<thead>
+		<tr>
+			<th>브랜드명</th>
+			<th>수량</th>
+			<th>금액</th>
+			<th>입예수량</th>
+			<th>입예금액</th>
+			<th>총수량</th>
+			<th>총금액</th>
+		</tr>
+	</thead>
+	
+	<tbody>
+	{ @loop }
+		<tr>
+			<td>{.value_}</td>
+			<td>{=number_format(_sumcnt[.value_]['c'])}</td>
+			<td>{=number_format(_sumprice[.value_]['c'])}</td>
+			<td>{=number_format(_sumcnt[.value_]['s'])}</td>
+			<td>{=number_format(_sumprice[.value_]['s'])}</td>
+			<td>{=number_format(_totcnt[.value_])}</td>
+			<td>{=number_format(_totprice[.value_])}</td>
+		</tr>
+	{ / }
+	</tbody>
+	
+</table>
+<script>
+document.title="{_page_title}";
+
+</script>
+{#footer}

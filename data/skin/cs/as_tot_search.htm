@@ -1,0 +1,91 @@
+{#header}
+<style>
+.open_link{cursor:pointer}
+</style>
+<div class=" statusbox-header"><h3>{_page_title}<!--<span>Customer Service Management</span>--></h3></div>
+<form method="get">
+	<table class="table table-bordered" >
+		<tr>
+			<th>통합검색</th>
+			<td>
+				<input type="text" name="s_total" value="{_GET['s_total']}" style="width:300px;">
+				<label style="font-weight: normal;"><input type="checkbox" name="schedule_3" value="Y" {_checked['schedule_3']['Y']}> 3일이하 미처리건</label>			
+			</td>
+		</tr>		
+	</table>
+	<center>
+		<button class="btn btn-sm btn-primary" id="">검 색</button>
+	</center>
+</form>
+<hr>
+
+<form method="post" onsubmit="return checkForm('2');">
+
+	<div class="col-lg-12">
+		<div class="row">
+		<div class="common-table-wrapper">
+			<table class="table common-table">
+				<caption>
+					<div class="input-group col-lg-12 common-table-search2">
+						<!--<span class="common-table-result">총 <b>{=number_format(pg->recode['total'])}</b>건</span>-->
+						<div class="input-group common-table-search">
+							<!-- <input type="text" class="form-control" placeholder="결과내 검색">
+							<span class="input-group-btn"><button class="btn btn-primary" type="button">검색</button></span> -->
+						</div>
+					</div>
+				</caption>
+				<colgroup>
+					
+				</colgroup>
+				<thead>
+					<tr>
+						<th>접수번호</th>
+						<th>몰명</th>
+						<th>주문번호</th>
+						<th>접수자</th>
+						<th>옵션명</th>
+						<th>수량</th>
+						<th>단계</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					{@loop}
+						<tr>			
+							<td data-link="as_list.php?search_no={.as_no}&s_as_status={.as_status}" class="open_link">{.as_no}</td>
+							<td>{.mall_name}<br/>{.upload_form_type}</td>
+							<!--<td  data-link="as_list.php?s_as_status={.as_status}" class="open_link">{.ordno}</td>-->
+							<td>{.ordno}</td>
+							<td>{.receipt_name}</td>
+							<td>{.as_goodsnm}</td>
+							<td>1</td>
+							<td>{.as_status}단계</td>
+							<td></td>
+						</tr>
+					{/}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+
+</form>
+<script>
+document.title="{_page_title}";
+
+$(function(){
+	
+	$(".open_link").click(function(){
+		var link=$(this).data("link");
+		if(link){
+			opener.location.href=link;
+		}else{
+
+		}
+	});
+});
+
+</script>
+{#footer}

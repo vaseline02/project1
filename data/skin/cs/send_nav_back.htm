@@ -1,0 +1,113 @@
+{?_print_xls!=1}
+<?
+$qry="select 
+cd.send_type,cd.return_confirm,ci.return_type,count(cd.no) as cnt
+from cs_info ci 
+left join cs_detail cd on (ci.no=cd.cs_info_no)
+where cd.send_type between '1' and '90' 
+group by cd.send_type,cd.return_confirm, ci.return_type";
+
+$res = {_db}->query($qry);
+foreach($res->results as $v){
+    if($v['send_type']=='90')$v['send_type']='1';
+    
+
+    //반품(회수확인)
+    if($v['return_type']=='60' && $v['send_type']=='2'){
+        if($v['return_confirm']){
+            $data_nav[$v['send_type']]['return']+=$v['cnt'];
+        }else{
+            $data_nav[$v['send_type']][$v['return_confirm']]+=$v['cnt'];
+        } 
+        if($v['return_confirm']=='0')$data_nav['1']+=$v['cnt'];
+    //교환(회수확인)
+    }else if($v['return_type']=='70' && $v['send_type']=='2'){
+        if($v['return_confirm']){
+            $data_nav[$v['send_type']]['exchange']+=$v['cnt'];
+        } else {
+            $data_nav[$v['send_type']][$v['return_confirm']]+=$v['cnt'];
+        }
+        if($v['return_confirm']=='0')$data_nav['1']+=$v['cnt'];
+    //교환,반품(회수확인제외)
+    }else if($v['return_type']=='60' || $v['return_type']=='70'){
+        $data_nav[$v['send_type']]+=$v['cnt'];
+    //품절재주문
+    }else if($v['return_type']=='80'){
+        $data_nav[$v['send_type']]+=$v['cnt'];
+    }
+}
+$qry="select count(ad.no) as as_cnt from as_info ai 
+left join as_detail ad on (ai.no=ad.info_no)
+where as_status='5'";
+
+$res = {_db}->query($qry);
+$as_count=$res->results[0]['as_cnt'];
+?>
+<style>
+
+.table_order_nav {width:100%;border-collapse: collapse;border:1px solid #ccc;margin-bottom:20px;}
+.table_order_nav td{padding:20px;text-align:center}
+.table_order_nav div{padding:10px;border:1px solid #ccc;text-align:center;position:relative;margin:5px 0px}
+.table_order_nav div a{display:block;width:100%;}
+.table_order_nav div a:after{display:block; content:""; position:absolute;bottom:0; left:50%; width:0%; height:6px; background:#4c89cd; -webkit-transform:translate3d(-50%, 0, 0); -moz-transform:translate3d(-50%, 0, 0); -o-transform:translate3d(-50%, 0, 0); -ms-transform:translate3d(-50%, 0, 0); transform:translate3d(-50%, 0, 0); -webkit-transition:all 0.3s ease-out; -moz-transition:all 0.3s ease-out; -ms-transition:all 0.3s ease-out; -o-transition:all 0.3s ease-out; transition:all 0.15s ease-out;	}
+.table_order_nav div a:hover:after{width:90%}
+
+.table_order_nav_sub {width:100%;border-collapse: collapse; list-style-type: none;}
+.table_order_nav_sub td{padding:0px;text-align:center}
+</style>
+
+<table class="table_order_nav">
+    <div>
+        <!-- <tr><th colspan=5 style='padding: 10px 10px 0px 20px;'>※교환&반품</th></tr> -->
+        <tr>
+            <td>
+                <div id="nav_div1" ><a href="send_reception.php">1.접수 (<?=$data_nav['1']?$data_nav['1']:'0'?>)</a></div>
+            </td>
+            <td>>></td>
+            <td>
+                <div id="nav_div1_1" ><a href="send_check.php">2.회수확인(바코드) (<?=$data_nav['2']['0']?$data_nav['2']['0']:'0'?>)</a></div>
+            </td>
+            <td>>></td>
+            <td>
+                <div id="nav_div2"><a href="send_return.php">3.회수확인(반품) (<?=$data_nav['2']['return']?$data_nav['2']['return']:'0'?>) </a></div>
+                
+                <table class="table_order_nav_sub">
+                    <tr>
+                        <td><div id="nav_div2_b"><a href="send_exchange.php">3.회수확인(교환) (<?=$data_nav['2']['exchange']?$data_nav['2']['exchange']:'0'?>) </a></div></td>
+                        <td>>></td>
+                        <td><div id="nav_div3"><a href="send_exchange_b.php">4.발송(교환) (<?=$data_nav['3']?$data_nav['3']:'0'?>) </a></div></td>
+                    </tr>
+                </table>
+                
+            </td>
+            <td>>></td>
+            
+            <td>
+                <div id="nav_div4"><a href="send_close.php">처리완료 (<?=$data_nav['4']?$data_nav['4']:'0'?>)</a></div>
+            </td>
+        </tr>
+    </div>
+    <div>
+        <tr style="border-top:1px solid #ccc;">
+            <td><div id="nav_div2_c"><a href="etc_order.php">품절재주문 (<?=$data_nav['20']?$data_nav['20']:'0'?>) </a></div></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </div>
+    <div>
+        <tr style="border-top:1px solid #ccc;">
+            <td><div id="nav_div3_c"><a href="send_as.php">AS발송 (<?=$as_count?>) </a></div></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </div>
+</table>
+{/}

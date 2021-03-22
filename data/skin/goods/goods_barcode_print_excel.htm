@@ -1,0 +1,28 @@
+<table id="" class="display display_dt barcodeTable" border="{_xls_border}">
+    <thead>
+        <tr>
+            <th></th>			
+            <th>모델명</th>
+            <th>바코드</th>
+            <th></th>
+            <th>모델명</th>
+            <th>모델명</th>
+            <th>브랜드</th>
+            <th>출력수량</th>
+        </tr>
+    </thead>
+    <tbody>
+    {@loop}
+        <tr>
+            <td></td>
+            <td style='mso-number-format:"\@";'>{.goodsnm}</td>
+            <td style='mso-number-format:"\@";'>{.barcode}</td>
+            <td></td>
+            <td style='mso-number-format:"\@";'>{.goodsnm}</td>
+            <td style='mso-number-format:"\@";'>{.goodsnm}</td>
+            <td>{.brand_img_folder}</td>
+            <td>{.quantity}</td>
+        </tr>
+    {/}
+    </tbody>
+</table>

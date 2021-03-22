@@ -1,0 +1,173 @@
+{#header}
+<h1>{_page_title}</h1>
+
+{?_print_xls!=1}
+<form enctype="multipart/form-data" method="post" onsubmit="return chkform();">
+<table class="table table-bordered" >
+    <tr>
+        <th>엑셀업로드</th>
+        <td width=40%>
+			<input type="file" name="excelFile[]" required/><button class="btn btn-sm btn-primary" >업로드</button>
+			<button type="button" class="btn btn-sm btn-success" onclick="location.href='../xls_file/quick_upload.xls'">양식 다운로드</button>
+		</td>
+		
+        <td style="text-align:right">
+			<div class="btn btn-sm btn-primary" onclick="popup('stock_quick_reg.php','','1100','900')">등록하기</div>			
+			<button type="button" class="btn btn-sm btn-success" id="quick_print_xls">선택값 엑셀 다운로드</button>
+		</td>
+		
+    </tr>
+</table>
+</form>
+{/}
+
+
+<!-- <div class="table_title" >일반접수</div> -->
+<form method="post" id="quickForm" name="quickForm">
+<input type="hidden" name="mode" value="confirm">
+<input type="hidden" name="no" value="">
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<colgroup>
+		<col width="3%" />
+		<col width="20%"/>
+		<col width="3%"/>
+		<col width="20%"/>
+		<col width="5%"/>
+		<col width="5%"/>
+		<col width="5%"/>
+		<col width="5%"/>
+		<col width="10%"/>
+		<col width="5%"/>
+		<col width="5%"/>
+		<col width="10%" />
+
+	</colgroup>
+	<thead>
+		<tr>			
+			<th data-orderable="false"><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>			
+			<th>모델명</th>
+			<th>수량</th>
+			<th data-orderable="false">사유</th>
+			<th>차감위치</th>
+			<th>최초작성자</th>
+			<th>등록일</th>
+			<th>요청자</th>
+			<th>요청일</th>
+			<th>등록위치</th>
+			<th>수령확인자</th>
+			<th>수령확인일</th>
+			<!--<th data-orderable="false"></th>-->
+		</tr>
+	</thead>	
+	<tbody>
+		{@loop}
+		<tr>			
+			<td>				
+				{?!.confirm_admin_no}<input type="checkbox" class="chk_no" name="chk_no[]" value="{.no}" data-request="{.request_admin_no}">{/}
+			</td>
+			<td>{.goodsnm}</td>
+			<td>{.quantity}</td>
+			<td>{?.state}{?.state=="1"}<font color = "red">[홀드]</font>{:}<font color = "blue">[요청]</font>{/} {/}{.memo}</td>
+			<td>{.s_move}</td>
+			<td>{.admin_name}</td>
+			<td>{.reg_date}</td>			
+			<td>{.request_admin_name}</td>			
+			<td>{.request_date}</td>			
+			<td>{.e_move}</td>
+			<td>{.confirm_admin_name}</td>
+			<td>{.confirm_admin_date}</td>
+			<!--
+			<td>
+				{?!.confirm_admin_no}<div><button type="button" class="btn btn-sm btn-warning confirmCheck" data-no="{.no}" data-mode="confirm">수령확인</button></div>{/}
+			</td>-->
+			
+		</tr>
+		{/}
+	</tbody>
+</table>
+
+
+<div class="bottom_btn_box">
+	<div class="box_left">		
+		<div class="btn btn-sm btn-primary confirmCheck" data-mode='request_confirm' data-name="요청">요청</div>
+	</div>
+	{?_h_control['order']}
+	<div  class="box_right">		
+		<select name="place_code" id="" class="place_code" >
+			{@_codedata}
+				<option value="{.no}">{.cd}</option>
+			{/}
+		</select>
+		<div class="btn btn-sm btn-primary confirmCheck" data-mode='v_confirm' data-name="수령확인">수령확인</div>
+		
+	</div>
+	{/}
+</div>
+
+</form>
+
+{?_print_xls!=1}
+<div>{pg->page['navi']} 총 데이터 :{=number_format(pg->recode['total'])}</div>
+{/}
+
+<script>
+
+document.title="{_page_title}";
+$("#nav_div{_GET['s_as_status']}").addClass('active');
+
+$(".confirmCheck").click(function(){
+	var requestChk=0;
+	if(($(this).data('mode')=='v_confirm' || $(this).data('mode')=='request_confirm') && !$(".chk_no").is(":checked")){
+		alert("처리할 접수건이 선택되있지않습니다.");
+		return false;
+	}
+
+	if($(this).data('mode')=='v_confirm'){
+		$(".chk_no").each(function(index, item){
+			if($(item).is(":checked")){  				
+				if(!$(this).data('request')){
+					requestChk++;					
+				}
+			}
+		});
+	}
+	if(requestChk){
+		alert("요청처리되지않은 접수건이 있습니다.");
+		return false;
+	}
+
+	if(confirm($(this).data('name')+" 하시겠습니까?")){
+		$("input[name='no']").val($(this).data('no'));
+		$("input[name='mode']").val($(this).data('mode'));
+		$("form[name='quickForm']").submit();	
+	}
+
+});
+
+/*인클루드 되어있는 페이지의 체크박스 값을 가지고 넘어가야 하기때문에 메인폼을 포스트로 날림.*/ 
+$("#quick_print_xls").click(function(){
+		
+	var file_loc='';
+	
+	file_loc="stock_quick_excel.php";	
+
+	var chk_len=$(".chk_no:checked").length;
+	if( chk_len<=0 ){
+		alert('출력할 항목을 선택해주세요.');
+		return false;
+	}else{		
+		var html='<div id="div_excel_search_val">';
+		html+='<input type="hidden" name="print_xls" value="1" >';
+		html+='</div>';	
+		$("#quickForm").append(html);
+		
+		$("#quickForm").attr("action",file_loc);
+		$("#quickForm").submit();
+		$("#quickForm").attr("action","");
+		$("#div_excel_search_val").remove();
+	}
+
+});
+
+</script>
+{#footer}

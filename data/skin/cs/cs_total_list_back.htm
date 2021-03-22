@@ -1,0 +1,114 @@
+{#header}
+<h1>{_page_title}</h1>
+
+<hr>
+<style>
+.search_td_width{width:380px;}
+.mallLabel{ display:inline-block; width:200px; line-height:23px;}
+</style>
+
+{?_print_xls!=1}
+<form method="get">
+	<table class="table table-bordered" >
+
+		<tr>
+            <th>통합검색</th>
+			<td>
+                <input type="text" name="total_search" id="total_search" value="{_GET['total_search']}" style="width:250px;">
+				<div>* 성함(구매자,수령자,접수자), 연락처, 주문번호, 송장번호, 모델명</div>
+				<div>
+					<label style="font-weight: normal;"><input type="checkbox" name="cslist" value=1 {_checked['cslist']['1']}>CS</label>
+					<!-- <label style="font-weight: normal;"><input type="checkbox" name="returnlist" value=1 {_checked['cslist']['1']}>교환/반품</label> -->
+					<label style="font-weight: normal;"><input type="checkbox" name="aslist" value=1 {_checked['aslist']['1']}>AS</label>
+					<label style="font-weight: normal;"><input type="checkbox" name="returnlist" value=1 {_checked['returnlist']['1']}>교환,반품</label>
+					<label style="font-weight: normal;"><input type="checkbox" name="handlist" value=1 {_checked['handlist']['1']}>수기접수</label>
+				</div>
+            </td>
+            
+			<th>주문일자</th>
+			<td>
+                <input type="text" name="s_date" id="s_date" class="datepicker_common" autocomplete="off" value="{_s_date_value}"> ~ 
+                <input type="text" name="e_date" id="e_date" class="datepicker_common" autocomplete="off" value="{_e_date_value}">
+                <div style='padding-top:5px'>
+                    <span type="button" class="btn btn-sm btn-warning dayChange" data-int='0' data-type='day'>오늘</span>
+                    <span type="button" class="btn btn-sm btn-warning dayChange" data-int='7' data-type='day'>7일</span>
+                    <span type="button" class="btn btn-sm btn-warning dayChange" data-int='15' data-type='day'>15일</span>
+                    <span type="button" class="btn btn-sm btn-warning dayChange" data-int='1' data-type='month'>1개월</span>
+                    <span type="button" class="btn btn-sm btn-warning dayChange" data-int='3' data-type='month'>3개월</span>
+                    <span type="button" class="btn btn-sm btn-warning dayChange" data-int='1' data-type='year'>1년</span>
+                </div>
+            </td>
+			
+		</tr>
+		
+	</table>
+	<center>
+		<button class="btn btn-primary" id="">검 색</button>
+	</center>
+</form>
+
+{/}
+
+<table id="" class="display display_dt" style="width:100%;" border="{_xls_border}">
+	<thead>
+		<tr>			
+			<th width='50'></th>
+			<th width='100'>등록구분</th>
+			<th width='50'>몰명</th>
+			<th width='100' data-orderable="false">주문번호</th>
+			<th data-orderable="false">이미지</th>
+			<th width='100'>옵션명</th>
+			<th width='50'>수량</th>
+			<th width='50'>가격</th>
+			<th width='50' data-orderable="false">구매자<br>수령자</th>
+			<th width='100' data-orderable="false">연락처<br>모바일</th>
+			<th data-orderable="false">주소</th>
+			<th width='100' data-orderable="false">송장번호</th>
+			<th width='100'>주문일자</th>
+			<th width='100'>주문상태</th>
+			<th width='100'>작성자</th>
+			<th data-orderable="false"></th>
+		</tr>
+	</thead>	
+	<tbody>
+		{@loop}
+		<tr class=" table_tr1">			
+			<td>
+				{?.asCheck}<div style="padding:0px 3px 0px 3px; color:#fff; background-color: #337ab7; font-size: 8px; text-align: center;border-radius: 4px;">AS</div>{/}
+				{?.csCheck}<div style="padding:0px 3px 0px 3px; color:#fff; background-color: #f0ad4e; font-size: 8px; text-align: center;border-radius: 4px;">CS</div>{/}
+			</td>
+			<td>{.qry_type}</td>
+			<td>{.mall_name}</td>
+			<td>{.orderno} {?.copy_seq>0}복사본{/}</td>
+			<td class="td_img">{.img_url}</td>
+			<td>{.goodsnm}</td>
+			<td>{.quantity}</td>
+			<td>{=number_format(.price)}</td>
+			<td>{.name1}<br/>{.name2}</td>
+			<td>{.mobile1}<br/>{.mobile2}</td>
+			<td>{.address}</td>
+			<td>{?.invoice!=0}{.delivery_name} ({.invoice}){/}</td>
+			<td>{.date}</td>
+			<td>{_cfg_order_step[.step]}{?.step2}<div style="color: red;">({_cfg_order_step2[.step2]})</div>{/}</td>
+			<td>{?.admin_no}{.name}<br>({.id}){/}</td>
+			<td>
+				{ ?.qry_type=="주문" }
+				<button type="button" class="btn btn-sm btn-warning" onclick="popup('cs_reg.php?ordno={.orderno}&mall_no={.mall_no}','','1100','900')">CS등록</button>
+				{ :.qry_type=="수기접수" }
+				<button type="button" class="btn btn-sm btn-warning" onclick="popup('as_reg.php?as_no={.no}','','1100','900')">AS수정</button>
+				{ / }
+			</td>		
+		</tr>
+	{/}
+	</tbody>
+</table>
+
+{?_print_xls!=1}
+<div>{pg->page['navi']} 총 데이터 :{=number_format(pg->recode['total'])}</div>
+{/}
+<script>
+
+document.title="{_page_title}";
+
+</script>
+{#footer}

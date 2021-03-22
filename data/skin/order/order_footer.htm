@@ -1,0 +1,11 @@
+<script>
+	$("#print_xls").click(function(){
+		
+		$("input[name='print_xls']").val("1");
+		$("#main_form").attr("action","order_settle_excel.php");
+		$("#main_form").submit();
+		$("input[name='print_xls']").val("0");
+		$("#main_form").attr("action","");
+		
+	});
+</script>

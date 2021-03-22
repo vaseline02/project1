@@ -1,0 +1,369 @@
+{#header}
+{?_print_xls!=1 }
+<div class="row"><div class="col-lg-12 statusbox-header"><h3>{_page_title}<!--<span>Customer Service Management</span>--></h3></div></div>
+<form method="POST" id="compForm">
+<input type="hidden"name="print_xls" value="">
+    <div class="panel panel-default panel-stock margin20">
+        <table class="table fileload-list-small">
+            <colgroup>
+                <col width="15%" />
+                <col width="35%" />
+                <col width="15%" />
+                <col width="35%" />
+            </colgroup>
+            <tbody>
+                <tr>
+                    <th scope="row">주문처리완료일</th>
+                    <td colspan="3" class="receive-title no-gutters">
+                        
+                        <div class="col-lg-4 btn-group-sm" role="group" aria-label="Small button group">
+                            <button type="button" class="btn btn-default dayChange" data-int='0' data-type='day'>오늘</button>
+                            <button type="button" class="btn btn-default dayChange" data-int='3' data-type='day'>3일</button>
+                            <button type="button" class="btn btn-default dayChange" data-int='7' data-type='day'>7일</button>
+                            <button type="button" class="btn btn-default dayChange" data-int='1' data-type='month'>1개월</button>
+                            <button type="button" class="btn btn-default dayChange" data-int='3' data-type='month'>3개월</button>
+                            <button type="button" class="btn btn-default dayChange" data-int='1' data-type='year'>1년</button>
+                            <!-- <button type="button" class="btn btn-primary">전체</button> -->
+                        </div>
+                        <div class="col-md-2 date-wrap">
+                            <div class="input-group">
+                                <input type="text" class="form-control datepicker_common" placeholder="시작 날짜" aria-describedby="basic-addon2" name="order_search_comp_sdate" id="s_date" value="{_s_date_value}"  />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default datepicker_click" type="button" autocomplete="off" target="s_date"><span class="glyphicon glyphicon-list-alt"></span></button>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <p class="date-tilde">~</p>
+                        <div class="col-md-2 date-wrap">
+                            <div class="input-group">
+                                <input type="text" class="form-control datepicker_common" placeholder="종료 날짜" aria-describedby="basic-addon2" name="order_search_comp_edate" id="e_date" value="{_e_date_value}"  />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default datepicker_click" type="button" autocomplete="off" target="e_date"><span class="glyphicon glyphicon-list-alt"></span></button>
+                                </span>
+                            </div>										
+                        </div>
+                        <script>
+                            
+                        </script>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="align-left">몰명</th>
+                    <td class="receive-title no-gutters">
+                        <select name="order_search_mall">
+                            <option value="">선택</option>
+                            <optgroup label="업로드별">
+                            {@_uplolad_mall}
+                                <option value="{.key_}" {_selected['order_search_mall'][.key_]} >=={.key_}==</option>
+                            {/}
+                            </optgroup>
+                            <optgroup label="상세">
+                                {@_uplolad_mall}
+                                    <option value="{.key_}" >=={.key_}==</option>
+                                    {@.value_}
+                                        <option value="{..key_}" {_selected['order_search_mall'][..key_]} >{..value_}</option>
+                                    {/}
+                                {/}
+                            </optgroup>
+                        </select>
+                    </td>
+                    <th scope="row" class="align-left">옵션명</th>
+                    <td class="receive-title no-gutters">                        
+                        <div class="col-xs-12"><input type="text" class="form-control" name="order_search_goodsnm" value="{_POST['order_search_goodsnm']}"></div>
+                    </td>
+                </tr>
+                <tr>                    
+                    <th scope="row" class="align-left">브랜드</th>
+                    <td class="receive-title no-gutters">
+                        <div class="col-xs-12"><input type="text" class="form-control" name="order_search_brand" id="order_search_brand" value="{_POST['order_search_brand']}"></div>
+                    </td>
+                    <th scope="row" class="align-left">고객명</th>
+                    <td class="receive-title no-gutters">
+                        <div class="col-xs-12"><input class="form-control" type="text" name="order_search_receiver" value="{_POST['order_search_receiver']}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="align-left">주문번호</th>
+                    <td class="receive-title no-gutters" colspan="3">
+                        <div class="col-xs-12">
+                            <textarea class="form-control" name="order_search_ordno" id="" cols="30" rows="3">{_POST['order_search_ordno']}</textarea>
+                        </div>
+                    </td>
+                </tr>
+				<tr>
+                    <th scope="row" class="align-left">옵션명</th>
+                    <td class="receive-title no-gutters" colspan="3">
+                        <div class="col-xs-12">
+                            <textarea class="form-control" name="order_search_goodsnm_all" id="" cols="30" rows="3">{_POST['order_search_goodsnm_all']}</textarea>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center table-btn-group">
+        <button class="btn btn-primary">검색</button>
+		<button type="button" class="btn btn-success" id="print_xls">엑셀 다운로드</button>
+		<button type="button" class="btn btn-primary" onclick="popup('order_outside_refund.php','order_outside_refund','1100','900')">환불등록</button>
+		<button type="button" class="btn btn-primary" onclick="popup('order_other_refund.php','order_other_refund','1100','900')">국내입고반품등록</button>
+        <!--<button class="btn btn-default" onclick="location.href ='order_outside_comp.php'; return false;">초기화</button>-->
+
+    </div>
+</form>
+
+<form enctype="multipart/form-data" method="post">
+<table class="table table-bordered" >
+    <tr>
+		<td >
+			<select id="excel_type">
+				<option value="">선택</option>
+				<option value="in">입고장</option>
+				<option value="out">출고장</option>
+			</select>
+			<button type="button" class="btn btn-sm btn-success" id="excel_download">엑셀다운로드</button>
+		</td>	
+		<!--
+		<td style="text-align:right">
+			<input type="text" class=" datepicker_common" placeholder="변경 날짜" aria-describedby="basic-addon2" name="comp_date" id="comp_date" readonly />
+			<button type="button" class="btn btn-sm btn-success" id="comp_change">날짜변경</button>
+			<input type="text" id="return_deli_price">
+			<button type="button" class="btn btn-sm btn-success" id="return_order">반품처리</button>
+		</td>-->
+    </tr>
+</table>
+</form>
+{/}
+
+<form method="post" id="main_form">
+<input type="hidden" name="mode" id="mode">
+<input type="hidden" name="return_deli_price" id="h_return_deli_price">
+<input type="hidden" name="sel_excel_type" id="sel_excel_type">
+<input type="hidden" name="u_comp_date" id="u_comp_date">
+<input type="hidden"name="print_xls" value="">
+
+<!--<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">-->
+
+<table id="" class="display_xscroll display nowrap" data-height="740" style="width:100%;" border="{_xls_border}">
+	<thead>
+		<tr>
+			{?_print_xls!=1}
+			<th class="sorting_disabled"><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>
+			{/}
+			<th>담당자</th>
+			<th>주문일</th>
+			<th>발주일</th>
+			<th>브랜드</th>
+			<th>주문상품명</th>
+			<th>수량</th>
+			<th>소비자가</th>
+			<th>매입단가</th>
+			<th>업체배송비</th>
+			<th>매입가*수량</th>
+			<th>합계금</th>
+			<th>비고</th>
+			<th>품절확인</th>
+			<th>판매가</th>
+			<th>쇼핑몰명</th>
+			<th>주문번호</th>
+			<th>품목코드</th>
+			<th>수령자명</th>
+			<th>우편번호</th>
+			<th>수령자주소</th>
+			<th>수령자전화번호</th>
+			<th>수령자휴대폰</th>
+			<th>주문요청사항</th>
+			<th>택배사</th>
+			<th>운송장번호</th>
+			<th>업체명</th>
+			<th>업체코드</th>
+			<th>고유번호</th>
+			
+		</tr>
+	</thead>
+	<tbody>
+	{@loop}
+		<tr>
+			{?_print_xls!=1}
+			<td>
+				<input type="checkbox" class="chk_no" name="chk_no[{.stype}][]" value="{.no}">
+				<input type="hidden" name="hid_invoice[{.no}]" value="{.invoice}">
+			</td>			
+			{/}
+			<td>{.c_mem_name}</td>
+			<td>{.reg_date}</td>
+			<td>{.mod_date}</td>
+			<td>{.brandnm}</td>
+			<td>{.goodsnm}</td>
+			<td>{?.data_type=='return'}-{/}{.order_num}</td>
+			<td>{.consumer_price}</td>
+			<td>
+				{?_print_xls!=1}
+					{?.view_type=='text'}
+						{=number_format(.purchase_price)}
+					{:}
+					<textarea name="mod_purchase_price[{.stype}][{.no}]" id="" cols="15" rows="1" class="" data-no="{.no}">{.purchase_price}</textarea>
+					{/}
+				{:}
+					{.purchase_price}
+				{/}
+			</td>
+			<td>
+				{?_print_xls!=1}
+					{?.view_type=='text'}
+						{=number_format(.ent_deli_price)}
+					{:}
+					<textarea name="mod_ent_deli_price[{.stype}][{.no}]" id="" cols="15" rows="1" class="" data-no="{.no}">{.ent_deli_price}</textarea>
+					{/}
+				{:}
+					{.ent_deli_price}
+				{/}
+			</td>
+			<td>{.purchase_price * .order_num}</td>
+			<td>{ (.purchase_price * .order_num ) + .ent_deli_price}</td>
+			<td><span style="color: red;">{.memo}</span></td>
+			<td></td>
+			<td>{.settle_price}</td>
+			<td>{.mall_name}</td>
+			<td class="text_type">{.ordno}</td>
+			<td>{.mall_key}</td>
+			<td>{.receiver}</td>
+			<td class="text_type">{.zipcode}</td>
+			<td>{.address}</td>
+			<td>{.buyer_mobile}</td>
+			<td>{.mobile}</td>
+			<td>{.order_memo}</td>
+			<td>{_delivery_list[.courier_code]['name']}</td>
+			<td class="text_type">{.invoice}</td>
+			<td>{.d_name}</td>
+			<td>{.d_code}</td>			
+			<td>{?.stype=='other'}ot-{/}{.no}</td>			
+		</tr>
+	{/}
+	</tbody>
+</table>
+
+</form>
+
+
+{?_print_xls!=1}
+
+<div class="bottom_btn_box">
+	<div class="box_left">
+		<button type="button" class="btn btn-primary btn_submit" id="info_chg">정보 변경</button>
+	</div>
+</div>
+
+
+{/}
+
+<script>
+document.title="{_page_title}";
+$('table.display_xscroll').dataTable( {
+	"aoColumnDefs": [{ 'bSortable': false, 'aTargets': ["sorting_disabled"] }],
+	"scrollCollapse": true,
+	"paging":   false,
+	"scrollY": "800px",
+    "scrollX": true,
+	"order": []
+} );
+
+$(function(){
+	$(".btn_submit").click(function(){
+		
+		var this_id = $(this).attr("id");
+		var msg='';
+
+		if( $(".chk_no:checked").length <=0 ){
+			alert('주문을 선택해주세요.');
+			return;
+		}
+		
+        if(this_id=='info_chg'){
+			msg='[정보변경]';
+		}
+
+		if(confirm(msg+'처리하시겠습니까?')){
+			
+			$("#mode").val(this_id);
+			$("#main_form").submit();
+		}
+		
+	});
+
+
+	$("#return_order").click(function(){
+		var chk_len=$(".chk_no:checked").length;
+			
+		if( chk_len<=0 ){
+			alert('반품처리할 주문을 선택해주세요.');
+			return;
+		}
+		
+		if(confirm('처리하시겠습니까?')){
+
+			$("#h_return_deli_price").val($("#return_deli_price").val());
+			$("#mode").val('return_order');
+			$("#main_form").submit();
+
+			$("#mode").val('');
+			$("#h_return_deli_price").val('');
+		}
+	});
+
+	$("#comp_change").click(function(){
+		var chk_len=$(".chk_no:checked").length;
+		
+		if( chk_len<=0 ){
+			alert('변경할 주문을 선택해주세요.');
+			return;
+		}
+		if(!$("#comp_date").val()){
+			alert('변경할 날짜를 입력해주세요.');
+			return;
+		}
+
+		if(confirm('처리하시겠습니까?')){
+			$("#u_comp_date").val($("#comp_date").val());
+			$("#mode").val('comp_change');
+			$("#main_form").submit();
+			$("#mode").val('');
+			$("#u_comp_date").val('');
+		}
+	});
+
+	
+	$("#excel_download").click(function(){
+
+		var chk_len=$(".chk_no:checked").length;
+			
+		if( chk_len<=0 ){
+			alert('출력할 주문을 선택해주세요.');
+			return;
+		}
+
+		if($("#excel_type").val()==''){
+
+			alert('출력할 타입을 선택해주세요.');
+
+			return;
+        }
+     
+		$("#sel_excel_type").val($("#excel_type").val());
+
+		$("#main_form").attr("action","order_outside_inout_excel.php");
+		$("input[name='print_xls']").val("1");
+		$("#main_form").submit();
+		$("#main_form").attr("action","");
+		$("input[name='print_xls']").val("");
+	});
+	
+	$("#print_xls").click(function(){
+		$("input[name='print_xls']").val("1");
+		$("#compForm").submit();
+		$("input[name='print_xls']").val("0");
+	});
+
+});
+</script>
+{#footer}

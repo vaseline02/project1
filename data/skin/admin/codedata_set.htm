@@ -1,0 +1,125 @@
+{#header}
+<h1>{_page_title}</h1>
+
+<hr>
+
+<table id="" style="width:100%" border="{_xls_border}">
+    <tr>
+        <td style="width:30%; vertical-align: top;">
+            <form id="codedataFormin" method="POST">
+                <input type="hidden" name="code" value="IN">
+                <input type="hidden" name="mode" value="ins">
+                <input type="hidden" name="no" value="">
+                <div style="overflow: auto; height:700px;">
+                <table class="table table-bordered">
+                    <tr>
+                        <th colspan='2'>IN</th>
+                    </tr>
+                    <tr>
+                        <th>이름</th>
+                        <th></th>
+                    </tr>
+                    
+                    {@loop.IN}
+                    <tr>
+                        <td width="100%">{.cd}</td>
+                        <td><div type="button" class="btn btn-sm btn-danger checkForm" data-id="in" data-mode="del" data-no={.no}>삭제</div></td>
+                    </tr>
+                    {/}
+                </table>
+                </div>
+                <hr>
+                <div><input type="text" style="width:85%" name="codedataName"> <div class="btn btn-primary checkForm" data-id="in"  data-mode="ins">등록</div></div>
+            </form>
+        </td>
+        <td> </td>
+        <td style="width:30%; vertical-align: top;">
+            <form id="codedataFormout" method="POST">
+                <input type="hidden" name="code" value="OUT">
+                <input type="hidden" name="mode" value="ins">
+                <input type="hidden" name="no" value="">
+                <div style="overflow: auto; height:700px;">
+                <table class="table table-bordered">
+                    <tr>
+                        <th colspan='2'>OUT</th>
+                    </tr>
+                    <tr>
+                        <th>이름</th>
+                        <th></th>
+                    </tr>
+                    
+                    {@loop.OUT}
+                    <tr>
+                        <td width="100%">{.cd}</td>
+                        <td><div type="button" class="btn btn-sm btn-danger checkForm" data-id="out" data-mode="del" data-no={.no}>삭제</div></td>
+                    </tr>
+                    {/}
+                </table>
+                </div>
+                <hr>
+                <div><input type="text" style="width:85%" name="codedataName"> <div class="btn btn-primary checkForm" data-id="out" data-mode="ins">등록</div></div>
+            </form>
+        </td>
+        <td> </td>
+        <td style="width:30%; vertical-align: top;">
+            <form id="codedataFormplace" method="POST">
+                <input type="hidden" name="code" value="PLACE">
+                <input type="hidden" name="mode" value="ins">
+                <input type="hidden" name="no" value="">
+                <div style="overflow: auto; height:700px;">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>PLACE<div style="color: red;">*PLACE 삭제시 개발팀에 문의해주세요.</div></th>
+                    </tr>
+                    <tr>
+                        <th>이름</th>
+                    </tr>
+                    
+                    {@loop.PLACE}
+                    <tr>
+                        <td width="100%">{.cd}</td>
+                        <!-- <td><div type="button" class="btn btn-sm btn-danger checkForm" data-id="place" data-mode="del" data-no={.no}>삭제</div></td> -->
+                    </tr>
+                    {/}
+                </table>
+                </div>
+                <hr>
+                <div><input type="text" style="width:85%" name="codedataName"> <div class="btn btn-primary checkForm" data-id="place" data-mode="ins">등록</div></div>
+            </form>
+        </td>
+    </tr>
+</table>
+
+<script>
+
+document.title="{_page_title}";
+
+$(".checkForm").click(function (){
+    var formName=$("form[id='codedataForm"+$(this).data('id')+"']");
+    var codeName=formName.find('input[name="codedataName"]').val();
+    var mode=$(this).data('mode');
+
+    formName.find('input[name="mode"]').val(mode);
+    
+    if(mode=='ins'){
+        if(!codeName){
+            alert('코드명을 입력해주세요.');
+            return false;
+        }else{
+            if(confirm('등록하시겠습니까?')){
+                formName.submit();
+            }
+            
+        }
+    }else if(mode=='del'){
+        formName.find('input[name="no"]').val($(this).data('no'));
+
+        if(confirm('삭제하시겠습니까?')){
+                formName.submit();
+        }
+        
+    }
+});
+
+</script>
+{#footer}

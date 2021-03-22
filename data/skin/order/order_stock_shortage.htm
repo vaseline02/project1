@@ -1,0 +1,231 @@
+{#header}
+<h1>{_page_title}</h1>
+<hr>
+{?_nav_view}
+{=include_file("order/order_nav2.htm")}
+{:}
+{=include_file("order/order_nav.htm")}
+{/}
+
+
+<form method="post" id="main_form">
+<input type="hidden" name="mode" id="mode">
+{@loop}
+<div class="table_title" >{?.key_=='stock'}재고부족주문{:}품절주문{/}</div>
+{?_print_xls!=1}
+{?.key_=='stock' && !_nav_view}
+<button type="button" class="btn btn-primary chk_order" id="single">단품주문 일괄선택</button>
+<button type="button" class="btn btn-primary chk_order" id="bundle">묶음주문 일괄선택</button>
+{/}
+{/}
+<div class="btn btn-warning smsSend">문자발송</div>
+<table id="" class="display display_dt" style="width:100%;" border="{_xls_border}">
+
+	{=include_file("outline/table_width_order.htm")}
+	<thead>
+		<tr>
+			{?_print_xls!=1}<th class="sorting_disabled"><input type="checkbox" onclick="chk_all_box(this,'chk_no_{.key_}')"></th>{/}
+			{=include_file("order/_order_cols.htm")}
+			<th>총주문</th>
+			<th>총재고</th>
+			<th>입고예정</th>
+			<th>사무실</th>
+			<th>3자물류</th>
+			<th>영인터</th>
+			<th>원마케팅</th>
+			<th>방송</th>
+			<th>마케팅매입</th>
+			<th>재고이동중</th>
+			<th>외부샘플</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+	{@.value_}
+		<tr>
+			{?_print_xls!=1}
+			<td>
+				<input type="checkbox" class="chk_no chk_no_{.key_} {?.key_=='stock'}bundle_{?..bundle>0}1{:}0{/}{/}" name="chk_no[]" value="{..no}">
+				<input type="hidden" name="hid_goodsno[{..no}]" value="{..goodsno}">
+				<input type="hidden" name="hid_goodsnm[{..no}]" value="{..goodsnm}">
+				<input type="hidden" name="hid_ordno[{..no}]" value="{..ordno}">
+				<input type="hidden" name="hid_bundle[{..no}]" value="{..bundle}">
+
+			</td>
+			{/}
+			<td>{..mall_name}<br/>{..upload_form_type}</td>
+			<td>{..ordno} {..order_type}</td>
+			<td>{..mall_goodsnm}</td>
+			<td><font {?..cs_chk}color='blue'{:?..cal_chk}color='red'{/}>{..goodsnm}</font></td>
+			<td>{..order_num}<input type="hidden" name="hid_ord_num[{..no}]" value="{..order_num}"></td>
+			<td>{=number_format(..settle_price)}</td>
+			<td>{..buyer}<br/>{..receiver}</td>
+			<td>{..buyer_mobile}<br/>{..mobile}</td>
+			<td>{..zipcode} {..address}</td>
+			<td>{..memo}</td>
+			<td style="color:{..bundle_color}">{..bundle}</td>
+			<td>{..reg_date}</td>
+			<td>{goods_order_cnt[..goodsnm]}</td>
+			<td>{..cur_cnt}</td><!-- 총재고(현재고) -->
+			<td>{..codeno_3}</td><!-- 입고예정 -->
+			<td>{..codeno_1}</td><!-- 사무실 -->
+			<td>{..codeno_51}</td><!-- 3자물류 -->
+			<td>{..codeno_91}</td><!-- 영인터 -->
+			<td>{..codeno_125}</td><!-- 원마케팅 -->
+			<td style="cursor:pointer;" onclick="popup('order_stock_pop.php?codeno=87&no={..goodsno}','order_stock_pop','1500','1000')">{..codeno_87}</td><!-- 방송 -->
+			<td style="cursor:pointer;" onclick="popup('order_stock_pop.php?codeno=55&no={..goodsno}','order_stock_pop','1500','1000')">{..codeno_55}</td><!-- 마케팅매입 -->
+			<td>{..codeno_130}</td><!-- 재고이동중 -->
+			<td style="cursor:pointer;" onclick="popup('order_stock_pop.php?codeno=104&no={..goodsno}','order_stock_pop','1500','1000')">{..codeno_104}</td><!-- 외부샘플 -->
+			<td>
+				<button type="button" class="btn btn-warning mod" onclick="popup('order_mod_pop.php?no={..no}','order_mod_pop','1000','700')">수정</button>
+				<button type="button" class="btn btn-sm btn-warning" onclick="popup('../cs/cs_reg.php?ordno={..ordno}&mall_no={..mall_no}&order_seq={..no}&order_memo_add=1','','1100','900')">CS등록</button>
+			</td>
+		</tr>
+	{/}
+	</tbody>
+</table>
+{/}
+
+{?_print_xls!=1}
+
+<div class="bottom_btn_box">
+	<div class="box_left">
+		<button type="button" class="btn btn-success submit" id="stand">입고예정대기</button>
+		{?!_nav_view}
+		<button type="button" class="btn btn-danger submit" id="hold_order">보류이동</button>
+		<button type="button" class="btn btn-danger submit" id="soldout">발송대기(예약재고잡힘)</button>
+	
+		<!--<button type="button" class="btn btn-warning submit" id="hold">발송대기</button>-->
+		<!--<button type="button" class="btn btn-success submit" id="copy">주문복제</button>-->
+		{/}
+		<button type="button" class="btn btn-danger submit" id="cancel">주문취소</button>
+		선택한 주문을
+		<select name="place_code" id="">
+		{@_codedata}
+			<option value="{.no}" {_selected['place_code'][.no]}>{.cd}</option>
+		{/}
+			<!--<option value="all">통합발송</option>-->
+		</select>
+		<button type="button" class="btn btn-danger submit" id="change">변경출고</button>
+	</div>
+	<div  class="box_right">
+		{?!_nav_view}
+		<button type="button" class="btn btn-primary submit" id="deli">발송최종확인</button>
+		{/}
+	</div>
+</div>
+
+<fieldset class="page_field_info">
+  <legend>참 고</legend>
+  <ul>
+
+	<li>등록된 총 주문수량이 3개 현재고가 2개면 해당 모델의 모든 주문이 현재 페이지에 표시됨(발송 우선순위대로 발송하기 위해)</li>
+	<li>품절처리 주문은 CS페이지로 노출. 고객 응대까지 판매대기 / 취소처리는 완전취소.</li>
+	<li>묶음주문 품절처리시 동일몰,동일 주문번호의 주문이 함께 품절/발송대기 처리됨.</li>
+	<li>발송대기 - 묶음 품절시 묶음중 재고가 있는 모델이 있으면 재고를 우선 발송대기재고로 돌려놓고 cs후 처리함.</li>
+	<li>모델명 색상 구분 : (RED) 입고일자 임박[3일 이내) | (BLUE) 반품확정예정(당일분)</li>
+  </ul>
+</fieldset>
+
+{/}
+</form>
+
+<form method="post" name="smsForm" id="smsForm">
+<input type="hidden" name="order_list_no" value="">
+
+</form>
+<script>
+document.title="{_page_title}";
+
+{?__GET['gubunb']==0}
+	{?__GET['tday']==1}
+	$("#nav_div2-1-1").addClass('active');
+	{:}
+	$("#nav_div2-1-2").addClass('active');
+	{/}
+{:}
+	{?__GET['tday']==1}
+	$("#nav_div2-2-1").addClass('active');
+	{:}
+	$("#nav_div2-2-2").addClass('active');
+	{/}
+{/}
+$(function(){
+	
+	$(".chk_order").click(function(){
+		$(".chk_no_stock").prop("checked",false);
+
+		if( $(this).attr("id")=="bundle" ){
+			$(".bundle_1").prop("checked",true);
+		}else{
+			$(".bundle_0").prop("checked",true);
+		}
+	});
+
+	$(".submit").click(function(){
+		
+		var chk_len=$(".chk_no:checked").length;
+			
+		if( chk_len<=0 ){
+			alert('변경할 주문을 선택해주세요.');
+			return;
+		}
+		
+		var btype=$(this).attr("id");
+		var msg=msg2='';
+		if( btype=='soldout' ){
+			msg='품절처리';
+			msg2="묶음주문 품절시 관련 주문 모두가 품절처리됩니다.(cs 등록)";
+		}else if( btype=='deli' ){
+			msg='발송최종확인 단계로 이동';
+		}else if( btype=='stand' ){
+			msg='입고예정대기 단계로 이동';
+		}else if( btype=='cancel' ){
+			msg='주문취소';
+			//msg2="묶음주문 주문취소시 관련 주문 모두가 주문취소됩니다.";
+		}else if(btype=='hold_order'){
+			msg='보류이동';
+		}else if(btype=='copy'){
+			msg='주문복제';
+		}else if(btype=='change'){
+			msg='변경출고';
+		}
+
+
+		if(confirm(msg+' 하시겠습니까?'+msg2)){
+			
+			$("#mode").val(btype);
+			$("#main_form").submit();
+		}
+	});
+});
+
+$(".smsSend").click(function (){
+	var ordno=new Array();
+	
+	$(".chk_no").each(function(index, item){
+		if($(item).is(":checked")){                  
+			ordno.push($(this).val());
+		}
+	});
+
+	$("input[name='order_list_no']").val(ordno);
+
+	var pop_title = "send_sms" ;
+
+	var status = "width=1000, height=700, scrollbars = yes";
+         
+	window.open("", pop_title, status) ;
+	 
+	var frmData = document.smsForm ;
+	frmData.target = pop_title ;
+	frmData.action = "../cs/send_sms.php?etc_code=cs" ;
+	 
+	frmData.submit() ;
+
+});
+ 
+</script>
+
+{=include_file("order/order_footer.htm")}
+{#footer}

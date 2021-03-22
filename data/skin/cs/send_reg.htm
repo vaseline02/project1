@@ -1,0 +1,107 @@
+{#header}
+<h1 class="page_title">{_page_title}</h1>
+
+<hr>
+
+<form method="post" onsubmit="return checkForm();">
+<input type="hidden" name="mode" value="{_mode}">
+<input type="hidden" name="order_no" value="{ordno}">
+<input type="hidden" name="claim_no" value="">
+
+<h1 class="page_title">정보</h1>
+<style>
+    .search_td_width{width:400px;}
+</style>
+<table class="table table-bordered" >
+	<tbody>
+		<tr>
+			<th>주문번호</th>
+            <td class="search_td_width">{order_no}</td>            
+            <th>수령자</th>
+            <td>{receiver}</td>   
+        </tr>
+        <tr>
+			<th>주소</th>
+            <td>{zipcode} {address}</td>   
+            <th>연락처</th>
+            <td>{mobile}</td>   
+        </tr>
+        <tr>
+			<th>송장번호</th>
+            <td>{invoice}</td>   
+            <th>차액</th>
+            <td>{=number_format(diff_price)}원</td>   
+        </tr>
+        <tr>
+			<th>교환반품</th>
+            <td>{return_type_nm}</td>   
+            <th>진행상태</th>
+            <td></td>   
+        </tr>
+	</tbody>
+</table>
+
+<hr>
+
+
+<h1 class="page_title">상품정보</h1>
+
+<table id="" style="width:100%" class="listTable">
+    <tr>
+        <td>
+            <table id="" style="width:100%" class="listTable">
+                <thead>
+                    <tr>			
+                        <th width='100'>모델명</th>
+                        <th width='100'>이미지</th>
+                        <th width='100'>수량</th>
+                    </tr>
+                </thead>	
+                <tbody>
+                    
+                    <tr>			
+                        <td>{goodsnm}</td>
+                        <td class="td_img">{img_url}</td>
+                        <td class="centerClass">{order_num}</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </td>
+        <td style="text-align: center;">=></td>
+        <td>
+                
+            <table id="" style="width:100%" class="listTable">
+                <thead>
+                    <tr>			
+                        <th width='100'>모델명</th>
+                        <th width='100'>이미지</th>
+                        <th width='100'>수량</th>
+                    </tr>
+                </thead>	
+                <tbody>
+                
+                    <tr>			
+                        <td>{exchange_goodsnm}</td>
+                        <td class="td_img">{exchange_img_url}</td>
+                        <td class="centerClass">{exchange_goods_num}</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </td>
+    </tr>
+</table>
+<hr>
+ <center>
+    <button class="btn btn btn-primary buttonChange">등록</button>
+</center>
+
+
+</form>
+
+<script>
+document.title="{_page_title}";
+</script>
+
+{#footer}

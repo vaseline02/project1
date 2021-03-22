@@ -1,0 +1,113 @@
+
+
+
+{#header}
+<div class="row">
+	<div class="col-lg-12 statusbox-header"><h3>{_page_title}<!--<span>Customer Service Management</span>--></h3></div>
+</div>
+
+
+
+<form method="get">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel panel-default panel-stock margin20">
+				<table class="table fileload-list-small">
+					<caption>
+						<div class="input-group col-lg-12 fileload-list-small-title">
+							<span class="fileload-list-small-result"><b></b></span>					
+							<div class="input-group fileload-list-small-button">
+								<span class="input-group-btn"><button class="btn btn-primary">검색</button>	</span>
+							</div>
+							
+						</div>
+					</caption>
+					<colgroup>
+						<col width="15%" />
+						<col width="85%" />
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">모델명</th>
+							<td class="receive-title no-gutters">
+								<textarea name="s_goodsnm" style="width:100%; height:100px">{_POST['s_goodsnm']}</textarea>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</form>
+
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="common-table-wrapper">
+			<table class="table common-table">
+				<caption>
+					<div class="input-group col-lg-12 common-table-search2">
+						<span class="common-table-result">총 <b>{=number_format(pg->recode['total'])}</b>건</span>
+						<div class="input-group common-table-search">
+							<!-- <input type="text" class="form-control" placeholder="결과내 검색"> -->
+							<!-- <span class="input-group-btn"><button class="btn btn-primary" type="button" onclick="popup('menu_reg.php','member_reg','1100','900')">메뉴등록</button></span> -->
+						</div>
+					</div>
+				</caption>
+				<colgroup>
+					<col/>
+					<col width="10%" />
+					<col width="15%" />
+					<col width="15%" />
+					<col width="10%" />
+					<col width="3%" />
+					
+				</colgroup>
+				<thead>
+					<tr>
+						<th>모델명</th>
+                        <th>이미지</th>
+                        <th>판매가</th>
+                        <th>소비자가</th>
+                        <th>수량</th>
+                        <th></th>
+					</tr>
+				</thead>
+				<tbody>
+				{@loop}
+					<tr>
+						<td>{.goodsnm}</td>
+                        <td class="td_img_sm">{.img_url}</td>
+                        <td>{=number_format(.s_price)}원</td>
+                        <td>{=number_format(.c_price)}원</td>
+                        <td>{.totalCnt}</td> 
+                        <td>
+                            <div class="input-group fileload-list-small-button">
+                                <span class="input-group-btn"><button class="btn btn-warning goodsClick" data-no={.no} data-goodsnm='{.goodsnm}' data-stock_yn='{.stock_yn}' type="button">선택</button></span>
+                            </div>
+                        </td>
+					</tr>
+				{/}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+{?_print_xls!=1}
+<div>{pg->page['navi']}</div>
+{/}
+<script>
+
+document.title="{_page_title}";
+
+$(".goodsClick").click(function(){
+	var goodsno=$(this).data('no');
+	var goodsnm=$(this).data('goodsnm');
+	$("input[name='gift_goodsno']",opener.document).val(goodsno);
+	$(".gift_goodsnm",opener.document).html(goodsnm);
+	self.close();
+
+});
+</script>
+{#footer}

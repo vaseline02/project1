@@ -1,0 +1,183 @@
+{#header}
+{?_print_xls!=1}
+<div class="row">
+	<div class="col-lg-12 statusbox-header"><h3>{_page_title}</h3></div>
+</div>
+
+<form method="GET" name="searchForm" id="searchForm">	
+	<input type="hidden" name="print_xls" value="">
+	<table class="table table-bordered" >
+		<tr>			
+			<th>모델명</th>
+			<td><input type="text" class="form-control" name="s_goodsnm" value="{_REQUEST['s_goodsnm']}"></td>			
+			<th rowspan='2'>모델명 다중검색</th>
+			<td rowspan='2'><textarea class="form-control" name="s_multi_goodsnm" id="s_multi_goodsnm" cols="30" rows="3">{_REQUEST['s_multi_goodsnm']}</textarea></td>
+		</tr>		
+		<tr>			
+			<th>브랜드</th>
+			<td><input type="text" class="form-control" name="s_brand" value="{_REQUEST['s_brand']}"></td>			
+		</tr>		
+	</table>
+	<center>		
+		<input type="checkbox" name="pagelimit" id="pagelimit" value='y' {_checked['pagelimit']['y']}><label for="pagelimit">페이징해제</label>
+		<button class="btn btn-primary" id="">검 색</button>
+	</center>
+</form>
+<hr>
+<form enctype="multipart/form-data" method="post" name="addForm">
+<table class="table table-bordered" >
+	<!--<input type="hidden" name="mode" value="ins">	-->
+    <tr>
+		<!--
+		<th>등록</th>
+        <td>
+			<input type="text"  name="goodsnm" placeholder="상품명">
+			<select name="brandno">
+				<option value="">== 선택 ==</option>
+				{@_brandList}
+				<option value="{.no}">{.brandnm}</option>
+				{/}
+			</select>
+			<div class="btn btn-sm btn-primary chkForm" id="">등록</div>
+		</td>
+-->
+        <th>등록/수정</th>
+        <td>
+			<input type="file" name="excelFile[]" required/><button class="btn btn-primary">등록/수정</button>
+			<button type="button" class="btn btn-success" id="print_xls">엑셀 다운로드</button>
+		</td>
+		{?_err_msg}
+		<td>
+			<div style="overflow: auto; height:200px;">
+			{@_err_msg}
+				{.value_}<br>
+			{/}
+			</div>					
+		</td>
+		{/}		
+    </tr>
+</table>
+</form>
+{/}
+<form method="post" name="listForm" id="listForm">
+<table id="" class="display display_dt" style="width:100%;" border="{_xls_border}">
+<input type="hidden" name="mode" value="">
+<input type="hidden" name="no" value="">
+	<thead>
+		<tr>
+			<!--<th class="sorting_disabled"><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>	-->
+			<th>상품명</th>
+			{?_print_xls!=1}
+			<th>업체명</th>
+			{/}
+			<th>브랜드</th>
+			<th>소비자가</th>
+			<th>매입단가</th>
+			{?_print_xls!=1}
+			<th></th>
+			{/}
+		</tr>
+	</thead>
+	<tbody>
+	{@loop}
+	<tr>		
+		<!--<td><input type="checkbox" class="chk_no" name="chk_no[]" value="{.no}"></td>-->
+		<td>{.goodsnm}</td>
+		{?_print_xls!=1}
+		<td class="mallNm_{.no}">{.mall_name}</td>
+		{/}
+		<td>
+			{.brandnm}
+			<!--
+			<select name="outside_brand[{.no}]" class="brandChg" data-no="{.no}">
+
+				{@(_brandList)}
+				<option value="{..no}" {_selected['outside_brand'][.no][..no]}>{..brandnm}</option>
+				{/}
+
+			</select>
+			-->
+		</td>
+		<td>{.consumer_price}</td>
+		<td>{.purchase_price}</td>
+		{?_print_xls!=1}
+		<td>
+			<div type="button" class="btn btn-sm btn-danger indbSubmit" data-mode='del' data-no='{.no}'>삭제</div>
+		</td>	
+		{/}
+	</tr>
+	{/}
+	</tbody>
+</table>
+</form>
+{?_print_xls!=1}
+
+<div>{pg->page['navi']} 총 데이터 :{=number_format(pg->recode['total'])}</div>
+
+{/}
+<script>
+document.title="{_page_title}";
+
+$(".chkForm").click(function(){
+    var goodsnm=$("input[name='goodsnm']").val();
+    var brand=$("select[name='brandno']").val();
+
+	if(!goodsnm){
+		alert('상품명을 입력해주세요.');
+		return false;
+	}else if(!brand){
+		alert('브랜드를 선택해주세요.');
+		return false;
+	}else{        
+		if(confirm("등록하시겠습니까?")){
+			$("form[name=addForm]").submit();
+		}
+	}
+});
+
+$(".indbSubmit").click(function(){
+    var mode=$(this).data('mode');
+	var no=$(this).data('no');
+
+	if(confirm("삭제 하시겠습니까?")){
+		$("form[name='listForm']").find("input[name='mode']").val(mode);	
+		$("form[name='listForm']").find("input[name='no']").val(no);	
+
+		$("form[name=listForm]").submit();
+	}
+});
+
+$(".brandChg").change(function(){
+	var no =$(this).data("no");
+	var brandno=$(this).val();
+
+	if(confirm("브랜드를 변경하시겠습니까?")){
+		$.ajax({
+            url: "./order_outside_ajax.php",
+            type: "POST",
+            cache: false,
+            dataType: "json",
+            data: "no="+no+"&brandno="+brandno+"&mode=mod",
+            success: function(data){				
+				if(data){
+					$(".mallNm_"+no).text(data['mall_name']);
+				}else{
+					$(".mallNm_"+no).text("");
+				}
+                //alert("처리되었습니다.");
+            },
+            error: function (request, status, error){        
+                console.log(error);
+            }
+        });
+	}
+});
+
+$("#print_xls").click(function(){
+	$("input[name='print_xls']").val("1");
+    $("#searchForm").submit();
+    $("input[name='print_xls']").val("0");
+});
+
+</script>
+{#footer}

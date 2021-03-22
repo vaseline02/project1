@@ -1,0 +1,141 @@
+{#header}
+<h1>{_page_title}</h1>
+
+<hr>
+{=include_file("cs/send_nav.htm")}
+<style>
+.search_td_width{width:800px;}
+#nav_div2 a:after{width:90%}
+</style>
+
+{?_print_xls!=1}
+    {=include_file("outline/table_width_cancel.htm")}
+{/}
+<form id="sendForm" method="POST">
+<input type="hidden" name="mode" value="">
+<input type="hidden" name="no" value="">
+<input type="hidden" name="code" value="">
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+		<tr>			
+			<th><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>			
+			<th>몰명</th>
+			<th>주문번호</th>
+			<th>모델명</th>
+			<th>이미지</th>
+			<th width='100'>구매수량</th>
+			<th width='100'>반품수량</th>
+			<th>송장번호</th>
+			<th>계좌번호</th>
+			<th width='100'>사유</th>
+			<th width='100'>작성자</th>
+			<th width='90'>등록일</th>
+			<th></th>
+		</tr>
+	</thead>	
+	<tbody>
+		{@loop}
+		
+		<tr class="{.line_color}">			
+			<input type="hidden" name="account_number[{.no}]" value={.account_number}> 
+			<input type="hidden" name="account_code[{.no}]" value="{.account_code}"> 
+			<td><input type="checkbox" class="chk_no" name="chk_no[]" value="{.no}" data-return_type={.return_type} data-return_type_sub={.return_type_sub}></td>
+			<td>{.mall_name}</td>
+			<td>{.order_no}</td>
+			<td>{.goodsnm}</td>
+			<td class="td_img">{.img_url}</td>
+			<td>{.order_num}</td>
+			<td>{.exchange_goods_num}</td>
+			<td>{?.return_invoice!=0}{delivery_list[.return_delivery_code]['name']}<br>{.return_invoice}{/}</td>
+			<td>{?.account_number && .account_code}{_cfg_account_code[.account_code]}<br>{.account_number}{/}</td>
+			<td>{.return_type_nm}</td>
+			<td>{.name}<div>({.id})</div></td>
+			<td>{.reg_date}</td>
+			<td>
+				<button type="button" class="btn btn-sm btn-warning" onclick="popup('cs_reg.php?ordno={.order_no}&mall_no={.mall_no}&order_list_no={.order_list_no}&view_type=1','','1100','900')">상세</button>
+			</td>
+		</tr>
+	{/}
+	</tbody>
+</table>
+
+<div class="bottom_btn_box">
+	<div  class="box_left">
+		<!-- <div type="button" class="btn btn-danger cancelChange" id="order_settle" data-code='1'>접수</div> -->
+	</div>
+	<div  class="box_right">
+		재고이동 : 
+		<select name="codeSelect" class="codeSelect">
+			<option value="">선택</option>
+			<option value="bad">불량접수</option>
+			{ @ _codedata }
+			<option value="{_codedata['no']}">{_codedata['cd']}</option>
+			{ / }
+		</select>
+		<div type="button" class="btn btn-primary cancelChange" id="order_settle" data-code='4'>처리완료</div>
+	</div>
+</div>
+
+</form>
+
+<script>
+
+document.title="{_page_title}";
+
+$(".cancelChange").click(function(){
+	if(!$(".chk_no").is(":checked")){
+		alert("선택된 상품이 없습니다.");
+		return false;
+	}else{
+		
+		/*
+		var accountCheck=0;
+		$(".chk_no").each(function(index, item){
+			if($(item).is(":checked")){             
+				if(!$("input[name='account_number["+$(item).val()+"]']").val() || !$("input[name='account_code["+$(item).val()+"]']").val()){
+					accountCheck++;
+				}				
+			}
+		});
+		if(accountCheck>0){
+			alert('계좌번호가없는 접수건이 있습니다.');
+			return false;
+		}
+		*/
+		if($(this).data('code')=='1'){
+			if(confirm('이전상태(접수)로 변경하시겠습니까?')){
+				$("input[name='mode']").val('allCancel');
+				$("input[name='code']").val($(this).data('code'));
+				$("#sendForm").submit();
+			}
+		}else{
+			var badCount=0;
+			//재고이동시 불량접수건이 체크되있을경우 넘기지않는다.
+			$(".chk_no").each(function(index, item){
+				if($(item).is(":checked")){                                       
+					//교환이거나 반품일경우이고 불량접수일경우 체크
+					if(($(item).data('return_type')=='60' || $(item).data('return_type')=='70') && $(item).data('return_type_sub')=='2'){
+						badCount++;
+					}
+				}
+			});
+
+			if(!$(".codeSelect").val()){
+				alert("재고 등록위치를 선택해주세요.");
+				return false;
+			}else if($(".codeSelect").val()>=1 && badCount>0){
+				alert("불량접수건이 선택되어있습니다.");
+				return false;
+			}else{
+				if(confirm('처리완료로 변경하시겠습니까?')){
+					$("input[name='mode']").val('allCancel');
+					$("input[name='code']").val($(this).data('code'));
+					$("#sendForm").submit();
+				}
+			}
+		}
+        
+    }
+});
+</script>
+{#footer}

@@ -1,0 +1,140 @@
+{#header}
+{?_print_xls!=1}
+<h1>{_page_title}</h1>
+<style>
+.search_td_width{width:380px;}
+.mallLabel{ display:inline-block; width:200px; line-height:23px;}
+</style>
+<form method="get">
+	<table class="table table-bordered" >
+		<tr>
+			<th>입고일</th>
+			<td colspan='3'>
+			<input type="text" name="s_date" id="s_date" class="datepicker_common" autocomplete="off" value="{_GET['s_date']}"> ~ 
+			<input type="text" name="e_date" id="e_date" class="datepicker_common" autocomplete="off" value="{_GET['e_date']}">
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='0' data-type='day'>오늘</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='7' data-type='day'>7일</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='15' data-type='day'>15일</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='1' data-type='month'>1개월</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='3' data-type='month'>3개월</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='1' data-type='year'>1년</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='3' data-type='year'>3년</span>
+				<span type="button" class="btn btn-sm btn-warning dayChange" data-int='5' data-type='year'>5년</span>
+			</td>			
+		</tr>		
+	</table>
+	<center>
+		<button class="btn btn-sm btn-primary" id="">검 색</button>
+		<button type="button" class="btn btn-sm btn-success" id="print_xls">엑셀 다운로드</button>
+	</center>
+</form>
+{/}
+<form id="sendForm" name="sendForm" method="POST">
+<input type="hidden"name="print_xls" value="">
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+		<tr>			
+			<th style="height:25px;">구분</th>			
+			<th style="height:25px;"></th>
+			{@_list_name}
+			<th colspan='2' style="height:25px;">{.value_}</th>
+			{/}
+			<th style="height:25px;"></th>
+		</tr>
+		<tr>
+			<th style="height:25px;">날짜</th>
+			<th style="height:25px;">요일</th>
+			{@_list_name}
+			<th style="height:25px;">접수</th>
+			<th style="height:25px;">처리</th>
+			{/}
+			<th style="height:25px;">일별 처리 개수</th>
+		</tr>
+	</thead>	
+	<tbody>
+		{@loop}
+		<tr>									
+			<td><font {_font_color[.value_]}>{.key_}</font></td>
+			<td><font {_font_color[.value_]}>{_weekday[.key_]}</font></td>
+			{@(_list_name)}
+			<td>{=number_format(data[.key_][..key_]['0']['sumcount'])}</td>
+			<td>{=number_format(data[.key_][..key_]['1']['sumcount'])}</td>
+			{/}
+			<td>{=number_format(_day_sum[.key_])}</td>
+		</tr>
+		{/}
+		
+	</tbody>
+		<tr style="border-top:1px solid #333">
+			<td style="border-top:1px solid #333">개인별 월 접수</td>
+			<td style="border-top:1px solid #333"></td>
+			{@_list_name}
+			<td style="border-top:1px solid #333">{=number_format(_admin_sum[.key_][0])}</td>
+			<td style="border-top:1px solid #333">0</td>
+			{/}
+			<td style="border-top:1px solid #333">{=number_format(_total_sum[0])}</td>
+		</tr>
+		<tr>
+			<td>개인별 월 처리</td>
+			<td></td>
+			{@_list_name}
+			<td>0</td>
+			<td>{=number_format(_admin_sum[.key_][1])}</td>
+			{/}
+			<td>{=number_format(_total_sum[1])}</td>
+		</tr>
+</table>
+{?_print_xls==1}
+<br>
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+    <thead>
+		<tr>			
+			<th>항목</th>			
+			<th>수량</th>			
+		</tr>
+	</thead>	
+	<tbody>
+		<tr>
+			<th>단순교환</th>
+			<th>{_cs_sum['70']['1']}</th>
+        </tr>
+        <tr>
+			<th>단순반품</th>
+			<th>{_cs_sum['60']['1']}</th>
+        </tr>
+        <tr>
+			<th>불량교환</th>
+			<th>{_cs_sum['70']['2']}</th>
+        </tr>
+        <tr>
+			<th>불량반품</th>
+			<th>{_cs_sum['60']['2']}</th>
+        </tr>
+        <tr>
+			<th>오배송</th>
+			<th>{(_cs_sum['90']['1']+_cs_sum['90']['2'])}</th>
+        </tr>
+        <tr>
+			<th>총합</th>
+			<th>{(_cs_sum['60']['1']+_cs_sum['60']['2']+_cs_sum['70']['1']+_cs_sum['70']['2']+_cs_sum['90']['1']+_cs_sum['90']['2'])}</th>
+        </tr>
+    </tbody>
+</table>
+{/}
+</form>
+
+<script>
+
+document.title="{_page_title}";
+
+$(function(){
+
+$("#print_xls").click(function(){
+    $("input[name='print_xls']").val("1");
+    $("#sendForm").submit();
+    $("input[name='print_xls']").val("0");
+});
+})
+
+</script>
+{#footer}

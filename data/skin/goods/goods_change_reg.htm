@@ -1,0 +1,136 @@
+{#header}
+<h1 class="page_title">{_page_title}</h1>
+
+<hr>
+
+<form method="post" name="goodsChangeForm">
+<input type="hidden" name="mode" value="mod">
+<input type="hidden" name="no" value="{no}">
+<input type="hidden" name="member_level" value="{_member_level}">
+
+<h1 class="page_title"></h1>
+<table class="table table-bordered" >
+    <tbody>
+        <tr>
+            <th style="width:200px;">모델명</th>
+            <td class="search_td_width" style="height:45px">{goodsnm}({goodsnm_sub})</td>                       
+        </tr>        
+		{?_member_level=='1'}
+        <tr>
+            <th style="width:200px;">변경모델명(모델명1)</th>
+            <td><input type="text" name="goodsnm" style="width: 300px;"></td>
+        </tr>
+		{/}
+		<tr>
+            <th style="width:200px;">변경모델명(모델명2)</th>
+            <td><input type="text" name="goodsnm_sub" style="width: 300px;"></td>
+        </tr>
+    </tbody>
+</table>
+<center style="margin-bottom:20px; padding-top: 10px;">
+     <div type="button" class="btn btn-sm btn-primary checkForm" data-mode='mod'>변경</div>
+</center>
+</form>
+
+<form method="post" id="linkForm" name="linkForm">
+<input type="hidden" name="mode" value="link">
+<input type="hidden" name="no" value="{no}">
+<h1 class="page_title"></h1>
+
+<table class="table table-bordered" >
+    <tbody>
+        <tr>
+            <th style="width:200px;">유튜브 경로</th>
+            <td><input type="text" name="link" style="width:800px;" value="{youtube_link}"></td>	
+        </tr>		
+    </tbody>
+</table>
+<center style="margin-bottom:20px; padding-top: 10px;">
+     <div type="button" class="btn btn-sm btn-primary checkForm" data-mode='link'>변경</div>
+</center>
+
+</form>
+
+{? _cate_code != '000'}
+<form method="post" id="specForm" name="specForm">
+<input type="hidden" name="mode" value="spec">
+<input type="hidden" name="no" value="{no}">
+<h1 class="page_title"></h1>
+
+<table class="table table-bordered" >
+    <tbody>
+        <tr>
+			{@spec}
+				{@(gi)}
+				<tr>
+					<th style="width:200px;">{..value_}</th>
+					{?..key_ == 'warranty' || ..key_ == 'import' || ..key_ == 'bezel'}
+					<td>
+						<input type="checkbox" name="{..key_}" id="{..key_}_Y" value="Y" {? .spec_data[..key_] == 'Y'} checked {/}
+						onclick="checkOnlyOne(this, '{..key_}')"><label for="{..key_}_Y">Y</label>
+						<input type="checkbox" name="{..key_}" id="{..key_}_N" value="N" {? .spec_data[..key_] == 'N'} checked {/} 
+						onclick="checkOnlyOne(this, '{..key_}')"><label for="{..key_}_N">N</label>
+					</td>	
+					{:}
+					<td><input type="text" name="{..key_}" style="width:800px;" value="{.spec_data[..key_]}"></td>			
+					{/}
+				</tr>
+				{/}
+			{/}
+        </tr>		
+    </tbody>
+</table>
+<center style="margin-bottom:20px; padding-top: 10px;">
+     <div type="button" class="btn btn-sm btn-primary checkForm" data-mode='spec'>변경</div>
+</center>
+
+</form>
+{/}
+<script>
+
+document.title="{_page_title}";
+
+$(".checkForm").click(function (){
+    var mode=$(this).data('mode');
+    $("input[name='mode']").val(mode);
+	var level=$("input[name='member_level']").val();
+
+    if(mode=='mod'){        
+        if(!$("input[name='goodsnm']").val() && !$("input[name='goodsnm_sub']").val()){
+            alert('변경할 모델명을 입력해주세요.');
+            return false;
+        }else{
+			if(confirm('변경하시겠습니까?')){
+		       $("form[name='goodsChangeForm']").submit();
+			}
+        }
+    }else if(mode=='link'){
+		/*if(!$("input[name='link']").val()){
+			alert('변경할 유튜브 경로를 입력해주세요.');
+			$("input[name='link']").focus();
+			return false;
+		}else{*/
+			if(confirm('변경하시겠습니까?')){
+				$("form[name='linkForm']").submit();
+			}
+		//}	
+	}else if(mode=='spec'){
+		if(confirm('변경하시겠습니까?')){
+			$("form[name='specForm']").submit();
+		}
+	}
+});
+
+function checkOnlyOne(e, choose)  {
+	 var obj = document.getElementsByName(choose);
+	
+    for(var i=0; i<obj.length; i++){
+        if(obj[i] != e){
+            obj[i].checked = false;
+        }
+    }
+}
+
+</script>
+
+{#footer}

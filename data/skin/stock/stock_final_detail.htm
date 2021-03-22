@@ -1,0 +1,230 @@
+{#header}
+<div class="col-lg-12 statusbox-header"><h3>{_page_title}<span></span></h3></div>
+
+
+<form id="calcu_form" method="post">
+<input type="hidden" name="mode" value="">
+<input type="hidden" name="f_group_id" value="{_group_id}">
+<table class="table table-bordered" >
+	<tr>
+		{@_column_arr}
+			<th>{.key_}<button type="button" class="add_p" id="{.value_}">+</button></th>	
+		{/}
+	</tr>
+	<tr>
+		{@_column_arr}
+		<td class="text_center" id="{.value_}_td">
+
+			{? _d_arr[.value_]}
+				{@ (_d_arr[.value_])}
+					<input type="text" name="{.value_}[]" value="{..value_}"><br/>
+				{/}
+			{:}
+			<input type="text" name="{.value_}[]" value=""><br/>
+			<input type="text" name="{.value_}[]" value=""><br/>
+			<input type="text" name="{.value_}[]" value=""><br/>
+			{/}
+		</td>
+		{/}
+	</tr>
+	<tr>
+		<th colspan={_column_arr.size_}></th>	</tr>
+	<tr >
+		{@_column_arr}
+		<td class="text_center" id="tt_{.value_}">
+			
+			{? .value_=='send_rate'}
+			
+			{=number_format(_base['avg_rate'],1)}
+			{:}
+			{=number_format(_base[.value_])}
+			{/}
+			{?.value_=='send_money'}
+				<div>(입예송금외화 : {=number_format(_sum_cost)})</div>
+			{/}
+		</td>
+		{/}
+	</tr>
+</table>
+
+<table class="display display_s" data-height="250" style="width:100%" border="{_xls_border}">
+	<thead>
+	<tr>
+		{@_column_arr}
+			<th>{.key_}</th>	
+		{/}
+		<th>메모</th>
+		<th>등록일</th>
+	</tr>
+	</thead>
+	{@_cal_log}
+	<tr>
+		{@(_column_arr)}
+		<td>{=str_replace("|","<br/>",.value_[..value_])}</td>
+		{/}
+		<td>{.memo}</td>
+		<td>{.name} ( {.reg_date} )</td>
+	</tr>
+	{/}
+</table>
+
+
+<div  class="text_right">
+		
+	<input type="text" name="calcu_memo" >
+	<button type="button" class="btn btn-success confirmCheck" data-mode='calcu' data-mess="{?_comp_yn=='n'}등록{:}수정{/}">{?_comp_yn=='n'}등록{:}수정{/}</button>
+</div>
+</form>
+
+
+<form method="post" name="listForm" id="listForm">
+<input type="hidden" name="mode" value="">
+{@loop}
+<div class="" style="clear:both">
+
+<hr>
+<table class="table table-bordered" >
+	<tr>
+		<th style="width:200px;">통관그룹번호</th>
+		<td>{__GET['group_id']}</td>
+	</tr>
+</table>
+
+<!--<div class="table_title">{_title[.key_]} ( {.key_} ) - {?_pass_date}통관일 : {_pass_date}{/} {?_license_date} 면장등록일 : {_license_date}{/}</div>-->
+<table id="" class="display display_dt" style="width:100%" border="{_xls_border}">
+	<thead>
+		<tr>
+			{?_print_xls!=1}
+			<th><input type="checkbox" onclick="chk_all_box(this,'chk_no')"></th>
+			{/}
+			<th>브랜드</th>
+			<th>분류</th>
+			{?_print_xls!=1}<th>이미지</th>{/}
+			<th>모델명1</th>
+			<th>원산지</th>
+			<th>원가</th>
+			<th>환율</th>
+			<th>관세</th>
+			<th>수수료</th>
+			<th>부대비용</th>
+			<th>입고된수량</th>
+			<th>최종원가</th>
+			<th>최종원가<br/>(부가세제외)</th>						
+			<th>등록일</th>
+		</tr>
+	</thead>
+	<tbody>	
+	{@.value_}
+		<tr>	
+			{?_print_xls!=1}
+			<td>
+			<input type="checkbox" class="chk_no" name="chk_no[]" value="{..no}" >
+			</td>
+			{/}
+			<td>{..brandnm}</td>
+			<td>{..catenm}</td>
+			{?_print_xls!=1}<td class="td_img">{..img_url}</td>{/}
+			<td>{..goodsnm}</td>
+			<td>{..origin}</td>
+			<td>{=number_format(..cost_std)}</td>
+			<td>{=number_format(..rate,1)}</td>
+			<td>{..duty_per}%</td>
+			<td>{..charge}%</td>
+			<td>{..extra_expense}%</td>
+			<td class="stock_num">{=number_format(..stock_num)}</td>
+			<td>
+				{_ea_price[..goodsno]}
+				<input type="hidden" name="ea_price[{..no}]" value="{_ea_price[..goodsno]}">
+				<input type="hidden" name="ea_price_ori[{..no}]" value="{_ea_price_ori[..goodsno]}">
+			</td>
+			<td>{_ea_price_ori[..goodsno]}</td>
+			<td>{..reg_date}</td>	
+		</tr>
+	{/}
+	</tbody>
+</table>
+</div>
+{/}
+
+
+
+{?_print_xls!=1}
+
+<div>{pg->page['navi']} 총 데이터 :{=number_format(pg->recode['total'])}</div>
+<div class="bottom_btn_box">
+	<div class="box_left">		
+		<button type="button" class="btn btn-danger confirmCheck" data-mode='del' data-mess="삭제">삭제</button> |
+		<input type="text" name="mod_f_group_id" id="mod_f_group_id"> <button type="button" class="btn btn-success confirmCheck" data-mode='mod' data-mess="통관그룹변경">통관그룹변경</button>
+
+	</div>
+	<div  class="box_right">	
+		<button type="button" class="btn btn-primary confirmCheck" data-mode='comp' data-mess="{?_comp_yn=='n'}등록{:}재등록{/}">{?_comp_yn=='n'}등록{:}재등록{/}</button>
+	</div>
+</div>
+<fieldset class="page_field_info">
+  <legend>참 고</legend>
+  <ul>
+	
+  </ul>
+</fieldset>
+
+{/}
+
+</form>
+<script>
+document.title="{_page_title}";
+
+
+$(function(){
+
+	$(".add_p").click(function(){
+		var this_id=$(this).attr("id");
+		var html='';
+		
+		html+="<input type='text' name='"+this_id+"[]' value=''><br/>";
+		$("#"+this_id+"_td").append(html);
+	});
+
+	$(".confirmCheck").click(function(){
+		var mode=$(this).data("mode");
+		var mess=$(this).data("mess");
+		var form_nm='';
+
+		if(mode=='del' || mode=='mod'){
+
+			if( $(".chk_no:checked").length <=0 ){
+				alert('상품을 선택해주세요.');
+				return;
+			}
+		}
+
+		if(mode=='mod'){
+
+			if($("#mod_f_group_id").val()==''){
+				alert('통관그룹코드를 등록해주세요.');
+				$("#mod_f_group_id").focus();
+				return;
+			}
+		}
+
+		
+		if(mode=='calcu'){
+			form_nm=mode+'_form';
+		}else{
+			form_nm='listForm';
+		}
+
+
+		if(confirm(mess+" 하시겠습니까?")){
+			$("input[name='mode']").val(mode);
+			$("#"+form_nm).submit();	
+		}
+
+
+	});
+
+
+});
+
+</script>
+{#footer}
